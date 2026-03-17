@@ -1,0 +1,66 @@
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import gettext as _
+%>
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("Your Chronopoli Path")}</%block>
+
+<%block name="css_extras">
+<link rel="stylesheet" href="${static.url('css/chronopoli-main.css')}" />
+</%block>
+
+<%block name="content">
+<div style="max-width: 720px; margin: 0 auto; padding: 4rem 2rem;">
+
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <span class="hero-eyebrow">Your Personalized Path</span>
+    <h2 style="margin-top: 1rem;">
+      Welcome, ${user.first_name or user.username}
+    </h2>
+    <p class="text-muted" style="margin-top: 0.5rem;">
+      Based on your answers, here's your recommended Knowledge District and learning path.
+    </p>
+  </div>
+
+  ## Primary District
+  <div class="district-card" style="border-left: 4px solid ${primary_district.get('color', '#C9A84C')}; margin-bottom: 2rem;">
+    <span class="badge badge-gold" style="margin-bottom: 0.75rem;">Your Primary District</span>
+    <h3>${primary_district.get('name', 'Knowledge District')}</h3>
+    <p class="text-muted" style="margin-top: 0.5rem;">
+      This is where your core learning journey begins.
+    </p>
+  </div>
+
+  ## Learning Layer
+  <div style="background: var(--cp-card, #1A1A26); border: 1px solid var(--cp-border, #2A2A3A); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+    <h4 style="margin-bottom: 0.5rem;">Recommended Learning Layer</h4>
+    <p class="text-gold" style="font-weight: 600;">${layer_label}</p>
+  </div>
+
+  ## Secondary Districts
+  % if secondary_districts:
+  <div style="margin-bottom: 2rem;">
+    <h4 style="margin-bottom: 1rem;">Also Recommended For You</h4>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+      % for district in secondary_districts:
+      <div class="district-card" style="border-left: 4px solid ${district.get('color', '#888')};">
+        <h4>${district.get('name', '')}</h4>
+      </div>
+      % endfor
+    </div>
+  </div>
+  % endif
+
+  ## CTA
+  <div style="text-align: center; margin-top: 3rem;">
+    <a href="/dashboard" class="btn btn-primary" style="font-size: 1rem; padding: 0.75rem 2rem;">
+      Go to My Dashboard
+    </a>
+    <a href="/courses" class="btn btn-secondary" style="font-size: 1rem; padding: 0.75rem 2rem; margin-left: 1rem;">
+      Browse Courses
+    </a>
+  </div>
+
+</div>
+</%block>

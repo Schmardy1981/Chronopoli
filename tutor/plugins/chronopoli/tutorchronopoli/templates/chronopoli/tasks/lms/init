@@ -1,0 +1,32 @@
+#!/bin/bash
+# Initialize Chronopoli districts as OpenEdX organizations
+echo "Setting up Chronopoli Knowledge Districts..."
+
+python manage.py lms shell -c "
+from organizations.models import Organization
+
+districts = [
+    {'name': 'Chronopoli AI District', 'short_name': 'CHRON-AI', 'description': 'AI governance, model risk, enterprise AI adoption'},
+    {'name': 'Chronopoli Digital Assets District', 'short_name': 'CHRON-DA', 'description': 'Blockchain, tokenization, stablecoins, digital payments'},
+    {'name': 'Chronopoli Governance District', 'short_name': 'CHRON-GOV', 'description': 'Policy, regulation, sovereign digital strategy'},
+    {'name': 'Chronopoli Compliance District', 'short_name': 'CHRON-COMP', 'description': 'AML, KYC, sanctions, travel rule, compliance design'},
+    {'name': 'Chronopoli Investigation District', 'short_name': 'CHRON-INV', 'description': 'Blockchain forensics, financial crime, tracing'},
+    {'name': 'Chronopoli Risk & Trust District', 'short_name': 'CHRON-RISK', 'description': 'Operational risk, cyber risk, enterprise trust frameworks'},
+]
+
+for d in districts:
+    org, created = Organization.objects.get_or_create(
+        short_name=d['short_name'],
+        defaults={'name': d['name'], 'description': d['description']}
+    )
+    status = 'Created' if created else 'Already exists'
+    print(f'  {status}: {org.short_name} - {org.name}')
+
+print('Chronopoli districts initialized.')
+"
+
+# Run migrations for Chronopoli apps
+python manage.py lms migrate chronopoli_onboarding --noinput
+python manage.py lms migrate chronopoli_partners --noinput
+
+echo "Chronopoli initialization complete."

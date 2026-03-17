@@ -1,0 +1,2 @@
+# Chronopoli production overrides
+CHRONOPOLI_ENVIRONMENT = "production"

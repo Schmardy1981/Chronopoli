@@ -1,0 +1,53 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+env:
+  EC2_USER: ubuntu
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh ${{ env.EC2_USER }}@${{ secrets.EC2_HOST }} << 'DEPLOY'
+            set -e
+            cd /opt/chronopoli
+
+            # Pull latest code
+            git pull origin main
+
+            # Install/update Chronopoli Tutor plugin
+            pip install -e tutor/plugins/chronopoli/ --quiet
+
+            # Deploy theme
+            TUTOR_ROOT=$(tutor config printroot)
+            cp -r theme/chronopoli-theme "${TUTOR_ROOT}/env/build/openedx/themes/"
+
+            # Rebuild and restart
+            tutor config save
+            tutor images build openedx
+            tutor local restart
+
+            echo "Deployment complete: $(date)"
+          DEPLOY
+
+      - name: Health check
+        run: |
+          sleep 60
+          curl -sf "https://${{ secrets.LMS_HOST }}/heartbeat" || echo "Health check pending"

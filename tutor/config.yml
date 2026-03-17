@@ -1,0 +1,112 @@
+# Chronopoli – Tutor Configuration
+# Copy this to: ~/.local/share/tutor/config.yml
+# Then run: tutor config save && tutor local restart
+
+# ============================================================
+# PLATFORM IDENTITY
+# ============================================================
+PLATFORM_NAME: Chronopoli
+LMS_HOST: learn.chronopoli.io
+CMS_HOST: studio.chronopoli.io
+CONTACT_EMAIL: platform@chronopoli.io
+DEFAULT_FROM_EMAIL: noreply@chronopoli.io
+ENABLE_HTTPS: true
+
+# ============================================================
+# LANGUAGE & LOCALE
+# ============================================================
+LANGUAGE_CODE: en
+
+# ============================================================
+# AWS S3 STORAGE
+# ============================================================
+# Uncomment and fill in when ready for production
+# OPENEDX_AWS_ACCESS_KEY: YOUR_AWS_ACCESS_KEY
+# OPENEDX_AWS_SECRET_ACCESS_KEY: YOUR_AWS_SECRET_KEY
+# S3_STORAGE_BUCKET: chronopoli-media-production
+# S3_FILE_UPLOAD_BUCKET: chronopoli-media-production
+# AWS_DEFAULT_REGION: me-central-1
+# DEFAULT_FILE_STORAGE: storages.backends.s3boto3.S3Boto3Storage
+
+# ============================================================
+# EXTERNAL DATABASE (RDS)
+# ============================================================
+# Set to false when using RDS
+RUN_MYSQL: true   # Change to false and set below for production RDS
+# MYSQL_HOST: your-rds.cluster-xxxxx.me-central-1.rds.amazonaws.com
+# MYSQL_PORT: 3306
+# MYSQL_ROOT_USERNAME: admin
+# MYSQL_ROOT_PASSWORD: CHANGE_THIS_STRONG_PASSWORD
+
+# ============================================================
+# EXTERNAL REDIS (ElastiCache)
+# ============================================================
+RUN_REDIS: true   # Change to false and set below for production
+# REDIS_HOST: your-elasticache.xxxxx.me-central-1.cache.amazonaws.com
+# REDIS_PORT: 6379
+
+# ============================================================
+# EMAIL (AWS SES)
+# ============================================================
+RUN_SMTP: true    # Change to false when using SES
+# SMTP_HOST: email-smtp.me-central-1.amazonaws.com
+# SMTP_PORT: 587
+# SMTP_USE_TLS: true
+# SMTP_USERNAME: your-ses-smtp-user
+# SMTP_PASSWORD: your-ses-smtp-password
+
+# ============================================================
+# REGISTRATION & AUTHENTICATION
+# ============================================================
+# Require email verification
+REGISTRATION_EMAIL_PATTERNS_ALLOWED: null
+
+# Social auth (add OAuth providers later)
+ENABLE_OAUTH2_PROVIDER: true
+
+# ============================================================
+# FEATURES
+# ============================================================
+# These are passed to LMS/CMS Django settings
+OPENEDX_FEATURES:
+  CERTIFICATES_HTML_VIEW: true
+  ENABLE_COURSE_DISCOVERY: true
+  ENABLE_DISCUSSION_HOME_PANEL: true
+  ENABLE_COMBINED_LOGIN_REGISTRATION: true
+  ENABLE_MOBILE_REST_API: true
+  PREVIEW_LMS_BASE: preview.learn.chronopoli.io
+
+# ============================================================
+# THEME
+# ============================================================
+THEMES_ROOT: /openedx/themes
+OPENEDX_THEME: chronopoli-theme
+
+# ============================================================
+# CELERY WORKERS
+# ============================================================
+LMS_WORKER_CONCURRENCY: 2
+CMS_WORKER_CONCURRENCY: 2
+
+# ============================================================
+# SECURITY
+# ============================================================
+# Regenerate these in production!
+# Run: tutor config save  (auto-generates)
+SECRET_KEY: CHANGE_THIS_IN_PRODUCTION_AUTO_GENERATED_BY_TUTOR
+JWT_RSA_PRIVATE_KEY: CHANGE_THIS_IN_PRODUCTION
+
+# ============================================================
+# PLUGINS ENABLED
+# ============================================================
+# These are enabled via: tutor plugins enable <name>
+# Listed here for documentation:
+#
+# - mfe                    (Micro-frontends)
+# - indigo                 (Modern base theme)
+# - notes                  (In-course student notes)
+# - forum                  (Discussion forums)
+# - credentials            (Badges + certificates)
+# - chronopoli             (Our main customization plugin)
+# - chronopoli-districts   (District taxonomy plugin)
+# - chronopoli-ai-onboarding (AI questionnaire plugin)

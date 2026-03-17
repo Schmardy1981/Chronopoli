@@ -1,0 +1,48 @@
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import gettext as _
+%>
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${partner.name} – Chronopoli</%block>
+
+<%block name="css_extras">
+<link rel="stylesheet" href="${static.url('css/chronopoli-main.css')}" />
+</%block>
+
+<%block name="content">
+<div style="max-width: 900px; margin: 0 auto; padding: 4rem 2rem;">
+
+  <div style="margin-bottom: 3rem;">
+    <a href="/chronopoli/partners/" class="text-muted" style="text-decoration: none; font-size: 0.875rem;">
+      &larr; All Partners
+    </a>
+    <span class="badge badge-gold" style="margin-left: 1rem;">${partner.get_tier_display()}</span>
+    <h1 style="margin-top: 1rem;">${partner.name}</h1>
+    <p class="text-muted" style="margin-top: 0.5rem;">${partner.description}</p>
+  </div>
+
+  % if tracks:
+  <h3 style="margin-bottom: 1.5rem;">Learning Tracks</h3>
+  <div style="display: grid; gap: 1.5rem;">
+    % for track in tracks:
+    <div class="course-card">
+      <div class="course-card-body">
+        <span class="course-tag badge-gold">${track.district_code}</span>
+        <h4 class="course-card-title">${track.name}</h4>
+        <p class="course-card-meta">${track.description[:200]}</p>
+        % if track.course_key:
+        <a href="/courses/${track.course_key}/about" class="btn btn-secondary" style="margin-top: 1rem;">
+          View Course
+        </a>
+        % endif
+      </div>
+    </div>
+    % endfor
+  </div>
+  % else:
+  <p class="text-muted">Tracks coming soon.</p>
+  % endif
+
+</div>
+</%block>

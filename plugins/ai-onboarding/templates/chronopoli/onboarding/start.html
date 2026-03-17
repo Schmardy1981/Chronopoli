@@ -1,0 +1,102 @@
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import gettext as _
+%>
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("Welcome to Chronopoli")}</%block>
+
+<%block name="css_extras">
+<link rel="stylesheet" href="${static.url('css/chronopoli-main.css')}" />
+<style>
+  .onboarding-step { display: none; }
+  .onboarding-step.active { display: block; }
+</style>
+</%block>
+
+<%block name="content">
+<div class="onboarding-wrap">
+  <div class="onboarding-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="hero-eyebrow">Welcome to Chronopoli</span>
+      <h2 style="margin-top: 1rem;">Let's personalize your journey</h2>
+      <p class="text-muted" style="margin-top: 0.5rem;">
+        Answer ${total_questions} quick questions so we can recommend the right
+        Knowledge District and courses for you.
+      </p>
+    </div>
+
+    <div class="onboarding-progress">
+      <div class="onboarding-progress-bar" id="progress-bar" style="width: 20%;"></div>
+    </div>
+
+    <form method="post" action="/chronopoli/onboarding/submit/" id="onboarding-form">
+      <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />
+
+      % for i, question in enumerate(questions):
+      <div class="onboarding-step ${'active' if i == 0 else ''}" data-step="${i}">
+        <p class="onboarding-question">${question['question']}</p>
+        <div class="onboarding-options">
+          % for option in question['options']:
+          <button type="button"
+                  class="onboarding-option"
+                  data-question="${question['id']}"
+                  data-value="${option['value']}">
+            ${option['label']}
+          </button>
+          % endfor
+        </div>
+        <input type="hidden" name="${question['id']}" id="input-${question['id']}" value="" />
+      </div>
+      % endfor
+
+      <div class="onboarding-step" data-step="${len(questions)}" style="text-align: center;">
+        <h3 style="margin-bottom: 1rem;">Ready to discover your path</h3>
+        <p class="text-muted" style="margin-bottom: 2rem;">
+          We'll match you with the right Knowledge District, learning layer, and courses.
+        </p>
+        <button type="submit" class="btn btn-primary" style="font-size: 1rem; padding: 0.75rem 2rem;">
+          Show My Recommendations
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</%block>
+
+<%block name="js_extras">
+<script>
+(function() {
+  var currentStep = 0;
+  var totalSteps = ${total_questions};
+  var steps = document.querySelectorAll('.onboarding-step');
+  var progressBar = document.getElementById('progress-bar');
+
+  document.querySelectorAll('.onboarding-option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var questionId = this.dataset.question;
+      var value = this.dataset.value;
+
+      // Mark selected
+      this.parentElement.querySelectorAll('.onboarding-option').forEach(function(b) {
+        b.classList.remove('selected');
+      });
+      this.classList.add('selected');
+
+      // Store value
+      document.getElementById('input-' + questionId).value = value;
+
+      // Advance after short delay
+      setTimeout(function() {
+        steps[currentStep].classList.remove('active');
+        currentStep++;
+        if (currentStep <= totalSteps) {
+          steps[currentStep].classList.add('active');
+          progressBar.style.width = ((currentStep + 1) / (totalSteps + 1) * 100) + '%';
+        }
+      }, 300);
+    });
+  });
+})();
+</script>
+</%block>

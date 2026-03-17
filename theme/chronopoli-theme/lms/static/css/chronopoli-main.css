@@ -1,0 +1,489 @@
+/* ============================================================
+   CHRONOPOLI – Custom OpenEdX Theme
+   File: lms/static/css/chronopoli-main.css
+   ============================================================ */
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Brand colors */
+  --cp-black:        #0A0A0F;
+  --cp-dark:         #12121A;
+  --cp-card:         #1A1A26;
+  --cp-border:       #2A2A3A;
+  --cp-white:        #FFFFFF;
+  --cp-text:         #E8E8F0;
+  --cp-muted:        #888899;
+  
+  /* Accent: Gold (Dubai feel) */
+  --cp-gold:         #C9A84C;
+  --cp-gold-light:   #F0C96B;
+  --cp-gold-dark:    #9B7A2E;
+  
+  /* Districts */
+  --district-ai:     #6C63FF;
+  --district-da:     #F59E0B;
+  --district-gov:    #10B981;
+  --district-comp:   #3B82F6;
+  --district-inv:    #EF4444;
+  --district-risk:   #8B5CF6;
+  
+  /* Typography */
+  --font-heading:    'Inter', 'Segoe UI', sans-serif;
+  --font-body:       'Inter', 'Segoe UI', sans-serif;
+  --font-mono:       'JetBrains Mono', monospace;
+  
+  /* Spacing */
+  --radius-sm:       6px;
+  --radius-md:       12px;
+  --radius-lg:       20px;
+  --radius-xl:       32px;
+}
+
+/* ============================================================
+   BASE RESET & BODY
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--cp-black);
+  color: var(--cp-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--cp-white);
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+.text-gold { color: var(--cp-gold); }
+.text-muted { color: var(--cp-muted); }
+
+/* ============================================================
+   HEADER / NAVIGATION
+   ============================================================ */
+.global-header {
+  background-color: var(--cp-dark);
+  border-bottom: 1px solid var(--cp-border);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo-wrap img {
+  height: 32px;
+  width: auto;
+}
+
+/* Chronopoli wordmark fallback */
+.logo-wrap .platform-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--cp-white);
+  letter-spacing: -0.02em;
+}
+
+.logo-wrap .platform-name span {
+  color: var(--cp-gold);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  margin-left: 3rem;
+}
+
+.nav-links a {
+  color: var(--cp-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--cp-white);
+}
+
+.nav-cta {
+  margin-left: auto;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cp-gold), var(--cp-gold-dark));
+  color: var(--cp-black);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--cp-gold-light), var(--cp-gold));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--cp-white);
+  border: 1px solid var(--cp-border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--cp-gold);
+  color: var(--cp-gold);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--cp-muted);
+}
+
+.btn-ghost:hover {
+  color: var(--cp-white);
+}
+
+/* ============================================================
+   HERO SECTION (LMS Homepage)
+   ============================================================ */
+.hero-section {
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(108, 99, 255, 0.08) 0%, transparent 50%),
+    var(--cp-black);
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cp-gold);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 100px;
+  padding: 0.25rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--cp-muted);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+/* ============================================================
+   DISTRICTS GRID
+   ============================================================ */
+.districts-section {
+  padding: 5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.districts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+  .districts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.district-card {
+  background: var(--cp-card);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.district-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--district-color, var(--cp-gold));
+}
+
+.district-card:hover {
+  border-color: var(--district-color, var(--cp-gold));
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.district-card[data-district="ai"]   { --district-color: var(--district-ai); }
+.district-card[data-district="da"]   { --district-color: var(--district-da); }
+.district-card[data-district="gov"]  { --district-color: var(--district-gov); }
+.district-card[data-district="comp"] { --district-color: var(--district-comp); }
+.district-card[data-district="inv"]  { --district-color: var(--district-inv); }
+.district-card[data-district="risk"] { --district-color: var(--district-risk); }
+
+.district-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.district-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cp-white);
+  margin-bottom: 0.5rem;
+}
+
+.district-desc {
+  font-size: 0.875rem;
+  color: var(--cp-muted);
+  line-height: 1.5;
+}
+
+.district-count {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--district-color, var(--cp-gold));
+  font-weight: 600;
+}
+
+/* ============================================================
+   COURSE CARDS
+   ============================================================ */
+.course-card {
+  background: var(--cp-card);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all 0.25s;
+}
+
+.course-card:hover {
+  border-color: rgba(201, 168, 76, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.course-card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: linear-gradient(135deg, var(--cp-dark), var(--cp-card));
+}
+
+.course-card-body {
+  padding: 1.5rem;
+}
+
+.course-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  margin-bottom: 0.75rem;
+}
+
+.course-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cp-white);
+  margin-bottom: 0.5rem;
+}
+
+.course-card-meta {
+  font-size: 0.8rem;
+  color: var(--cp-muted);
+}
+
+/* ============================================================
+   ONBOARDING QUESTIONNAIRE
+   ============================================================ */
+.onboarding-wrap {
+  min-height: 100vh;
+  background: var(--cp-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.onboarding-card {
+  background: var(--cp-card);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  max-width: 640px;
+  width: 100%;
+}
+
+.onboarding-progress {
+  height: 3px;
+  background: var(--cp-border);
+  border-radius: 100px;
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+}
+
+.onboarding-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cp-gold-dark), var(--cp-gold));
+  border-radius: 100px;
+  transition: width 0.4s ease;
+}
+
+.onboarding-question {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cp-white);
+  margin-bottom: 1.5rem;
+}
+
+.onboarding-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.onboarding-option {
+  background: var(--cp-dark);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--cp-text);
+  font-size: 0.9375rem;
+}
+
+.onboarding-option:hover,
+.onboarding-option.selected {
+  border-color: var(--cp-gold);
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--cp-white);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.global-footer {
+  background: var(--cp-dark);
+  border-top: 1px solid var(--cp-border);
+  padding: 3rem 2rem;
+  margin-top: auto;
+}
+
+.footer-brand {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--cp-white);
+  margin-bottom: 0.5rem;
+}
+
+.footer-brand span {
+  color: var(--cp-gold);
+}
+
+.footer-tagline {
+  font-size: 0.875rem;
+  color: var(--cp-muted);
+}
+
+.footer-hosted {
+  font-size: 0.75rem;
+  color: var(--cp-muted);
+  margin-top: 0.25rem;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section { padding: 5rem 0; }
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.75rem;
+  border-radius: 100px;
+}
+
+.badge-gold {
+  background: rgba(201, 168, 76, 0.15);
+  color: var(--cp-gold);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+}

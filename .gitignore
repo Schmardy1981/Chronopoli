@@ -1,0 +1,47 @@
+# Upstream references (cloned, not committed)
+.upstream/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment files with secrets
+*.env
+!*.env.example
+!*.env.template
+infrastructure/production.tfvars
+infrastructure/staging.tfvars
+infrastructure/terraform/production.tfvars
+infrastructure/terraform/staging.tfvars
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# GSD framework working files
+.planning/milestones/*/work/
+
+# Tutor local data
+.local/
+
+# Logs
+*.log

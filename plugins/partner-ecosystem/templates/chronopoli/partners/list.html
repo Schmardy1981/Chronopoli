@@ -1,0 +1,38 @@
+<%page expression_filter="h"/>
+<%!
+from django.utils.translation import gettext as _
+%>
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("Knowledge Partners")}</%block>
+
+<%block name="css_extras">
+<link rel="stylesheet" href="${static.url('css/chronopoli-main.css')}" />
+</%block>
+
+<%block name="content">
+<div style="max-width: 1200px; margin: 0 auto; padding: 4rem 2rem;">
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <span class="hero-eyebrow">Chronopoli Partners</span>
+    <h2 style="margin-top: 1rem;">Knowledge Partners</h2>
+    <p class="text-muted" style="margin-top: 0.5rem;">
+      World-class organizations building learning tracks on Chronopoli.
+    </p>
+  </div>
+
+  <div class="districts-grid">
+    % for partner in partners:
+    <a href="/chronopoli/partners/${partner.slug}/" class="district-card" style="text-decoration: none;">
+      <span class="badge badge-gold">${partner.get_tier_display()}</span>
+      <h3 class="district-name" style="margin-top: 0.75rem;">${partner.name}</h3>
+      <p class="district-desc">${partner.description[:120]}</p>
+      % if partner.tracks.filter(is_published=True).count() > 0:
+      <span class="district-count">
+        ${partner.tracks.filter(is_published=True).count()} track${'s' if partner.tracks.filter(is_published=True).count() != 1 else ''}
+      </span>
+      % endif
+    </a>
+    % endfor
+  </div>
+</div>
+</%block>

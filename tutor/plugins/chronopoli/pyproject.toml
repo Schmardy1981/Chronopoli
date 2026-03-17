@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tutor-chronopoli"
+dynamic = ["version"]
+description = "Tutor plugin for the Chronopoli knowledge platform"
+readme = "README.rst"
+requires-python = ">=3.9"
+license = {text = "AGPL-3.0"}
+authors = [
+    {name = "Chronopoli Platform Team", email = "platform@chronopoli.io"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "tutor>=18.0.0,<22.0.0",
+]
+
+[project.entry-points."tutor.plugin.v1"]
+chronopoli = "tutorchronopoli.plugin"
+
+[tool.setuptools.dynamic]
+version = {attr = "tutorchronopoli.__about__.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tutorchronopoli*"]

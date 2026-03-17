@@ -1,0 +1,44 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  EC2_USER: ubuntu
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to staging
+        run: |
+          ssh ${{ env.EC2_USER }}@${{ secrets.EC2_HOST }} << 'DEPLOY'
+            set -e
+            cd /opt/chronopoli
+
+            git pull origin develop
+
+            pip install -e tutor/plugins/chronopoli/ --quiet
+
+            TUTOR_ROOT=$(tutor config printroot)
+            cp -r theme/chronopoli-theme "${TUTOR_ROOT}/env/build/openedx/themes/"
+
+            tutor config save
+            tutor images build openedx
+            tutor local restart
+
+            echo "Staging deployment complete: $(date)"
+          DEPLOY

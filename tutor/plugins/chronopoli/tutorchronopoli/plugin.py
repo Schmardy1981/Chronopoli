@@ -1,0 +1,132 @@
+"""
+Chronopoli – Custom Tutor Plugin
+Adds Chronopoli-specific configuration to OpenEdX/Tutor deployments.
+
+Discovery: tutor.plugin.v1 entry point in pyproject.toml
+"""
+from __future__ import annotations
+
+import importlib_resources
+from glob import glob
+import os
+
+from tutor import hooks
+
+from .__about__ import __version__
+
+# ============================================================
+# CONFIG DEFAULTS
+# ============================================================
+hooks.Filters.CONFIG_DEFAULTS.add_items(
+    [
+        ("CHRONOPOLI_VERSION", __version__),
+        ("PLATFORM_NAME", "Chronopoli"),
+        ("PLATFORM_DESCRIPTION", "The Global Knowledge City for AI, Blockchain & Digital Trust"),
+        ("CHRONOPOLI_SUPPORT_EMAIL", "support@chronopoli.io"),
+        ("CHRONOPOLI_PARTNER_CONTACT", "partners@chronopoli.io"),
+        ("CHRONOPOLI_DISTRICTS", [
+            {"code": "CHRON-AI",   "name": "AI District",            "color": "#6C63FF"},
+            {"code": "CHRON-DA",   "name": "Digital Assets District", "color": "#F59E0B"},
+            {"code": "CHRON-GOV",  "name": "Governance District",     "color": "#10B981"},
+            {"code": "CHRON-COMP", "name": "Compliance District",     "color": "#3B82F6"},
+            {"code": "CHRON-INV",  "name": "Investigation District",  "color": "#EF4444"},
+            {"code": "CHRON-RISK", "name": "Risk & Trust District",   "color": "#8B5CF6"},
+        ]),
+        ("CHRONOPOLI_AI_ONBOARDING_ENABLED", True),
+        ("CHRONOPOLI_AI_ONBOARDING_QUESTIONS", 5),
+    ]
+)
+
+# ============================================================
+# TEMPLATE ROOTS & TARGETS
+# ============================================================
+hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
+    str(importlib_resources.files("tutorchronopoli") / "templates")
+)
+
+hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
+    [
+        ("chronopoli/tasks", "plugins"),
+    ]
+)
+
+# ============================================================
+# PATCHES (loaded from tutorchronopoli/patches/ directory)
+# ============================================================
+for path in glob(str(importlib_resources.files("tutorchronopoli") / "patches" / "*")):
+    with open(path, encoding="utf-8") as patch_file:
+        patch_name = os.path.basename(path)
+        hooks.Filters.ENV_PATCHES.add_item(
+            (patch_name, patch_file.read())
+        )
+
+# ============================================================
+# INSTALLED APPS – inject Chronopoli Django apps into OpenEdX
+# ============================================================
+hooks.Filters.ENV_PATCHES.add_items(
+    [
+        (
+            "openedx-lms-common-settings",
+            """
+# ============================================================
+# CHRONOPOLI PLATFORM SETTINGS
+# ============================================================
+
+PLATFORM_NAME = "Chronopoli"
+PLATFORM_DESCRIPTION = "The Global Knowledge City for AI, Blockchain & Digital Trust"
+
+# Chronopoli Django apps
+INSTALLED_APPS.append("chronopoli_onboarding")
+INSTALLED_APPS.append("chronopoli_partners")
+
+# Chronopoli Districts config
+CHRONOPOLI_DISTRICTS = {{ CHRONOPOLI_DISTRICTS | tojson }}
+
+# Certificates
+CERT_HTML_VIEW_ENABLED = True
+CERTIFICATES_HTML_VIEW = True
+
+# Course Discovery
+COURSE_CATALOG_API_URL = "https://{{ LMS_HOST }}/api/catalog/v1/"
+
+# Partner content
+CHRONOPOLI_PARTNER_CONTENT_ENABLED = True
+
+# AI Onboarding
+CHRONOPOLI_AI_ONBOARDING_ENABLED = {{ CHRONOPOLI_AI_ONBOARDING_ENABLED }}
+
+# Social sharing for certificates
+SOCIAL_SHARING_SETTINGS = {
+    "CERTIFICATE_FACEBOOK": True,
+    "CERTIFICATE_LINKEDIN": True,
+    "CERTIFICATE_EMAIL": True,
+}
+
+# Footer links
+MKTG_URL_LINK_MAP = {
+    "ABOUT": "about",
+    "PRIVACY": "privacy",
+    "TERMS_OF_SERVICE": "tos",
+}
+""",
+        ),
+    ]
+)
+
+# ============================================================
+# URL PATTERNS – add Chronopoli URLs to LMS
+# ============================================================
+hooks.Filters.ENV_PATCHES.add_items(
+    [
+        (
+            "openedx-lms-urls",
+            """
+# Chronopoli custom endpoints
+urlpatterns += [
+    path("chronopoli/", include("chronopoli_onboarding.urls")),
+    path("chronopoli/partners/", include("chronopoli_partners.urls")),
+]
+""",
+        ),
+    ]
+)
