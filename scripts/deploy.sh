@@ -72,11 +72,11 @@ preflight_checks() {
 setup_environment() {
   log "Setting up $ENVIRONMENT environment..."
   
-  ENV_FILE="${REPO_DIR}/infrastructure/${ENVIRONMENT}.env"
-  
+  ENV_FILE="/data/chronopoli/${ENVIRONMENT}.env"
+
   if [[ ! -f "$ENV_FILE" ]]; then
     warn "No environment file found at $ENV_FILE"
-    warn "Copy infrastructure/staging.env.example to infrastructure/${ENVIRONMENT}.env and fill in values"
+    warn "Copy infrastructure/production.env.template to $ENV_FILE and fill in values"
   fi
   
   # Copy Tutor config

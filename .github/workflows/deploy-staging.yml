@@ -27,10 +27,11 @@ jobs:
         run: |
           ssh ${{ env.EC2_USER }}@${{ secrets.EC2_HOST }} << 'DEPLOY'
             set -e
-            cd /opt/chronopoli
+            cd /opt/chronopoli/repo
 
             git pull origin develop
 
+            source /opt/chronopoli/venv/bin/activate
             pip install -e tutor/plugins/chronopoli/ --quiet
 
             TUTOR_ROOT=$(tutor config printroot)
@@ -39,6 +40,8 @@ jobs:
             tutor config save
             tutor images build openedx
             tutor local restart
+
+            bash scripts/healthcheck.sh || echo "Some checks failed"
 
             echo "Staging deployment complete: $(date)"
           DEPLOY

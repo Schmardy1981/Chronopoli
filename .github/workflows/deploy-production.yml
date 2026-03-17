@@ -27,12 +27,13 @@ jobs:
         run: |
           ssh ${{ env.EC2_USER }}@${{ secrets.EC2_HOST }} << 'DEPLOY'
             set -e
-            cd /opt/chronopoli
+            cd /opt/chronopoli/repo
 
             # Pull latest code
             git pull origin main
 
-            # Install/update Chronopoli Tutor plugin
+            # Activate virtualenv and install/update Tutor plugin
+            source /opt/chronopoli/venv/bin/activate
             pip install -e tutor/plugins/chronopoli/ --quiet
 
             # Deploy theme
@@ -43,6 +44,9 @@ jobs:
             tutor config save
             tutor images build openedx
             tutor local restart
+
+            # Run health check
+            bash scripts/healthcheck.sh || echo "Some checks failed"
 
             echo "Deployment complete: $(date)"
           DEPLOY

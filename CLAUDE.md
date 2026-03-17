@@ -20,32 +20,46 @@ chronopoli/
 ├── .planning/                         ← GSD state (managed by /gsd: commands)
 │   ├── PROJECT.md                     ← Project context + decisions
 │   ├── REQUIREMENTS.md                ← Scoped v1/v2 requirements
-│   ├── ROADMAP.md                     ← 7 phases with plans
+│   ├── ROADMAP.md                     ← 8 phases with plans
 │   ├── STATE.md                       ← Living project memory
 │   ├── config.json                    ← GSD workflow config
-│   └── GAP_ANALYSIS.md               ← Component status audit
+│   └── phases/                        ← Per-phase plan summaries
 ├── docs/
 │   ├── 01-aws-infrastructure.md       ← AWS EC2 Phase 1 setup
 │   ├── 02-tutor-installation.md       ← OpenEdX via Tutor (Docker)
-│   ├── 03-kubernetes-scaling.md       ← EKS Phase 2 auto-scaling
 │   ├── 04-districts-configuration.md  ← 6 Knowledge Districts setup
-│   ├── 05-partner-onboarding.md       ← Partner management workflow
-│   └── 06-phase1-launch-checklist.md  ← Launch checklist
+│   ├── 06-phase1-launch-checklist.md  ← Launch checklist
+│   ├── DEPLOYMENT_HANDBOOK.md         ← 13-step engineer deployment guide
+│   └── presenton-prompts.md           ← Per-district AI slide prompts
 ├── infrastructure/
-│   ├── terraform/                     ← AWS IaC (EC2 Phase 1)
-│   └── kubernetes/                    ← EKS + Helm charts (Phase 2)
+│   ├── terraform/                     ← AWS IaC (EC2, RDS, S3, Route53, SES)
+│   ├── extensions/                    ← Docker Compose for Opencast + Presenton
+│   ├── nginx/                         ← Reverse proxy for video/slides subdomains
+│   ├── kubernetes/                    ← EKS + Helm charts (Phase 2, future)
+│   └── production.env.template        ← Environment variable template
 ├── tutor/
 │   ├── config.yml                     ← Tutor base config
-│   └── plugins/chronopoli/            ← Custom Tutor plugin
+│   └── plugins/chronopoli/            ← Custom Tutor plugin (pip-installable)
 ├── theme/chronopoli-theme/            ← Custom OpenEdX dark/gold theme
 ├── plugins/
-│   ├── ai-onboarding/                 ← 5-question district router
-│   ├── partner-ecosystem/             ← Partner management Django app
-│   └── district-taxonomy/             ← 6 districts as OpenEdX orgs
+│   ├── ai-onboarding/                 ← 5-question district router (chronopoli_onboarding)
+│   ├── partner-ecosystem/             ← Partner management (chronopoli_partners)
+│   ├── discourse-sso/                 ← Discourse SSO endpoint (chronopoli_discourse_sso)
+│   └── district-taxonomy/             ← Reserved for future district management
 ├── scripts/
 │   ├── deploy.sh                      ← Docker/EC2 deployment
-│   ├── deploy-k8s.sh                  ← Kubernetes deployment
-│   └── consolidate.sh                 ← Pulls OpenEdX upstream refs
+│   ├── setup-server.sh                ← EC2 provisioning (Docker, Tutor, firewall)
+│   ├── configure-tutor.sh             ← Wire Tutor to AWS services
+│   ├── setup-districts.sh             ← Create 6 districts + admin + demo courses
+│   ├── setup-discourse.sh             ← Discourse installation + SSO config
+│   ├── setup-discourse-categories.sh  ← District groups + categories
+│   ├── setup-opencast.sh              ← Opencast video platform setup
+│   ├── setup-presenton.sh             ← AI slide builder setup
+│   ├── healthcheck.sh                 ← 8-category smoke test
+│   └── backup.sh                      ← Database + media backup to S3
+├── preview/                           ← Local landing page preview
+│   ├── index.html
+│   └── server.js
 └── .github/workflows/
     ├── deploy-production.yml          ← CI/CD main → AWS
     └── deploy-staging.yml             ← CI/CD develop → staging
@@ -181,8 +195,8 @@ See `.planning/config.json` for full config. Key settings:
 
 ### GSD Planning Files
 - `.planning/PROJECT.md` – what we're building, core value, constraints, decisions
-- `.planning/REQUIREMENTS.md` – 33 v1 requirements mapped to 7 phases
-- `.planning/ROADMAP.md` – 7 phases with 14 plans total
+- `.planning/REQUIREMENTS.md` – 33 v1 requirements mapped to 8 phases
+- `.planning/ROADMAP.md` – 8 phases with plans (Phase 8 = Stack Extensions)
 - `.planning/STATE.md` – current position, velocity, session continuity
 
 ---
@@ -191,34 +205,30 @@ See `.planning/config.json` for full config. Key settings:
 
 ### Completed
 - [x] Repository structure created
-- [x] AWS infrastructure documented (Phase 1 EC2)
+- [x] Terraform IaC – EC2, RDS, S3 (4 buckets), CloudFront, Route53 (5 subdomains), SES, IAM
 - [x] Tutor configuration (config.yml)
-- [x] Custom Tutor plugin – full pip-installable package (pyproject.toml, tutorchronopoli/, patches/, templates/)
-- [x] AI Onboarding plugin – complete Django app (models, views, urls, admin, apps, signals, migrations, Mako templates)
-- [x] Partner Ecosystem plugin – complete Django app (models, views, urls, admin, migrations, Mako templates)
-- [x] Chronopoli dark/gold theme (CSS)
+- [x] Custom Tutor plugin – pip-installable package (pyproject.toml, CONFIG_UNIQUE secrets, patches, templates, init task)
+- [x] AI Onboarding plugin – complete Django app (models, views, urls, admin, apps, signals, migrations)
+- [x] Partner Ecosystem plugin – complete Django app (models, views, urls, admin, migrations)
+- [x] Discourse SSO plugin – HMAC-SHA256 SSO handshake with district group assignment
+- [x] Chronopoli dark/gold theme (CSS + header.html with Community/Video/Slides nav)
 - [x] GitHub Actions CI/CD pipelines (deploy-production.yml, deploy-staging.yml)
-- [x] Deployment script (deploy.sh)
-- [x] 6 Districts configuration guide
-- [x] Phase 1 launch checklist
-- [x] Terraform IaC skeleton (main.tf, rds.tf, s3.tf, cloudfront.tf, variables.tf, outputs.tf)
-- [x] Gap analysis document (.planning/GAP_ANALYSIS.md)
-- [x] Upstream repos cloned for reference (.upstream/tutor-core, tutor-mfe, openedx-platform)
-- [x] .gitignore configured
-- [x] GSD planning config + roadmap (.planning/)
+- [x] 10 deployment/setup scripts (server, tutor, districts, discourse, opencast, presenton, healthcheck, backup, deploy, discourse-categories)
+- [x] Docker Compose for extension services (Opencast + Presenton)
+- [x] Nginx reverse proxy for video.chronopoli.io + slides.chronopoli.io
+- [x] Deployment Handbook (13-step guide for engineer)
+- [x] Production env template with all service variables
+- [x] Presenton per-district brand prompts
+- [x] GSD planning complete (.planning/ with 8 phases)
+- [x] Code review + bug fixes (2026-03-17)
 
 ### In Progress
-- [ ] Kubernetes/EKS setup (Phase 2 auto-scaling)
-- [ ] Theme HTML templates (header, footer, homepage – CSS exists, HTML needed)
-- [ ] District taxonomy management command
-- [ ] Missing docs (03-custom-theme.md, 05-partner-onboarding.md)
+- [ ] Deploy to AWS (requires credentials + `terraform apply`)
 
 ### Next Milestones
-1. **M1**: AWS infra + OpenEdX running (EC2) – Terraform ready, needs `terraform apply`
-2. **M2**: Custom theme live + Districts configured
-3. **M3**: AI onboarding questionnaire working – Django app complete, needs integration test
-4. **M4**: First partner track (Ripple or Cardano) – Partner app complete, needs data
-5. **M5**: Kubernetes migration + auto-scaling
+1. **M1**: `terraform apply` + EC2 provisioning – all code ready, needs AWS credentials
+2. **M2**: First foundation course in Studio (Phase 7)
+3. **M3**: Kubernetes migration + auto-scaling (Phase 2 infra)
 
 ---
 
@@ -249,9 +259,9 @@ All secrets go in AWS Secrets Manager + GitHub Secrets.
 
 ### Django App Naming
 All Chronopoli Django apps prefixed: `chronopoli_`
-- `chronopoli_onboarding`
-- `chronopoli_partners`
-- `chronopoli_districts`
+- `chronopoli_onboarding` (plugins/ai-onboarding/)
+- `chronopoli_partners` (plugins/partner-ecosystem/)
+- `chronopoli_discourse_sso` (plugins/discourse-sso/)
 
 ---
 
