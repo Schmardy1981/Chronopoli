@@ -56,10 +56,10 @@ create_category() {
   cat_id=$(echo "$response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('category',{}).get('id',''))" 2>/dev/null || echo "")
 
   if [[ -n "$cat_id" ]]; then
-    log "  Created: $name (ID: $cat_id)"
+    log "  Created: $name (ID: $cat_id)" >&2
     echo "$cat_id"
   else
-    log "  Exists or error: $name"
+    log "  Exists or error: $name" >&2
     # Try to find existing
     cat_id=$(curl -s "$DISCOURSE_URL/categories.json" \
       -H "Api-Key: $API_KEY" -H "Api-Username: $API_USER" | \

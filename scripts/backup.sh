@@ -53,7 +53,7 @@ if [[ -z "$MYSQL_PASS" ]]; then
 fi
 
 # Use tutor exec to run mysqldump inside the container (or against RDS)
-tutor local do exec lms python manage.py lms shell -c "
+tutor local exec lms python manage.py shell -c "
 import subprocess, sys
 from django.conf import settings
 db = settings.DATABASES['default']

@@ -51,9 +51,8 @@ variable "ec2_data_volume_size" {
 }
 
 variable "admin_ssh_cidr" {
-  description = "CIDR block allowed for SSH access"
+  description = "CIDR block allowed for SSH access (e.g. your IP/32)"
   type        = string
-  default     = "0.0.0.0/0"
 }
 
 # RDS

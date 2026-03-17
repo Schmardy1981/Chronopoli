@@ -11,7 +11,7 @@ set -euo pipefail
 # ============================================================
 ENVIRONMENT=${1:-staging}
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-TUTOR_ROOT="${HOME}/.local/share/tutor"
+TUTOR_ROOT="${TUTOR_ROOT:-/data/tutor}"
 LOG_FILE="/var/log/chronopoli-deploy.log"
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -79,11 +79,9 @@ setup_environment() {
     warn "Copy infrastructure/production.env.template to $ENV_FILE and fill in values"
   fi
   
-  # Copy Tutor config
-  if [[ -f "${REPO_DIR}/tutor/config.yml" ]]; then
-    cp "${REPO_DIR}/tutor/config.yml" "${TUTOR_ROOT}/config.yml"
-    log "Tutor config deployed ✓"
-  fi
+  # Note: Do NOT overwrite ${TUTOR_ROOT}/config.yml — it contains live secrets.
+  # Use 'tutor config save' after plugin install to apply settings.
+  log "Environment setup complete ✓"
 }
 
 # ============================================================
@@ -92,9 +90,8 @@ setup_environment() {
 install_plugins() {
   log "Installing Chronopoli plugins..."
   
-  # Core Tutor plugins
+  # Core Tutor plugins (no indigo — conflicts with chronopoli-theme)
   tutor plugins enable mfe
-  tutor plugins enable indigo
   tutor plugins enable notes
   tutor plugins enable forum
   
@@ -192,7 +189,7 @@ backup() {
   
   BACKUP_FILE="${BACKUP_DIR}/backup-${TIMESTAMP//[: ]/-}.sql.gz"
   
-  tutor local do exec mysql mysqldump -u root \
+  tutor local exec mysql mysqldump -u root \
     --password="$(tutor config printvalue MYSQL_ROOT_PASSWORD)" \
     openedx | gzip > "$BACKUP_FILE"
   

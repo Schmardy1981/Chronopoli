@@ -62,11 +62,9 @@ templates:
   - "templates/web.template.yml"
   - "templates/web.ratelimited.template.yml"
   - "templates/web.socketed.template.yml"
-  - "templates/web.letsencrypt.ssl.template.yml"
 
-expose:
-  - "80:80"
-  - "443:443"
+# No ports exposed — using unix socket via web.socketed.template.yml
+# Nginx reverse-proxies to the socket at /var/discourse/shared/standalone/nginx.http.sock
 
 params:
   db_default_text_search_config: "pg_catalog.english"

@@ -21,6 +21,7 @@ WARN=0
 check_pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASS=$((PASS + 1)); }
 check_fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAIL=$((FAIL + 1)); }
 check_warn() { echo -e "  ${YELLOW}⚠ WARN${NC} $1"; WARN=$((WARN + 1)); }
+info() { echo -e "  ${BLUE}ℹ INFO${NC} $1"; }
 
 # ============================================================
 # DETERMINE DOMAIN
@@ -195,7 +196,7 @@ echo ""
 # ============================================================
 echo -e "${BLUE}[6/8] Knowledge Districts${NC}"
 
-DISTRICT_OUTPUT=$(tutor local do exec lms python manage.py lms shell -c "
+DISTRICT_OUTPUT=$(tutor local exec lms python manage.py shell -c "
 from organizations.models import Organization
 districts = ['CHRON-AI','CHRON-DA','CHRON-GOV','CHRON-COMP','CHRON-INV','CHRON-RISK']
 for code in districts:
@@ -224,7 +225,7 @@ echo ""
 # ============================================================
 echo -e "${BLUE}[7/8] Database${NC}"
 
-DB_CHECK=$(tutor local do exec lms python manage.py lms shell -c "
+DB_CHECK=$(tutor local exec lms python manage.py shell -c "
 from django.db import connection
 cursor = connection.cursor()
 cursor.execute('SELECT 1')
