@@ -22,28 +22,34 @@ Everything is automated where possible — your job is to:
 ### Architecture
 
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
-│  Route53     │────▶│  CloudFront  │────▶│  EC2 t3.xlarge  │
-│  DNS         │     │  CDN + SSL   │     │  Ubuntu 22.04   │
-└─────────────┘     └──────────────┘     │                 │
-                                          │  Tutor/Docker:  │
-                                          │  ├── LMS        │
-                                          │  ├── CMS        │
-                                          │  ├── Celery     │
-                                          │  ├── Caddy      │
-                                          │  └── Redis      │
-                                          └────────┬────────┘
-                                                   │
-                    ┌──────────────┐                │
-                    │  RDS MySQL   │◀───────────────┤
-                    │  Multi-AZ    │                │
-                    └──────────────┘                │
-                                                   │
-                    ┌──────────────┐                │
-                    │  S3 Buckets  │◀───────────────┘
+┌─────────────┐     ┌──────────────┐     ┌──────────────────────────┐
+│  Route53     │────▶│  CloudFront  │────▶│  EC2 t3.xlarge           │
+│  DNS         │     │  CDN + SSL   │     │  Ubuntu 22.04            │
+│              │     └──────────────┘     │                          │
+│ learn.       │                          │  Tutor/Docker:           │
+│ studio.      │          ┌──────────────▶│  ├── LMS (:80)           │
+│ community.   │──────────┤ Nginx        ││  ├── CMS                 │
+│ video.       │          │ Reverse      ││  ├── Celery              │
+│ slides.      │          │ Proxy        ││  ├── Caddy               │
+└─────────────┘          └──────────────▶│  └── Redis               │
+                                          │                          │
+                                          │  Extensions:             │
+                                          │  ├── Discourse (:443)    │
+                                          │  ├── Opencast  (:8080)   │
+                                          │  └── Presenton (:5050)   │
+                                          └────────────┬─────────────┘
+                                                       │
+                    ┌──────────────┐                    │
+                    │  RDS MySQL   │◀──────────────────┤
+                    │  Multi-AZ    │                    │
+                    └──────────────┘                    │
+                                                       │
+                    ┌──────────────┐                    │
+                    │  S3 Buckets  │◀───────────────────┘
                     │  media/      │
                     │  static/     │
                     │  backups/    │
+                    │  opencast/   │
                     └──────────────┘
 ```
 
@@ -110,7 +116,7 @@ terraform plan -var-file=production.tfvars
 terraform apply -var-file=production.tfvars
 ```
 
-**This creates:** EC2 + EBS, RDS MySQL, 3 S3 buckets, CloudFront CDN, Route53 DNS, ACM SSL cert, SES email, IAM roles.
+**This creates:** EC2 + EBS, RDS MySQL, 4 S3 buckets (media, static, backups, opencast), CloudFront CDN, Route53 DNS (learn/studio/community/video/slides), ACM SSL cert, SES email, IAM roles.
 
 **Duration:** ~15 minutes (RDS takes the longest)
 
@@ -269,7 +275,169 @@ bash scripts/setup-districts.sh --env-file /data/chronopoli/production.env
 
 ---
 
-## Step 6: Smoke Test
+## Step 6: Discourse Community Forum
+
+Discourse provides the community forum at `community.chronopoli.io`, integrated via SSO with OpenEdX.
+
+### 6.1 Configure Environment
+
+Ensure these variables are set in `/data/chronopoli/production.env`:
+
+| Variable | Description |
+|----------|-------------|
+| `DISCOURSE_HOSTNAME` | `community.chronopoli.io` |
+| `DISCOURSE_SMTP_USER_NAME` | SES SMTP username (from Terraform) |
+| `DISCOURSE_SMTP_PASSWORD` | SES SMTP password (from Terraform) |
+| `DISCOURSE_DB_PASSWORD` | Strong database password for Discourse |
+| `DISCOURSE_SSO_SECRET` | Random 64-char string (shared with OpenEdX) |
+| `DISCOURSE_S3_BUCKET` | S3 bucket for uploads |
+
+### 6.2 Install Discourse
+
+```bash
+cd /opt/chronopoli/repo
+sudo bash scripts/setup-discourse.sh --env-file /data/chronopoli/production.env
+```
+
+**This does:**
+- Clones `discourse_docker` to `/var/discourse`
+- Generates `app.yml` config with SES email, SSO, and S3 storage
+- Bootstraps the Discourse container (~10 minutes)
+- Starts Discourse
+
+**Duration:** ~15 minutes
+
+### 6.3 Post-Install: Generate API Key
+
+1. Open `https://community.chronopoli.io` and complete the wizard
+2. Go to **Admin → API → New API Key** (Global, All Users)
+3. Copy the key and update `DISCOURSE_API_KEY` in your `.env` file
+4. Update the Tutor config:
+   ```bash
+   tutor config save --set CHRONOPOLI_DISCOURSE_API_KEY=<your-api-key>
+   tutor local restart lms
+   ```
+
+### 6.4 Create District Categories & Groups
+
+```bash
+bash scripts/setup-discourse-categories.sh --env-file /data/chronopoli/production.env
+```
+
+**This creates:** 6 district groups, 6 top-level categories, 24+ sub-categories (learning layers + partner tracks).
+
+### 6.5 Verify SSO
+
+1. Log out of Discourse
+2. Click "Log In" — should redirect to OpenEdX login
+3. After authenticating, should return to Discourse as logged-in user
+4. Verify the user is added to their district group (check Admin → Users)
+
+---
+
+## Step 7: Opencast Video Platform
+
+Opencast provides video management at `video.chronopoli.io`, integrated via LTI into OpenEdX courses.
+
+### 7.1 Configure Environment
+
+Ensure these variables are set in `/data/chronopoli/production.env`:
+
+| Variable | Description |
+|----------|-------------|
+| `OPENCAST_DB_PASSWORD` | Database password for Opencast |
+| `OPENCAST_ADMIN_PASSWORD` | Admin UI password |
+| `OPENCAST_DIGEST_PASSWORD` | Internal digest password |
+| `OPENCAST_LTI_KEY` | LTI consumer key (shared with OpenEdX) |
+| `OPENCAST_LTI_SECRET` | LTI consumer secret (shared with OpenEdX) |
+
+### 7.2 Install Opencast
+
+```bash
+cd /opt/chronopoli/repo
+bash scripts/setup-opencast.sh --env-file /data/chronopoli/production.env
+```
+
+**This does:**
+- Creates `opencast` database on RDS
+- Starts Opencast container via Docker Compose
+- Waits for health check
+- Configures S3 storage for recordings
+
+**Duration:** ~5 minutes
+
+### 7.3 Verify Opencast
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" https://video.chronopoli.io/info/health
+# Expected: 200
+```
+
+Open `https://video.chronopoli.io` and log in with admin credentials.
+
+### 7.4 LTI Integration in OpenEdX
+
+To embed Opencast videos in courses:
+
+1. In Studio, add an **LTI Consumer** component to a course unit
+2. Configure:
+   - **LTI URL:** `https://video.chronopoli.io/lti`
+   - **LTI Key:** Value of `OPENCAST_LTI_KEY`
+   - **LTI Secret:** Value of `OPENCAST_LTI_SECRET`
+3. Students will see the Opencast player inline in the course
+
+---
+
+## Step 8: Presenton AI Slide Builder
+
+Presenton provides AI-powered slide generation at `slides.chronopoli.io` (staff-only).
+
+### 8.1 Configure Environment
+
+| Variable | Description |
+|----------|-------------|
+| `PRESENTON_ANTHROPIC_KEY` | Anthropic API key for Claude |
+| `PRESENTON_PEXELS_KEY` | Pexels API key for stock images |
+| `PRESENTON_STAFF_USER` | Basic auth username for staff access |
+| `PRESENTON_STAFF_PASSWORD` | Basic auth password for staff access |
+
+### 8.2 Install Presenton
+
+```bash
+cd /opt/chronopoli/repo
+bash scripts/setup-presenton.sh --env-file /data/chronopoli/production.env
+```
+
+**This does:**
+- Starts Presenton container via Docker Compose
+- Creates `.htpasswd` file for Nginx basic auth
+- Configures Nginx reverse proxy
+
+**Duration:** ~2 minutes
+
+### 8.3 Install Nginx Configs
+
+```bash
+# Copy extension proxy configs
+sudo cp infrastructure/nginx/extensions.conf /etc/nginx/sites-available/chronopoli-extensions.conf
+sudo ln -s /etc/nginx/sites-available/chronopoli-extensions.conf /etc/nginx/sites-enabled/
+
+# Get SSL certificates
+sudo certbot certonly --nginx -d video.chronopoli.io -d slides.chronopoli.io
+
+# Test and reload
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### 8.4 Using Presenton
+
+1. Open `https://slides.chronopoli.io` (staff credentials required)
+2. Use the district-specific prompt prefixes from `docs/presenton-prompts.md`
+3. Generated slides follow Chronopoli brand guidelines per district
+
+---
+
+## Step 9: Smoke Test
 
 ```bash
 bash scripts/healthcheck.sh
@@ -283,12 +451,13 @@ This checks:
 - All 6 districts exist
 - Database connectivity
 - Disk and memory usage
+- Extension services (Discourse, Opencast, Presenton)
 
 **Expected result:** All checks PASS.
 
 ---
 
-## Step 7: Verify Manually
+## Step 10: Verify Manually
 
 Open in your browser:
 
@@ -299,6 +468,9 @@ Open in your browser:
 | `https://studio.chronopoli.io` | Studio loads |
 | `https://learn.chronopoli.io/admin/organizations/organization/` | All 6 districts visible |
 | `https://learn.chronopoli.io/courses` | Demo courses visible |
+| `https://community.chronopoli.io` | Discourse forum loads |
+| `https://video.chronopoli.io` | Opencast admin loads |
+| `https://slides.chronopoli.io` | Presenton loads (staff auth required) |
 
 ### Verify Multi-Tenant Isolation
 
@@ -309,7 +481,7 @@ In Django Admin (`/admin`):
 
 ---
 
-## Step 8: SES Email Verification
+## Step 11: SES Email Verification
 
 AWS SES starts in sandbox mode. You need to:
 
@@ -321,7 +493,7 @@ Until production access is granted, you can only send to verified email addresse
 
 ---
 
-## Step 9: Backups
+## Step 12: Backups
 
 ### Automated Backup (cron)
 
@@ -344,7 +516,7 @@ Backups go to `s3://chronopoli-backups-production/` with Glacier archival at 30 
 
 ---
 
-## Step 10: Monitoring
+## Step 13: Monitoring
 
 ### Logs
 
@@ -478,10 +650,19 @@ tutor config save
 | `scripts/healthcheck.sh` | Smoke tests (run after every deployment) |
 | `scripts/backup.sh` | Database + media backup to S3 |
 | `scripts/deploy.sh` | Update deployment (git pull + rebuild) |
+| `scripts/setup-discourse.sh` | Discourse installation + SSO config |
+| `scripts/setup-discourse-categories.sh` | District groups + categories on Discourse |
+| `scripts/setup-opencast.sh` | Opencast installation + RDS database |
+| `scripts/setup-presenton.sh` | Presenton installation + basic auth |
 | `infrastructure/terraform/` | All AWS resources as IaC |
+| `infrastructure/extensions/docker-compose.yml` | Opencast + Presenton containers |
+| `infrastructure/extensions/.env.template` | Extension services env template |
+| `infrastructure/nginx/extensions.conf` | Nginx proxy for video + slides subdomains |
 | `infrastructure/production.env.template` | Environment variable template |
 | `tutor/config.yml` | Tutor base config (reference only) |
 | `tutor/plugins/chronopoli/` | Custom Tutor plugin |
+| `plugins/discourse-sso/` | Discourse SSO Django app |
+| `docs/presenton-prompts.md` | Per-district AI slide generation prompts |
 
 ---
 

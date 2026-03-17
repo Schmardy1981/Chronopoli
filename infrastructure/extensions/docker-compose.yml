@@ -1,0 +1,67 @@
+# ============================================================
+# Chronopoli – Extension Services (Opencast + Presenton)
+# Note: Discourse is managed separately via /var/discourse/launcher
+# Usage: docker compose --env-file .env up -d
+# ============================================================
+
+version: "3.8"
+
+services:
+  opencast:
+    image: quay.io/opencast/allinone:latest
+    container_name: chronopoli-opencast
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ORG_OPENCASTPROJECT_SERVER_URL: https://video.${CHRONOPOLI_DOMAIN}
+      ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER: admin
+      ORG_OPENCASTPROJECT_SECURITY_ADMIN_PASS: ${OPENCAST_ADMIN_PASS}
+      ORG_OPENCASTPROJECT_DB_VENDOR: MySQL
+      ORG_OPENCASTPROJECT_DB_JDBC_URL: "jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/opencast?useMysqlMetadata=true"
+      ORG_OPENCASTPROJECT_DB_JDBC_USER: ${MYSQL_ROOT_USERNAME}
+      ORG_OPENCASTPROJECT_DB_JDBC_PASS: ${MYSQL_ROOT_PASSWORD}
+      ORG_OPENCASTPROJECT_DISTRIBUTION_STREAMING_URL: https://${CLOUDFRONT_DOMAIN}
+      ORG_OPENCASTPROJECT_TRANSCRIPTION_SERVICE_ENABLE: "true"
+      ORG_OPENCASTPROJECT_TRANSCRIPTION_SERVICE_PROVIDER: aws
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_S3_BUCKET: ${S3_OPENCAST_BUCKET}
+      AWS_REGION: ${AWS_REGION}
+      AWS_TRANSCRIBE_REGION: ${AWS_REGION}
+      AWS_TRANSCRIBE_LANGUAGE: en-US
+    volumes:
+      - opencast-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/info/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  presenton:
+    image: ghcr.io/presenton/presenton:latest
+    container_name: chronopoli-presenton
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      LLM: anthropic
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_MODEL: claude-sonnet-4-6
+      IMAGE_PROVIDER: pexels
+      PEXELS_API_KEY: ${PEXELS_API_KEY}
+      CAN_CHANGE_KEYS: "false"
+      DISABLE_ANONYMOUS_TELEMETRY: "true"
+    volumes:
+      - presenton-data:/app_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  opencast-data:
+  presenton-data:

@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Chronopoli Preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["preview/server.js"],
+      "port": 3000
+    },
+    {
+      "name": "Tutor Dev (LMS + CMS hot-reload)",
+      "runtimeExecutable": "tutor",
+      "runtimeArgs": ["dev", "start"],
+      "port": 8000
+    },
+    {
+      "name": "Tutor Local (Production-like Docker)",
+      "runtimeExecutable": "tutor",
+      "runtimeArgs": ["local", "start", "-d"],
+      "port": 80
+    },
+    {
+      "name": "Terraform Plan (Preview AWS changes)",
+      "runtimeExecutable": "terraform",
+      "runtimeArgs": ["-chdir=infrastructure/terraform", "plan", "-var-file=production.tfvars"],
+      "port": 0
+    }
+  ]
+}

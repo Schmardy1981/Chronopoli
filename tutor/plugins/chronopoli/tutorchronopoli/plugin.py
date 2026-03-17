@@ -34,6 +34,14 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ]),
         ("CHRONOPOLI_AI_ONBOARDING_ENABLED", True),
         ("CHRONOPOLI_AI_ONBOARDING_QUESTIONS", 5),
+        # Discourse SSO
+        ("DISCOURSE_SSO_SECRET", "CHANGE_THIS_TO_YOUR_64_CHAR_SECRET"),
+        ("DISCOURSE_BASE_URL", "https://community.chronopoli.io"),
+        ("DISCOURSE_API_KEY", "CHANGE_THIS_AFTER_DISCOURSE_SETUP"),
+        # Opencast LTI
+        ("OPENCAST_LTI_KEY", "chronopoli-openedx"),
+        ("OPENCAST_LTI_SECRET", "CHANGE_THIS_TO_YOUR_32_CHAR_SECRET"),
+        ("OPENCAST_BASE_URL", "https://video.chronopoli.io"),
     ]
 )
 
@@ -78,6 +86,7 @@ PLATFORM_DESCRIPTION = "The Global Knowledge City for AI, Blockchain & Digital T
 # Chronopoli Django apps
 INSTALLED_APPS.append("chronopoli_onboarding")
 INSTALLED_APPS.append("chronopoli_partners")
+INSTALLED_APPS.append("chronopoli_discourse_sso")
 
 # Chronopoli Districts config
 CHRONOPOLI_DISTRICTS = {{ CHRONOPOLI_DISTRICTS | tojson }}
@@ -94,6 +103,19 @@ CHRONOPOLI_PARTNER_CONTENT_ENABLED = True
 
 # AI Onboarding
 CHRONOPOLI_AI_ONBOARDING_ENABLED = {{ CHRONOPOLI_AI_ONBOARDING_ENABLED }}
+
+# Discourse SSO Integration
+DISCOURSE_SSO_SECRET = "{{ DISCOURSE_SSO_SECRET }}"
+DISCOURSE_BASE_URL = "{{ DISCOURSE_BASE_URL }}"
+DISCOURSE_API_KEY = "{{ DISCOURSE_API_KEY }}"
+
+# Opencast LTI Integration
+OPENCAST_LTI_KEY = "{{ OPENCAST_LTI_KEY }}"
+OPENCAST_LTI_SECRET = "{{ OPENCAST_LTI_SECRET }}"
+OPENCAST_BASE_URL = "{{ OPENCAST_BASE_URL }}"
+
+# Enable LTI Provider
+FEATURES["ENABLE_LTI_PROVIDER"] = True
 
 # Social sharing for certificates
 SOCIAL_SHARING_SETTINGS = {
@@ -125,6 +147,7 @@ hooks.Filters.ENV_PATCHES.add_items(
 urlpatterns += [
     path("chronopoli/", include("chronopoli_onboarding.urls")),
     path("chronopoli/partners/", include("chronopoli_partners.urls")),
+    path("auth/discourse/", include("chronopoli_discourse_sso.urls")),
 ]
 """,
         ),

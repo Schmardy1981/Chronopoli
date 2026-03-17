@@ -3,6 +3,7 @@ Chronopoli AI Onboarding – Django Views
 """
 
 import json
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -10,6 +11,58 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
 from .models import OnboardingProfile, ONBOARDING_QUESTIONS, calculate_recommendations
+
+logger = logging.getLogger(__name__)
+
+# Discourse district group mapping
+DISCOURSE_DISTRICT_GROUPS = {
+    "CHRON-AI":   "ai-district",
+    "CHRON-DA":   "digital-assets-district",
+    "CHRON-GOV":  "governance-district",
+    "CHRON-COMP": "compliance-district",
+    "CHRON-INV":  "investigation-district",
+    "CHRON-RISK": "risk-trust-district",
+}
+
+
+def _assign_discourse_group(username, district_code):
+    """
+    Add user to their primary district group on Discourse.
+    Called after AI onboarding questionnaire completion.
+    Fails silently if Discourse is not configured.
+    """
+    try:
+        import requests
+        from django.conf import settings
+
+        discourse_url = getattr(settings, "DISCOURSE_BASE_URL", "")
+        api_key = getattr(settings, "DISCOURSE_API_KEY", "")
+
+        if not discourse_url or not api_key or api_key == "CHANGE_THIS_AFTER_DISCOURSE_SETUP":
+            return
+
+        group_name = DISCOURSE_DISTRICT_GROUPS.get(district_code)
+        if not group_name:
+            return
+
+        headers = {"Api-Key": api_key, "Api-Username": "system"}
+
+        resp = requests.get(
+            f"{discourse_url}/groups/{group_name}.json",
+            headers=headers, timeout=10,
+        )
+        if resp.status_code != 200:
+            logger.warning("Discourse group %s not found", group_name)
+            return
+
+        group_id = resp.json()["group"]["id"]
+        requests.put(
+            f"{discourse_url}/groups/{group_id}/members.json",
+            headers=headers, json={"usernames": username}, timeout=10,
+        )
+        logger.info("Assigned %s to Discourse group %s", username, group_name)
+    except Exception as e:
+        logger.warning("Discourse group assignment failed for %s: %s", username, e)
 
 
 @login_required
@@ -56,7 +109,13 @@ def onboarding_submit(request):
     profile.onboarding_completed = True
     profile.onboarding_completed_at = timezone.now()
     profile.save()
-    
+
+    # Assign user to their district group on Discourse
+    _assign_discourse_group(
+        request.user.username,
+        recommendations['primary_district'],
+    )
+
     return redirect('/chronopoli/onboarding/results/')
 
 

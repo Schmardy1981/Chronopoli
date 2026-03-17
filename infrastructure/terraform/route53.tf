@@ -44,6 +44,33 @@ resource "aws_route53_record" "preview" {
   records = [aws_eip.chronopoli.public_ip]
 }
 
+# Community: community.chronopoli.io → EC2 (Discourse)
+resource "aws_route53_record" "community" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "community.${var.domain_name}"
+  type    = "A"
+  ttl     = 300
+  records = [aws_eip.chronopoli.public_ip]
+}
+
+# Video: video.chronopoli.io → EC2 (Opencast)
+resource "aws_route53_record" "video" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "video.${var.domain_name}"
+  type    = "A"
+  ttl     = 300
+  records = [aws_eip.chronopoli.public_ip]
+}
+
+# Slides: slides.chronopoli.io → EC2 (Presenton)
+resource "aws_route53_record" "slides" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "slides.${var.domain_name}"
+  type    = "A"
+  ttl     = 300
+  records = [aws_eip.chronopoli.public_ip]
+}
+
 # ACM DNS validation records
 resource "aws_route53_record" "acm_validation" {
   for_each = {

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chronopoli — The Global Knowledge City</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/theme/chronopoli-theme/lms/static/css/chronopoli-main.css">
+  <style>
+    html { scroll-behavior: smooth; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Stats row */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--cp-border);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cp-gold);
+    }
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--cp-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Section headers */
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cp-gold);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cp-white);
+    }
+    .section-subtitle {
+      color: var(--cp-muted);
+      margin-top: 0.75rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Partner logos */
+    .partners-section {
+      padding: 4rem 2rem;
+      background: var(--cp-dark);
+      border-top: 1px solid var(--cp-border);
+      border-bottom: 1px solid var(--cp-border);
+    }
+    .partners-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      margin-top: 2rem;
+      opacity: 0.5;
+    }
+    .partner-logo {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--cp-muted);
+      letter-spacing: 0.05em;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--cp-border);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+    .partner-logo:hover {
+      opacity: 1;
+      border-color: var(--cp-gold);
+      color: var(--cp-white);
+    }
+
+    /* Course grid */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    @media (max-width: 768px) {
+      .courses-grid { grid-template-columns: 1fr; }
+    }
+    .course-card-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    /* Layers section */
+    .layers-section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .layers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    @media (max-width: 768px) {
+      .layers-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .layer-card {
+      background: var(--cp-card);
+      border: 1px solid var(--cp-border);
+      border-radius: var(--radius-md);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.25s;
+    }
+    .layer-card:hover {
+      border-color: var(--cp-gold);
+      transform: translateY(-2px);
+    }
+    .layer-number {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cp-gold);
+      margin-bottom: 0.75rem;
+    }
+    .layer-name {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--cp-white);
+      margin-bottom: 0.5rem;
+    }
+    .layer-audience {
+      font-size: 0.8rem;
+      color: var(--cp-muted);
+    }
+
+    /* CTA section */
+    .cta-section {
+      padding: 6rem 2rem;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 70%),
+        var(--cp-black);
+    }
+    .cta-section h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .cta-section p {
+      color: var(--cp-muted);
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .btn-lg {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+    }
+
+    /* Footer grid */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .footer-col h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cp-muted);
+      margin-bottom: 1rem;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--cp-text);
+      margin-bottom: 0.5rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--cp-gold); }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--cp-border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--cp-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="global-header">
+    <div class="logo-wrap">
+      <span class="platform-name">Chrono<span>poli</span></span>
+    </div>
+    <nav class="nav-links">
+      <a href="#districts" class="active">Districts</a>
+      <a href="#courses">Courses</a>
+      <a href="#layers">Learning Paths</a>
+      <a href="#partners">Partners</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost">Sign In</a>
+      <a href="#" class="btn btn-primary">Start Learning</a>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero-section">
+    <span class="hero-eyebrow">Dubai Blockchain Center</span>
+    <h1 class="hero-title">The Global <span class="text-gold">Knowledge City</span></h1>
+    <p class="hero-subtitle">
+      AI, blockchain, governance, compliance, investigation, and enterprise risk —
+      structured learning for professionals who shape the future.
+    </p>
+    <div style="display:flex; justify-content:center; gap:1rem;">
+      <a href="#" class="btn btn-primary btn-lg">Find Your District</a>
+      <a href="#districts" class="btn btn-secondary btn-lg">Explore Districts</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-number">6</div>
+        <div class="hero-stat-label">Districts</div>
+      </div>
+      <div>
+        <div class="hero-stat-number">4</div>
+        <div class="hero-stat-label">Learning Layers</div>
+      </div>
+      <div>
+        <div class="hero-stat-number">50+</div>
+        <div class="hero-stat-label">Partners</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DISTRICTS ========== -->
+  <section id="districts" class="districts-section">
+    <div class="section-header">
+      <div class="section-eyebrow">Knowledge Districts</div>
+      <h2 class="section-title">Choose Your Path</h2>
+      <p class="section-subtitle">Each district is a self-contained knowledge domain with curated courses, expert partners, and structured certification paths.</p>
+    </div>
+    <div class="districts-grid">
+      <div class="district-card" data-district="ai">
+        <span class="district-icon">&#129302;</span>
+        <div class="district-name">AI District</div>
+        <div class="district-desc">AI governance, model risk, enterprise AI adoption, responsible AI frameworks</div>
+        <div class="district-count">12 courses &middot; 4 partners</div>
+      </div>
+      <div class="district-card" data-district="da">
+        <span class="district-icon">&#9939;</span>
+        <div class="district-name">Digital Assets District</div>
+        <div class="district-desc">Blockchain, tokenization, stablecoins, digital payments, DeFi protocols</div>
+        <div class="district-count">18 courses &middot; 6 partners</div>
+      </div>
+      <div class="district-card" data-district="gov">
+        <span class="district-icon">&#127963;</span>
+        <div class="district-name">Governance District</div>
+        <div class="district-desc">Digital policy, regulation frameworks, sovereign strategy, CBDC governance</div>
+        <div class="district-count">8 courses &middot; 3 partners</div>
+      </div>
+      <div class="district-card" data-district="comp">
+        <span class="district-icon">&#128209;</span>
+        <div class="district-name">Compliance District</div>
+        <div class="district-desc">AML/CFT, KYC frameworks, sanctions screening, travel rule, FATF standards</div>
+        <div class="district-count">15 courses &middot; 5 partners</div>
+      </div>
+      <div class="district-card" data-district="inv">
+        <span class="district-icon">&#128269;</span>
+        <div class="district-name">Investigation District</div>
+        <div class="district-desc">Blockchain forensics, financial crime, asset tracing, intelligence analysis</div>
+        <div class="district-count">10 courses &middot; 4 partners</div>
+      </div>
+      <div class="district-card" data-district="risk">
+        <span class="district-icon">&#128737;</span>
+        <div class="district-name">Risk &amp; Trust District</div>
+        <div class="district-desc">Operational risk, cyber risk, enterprise trust, digital identity frameworks</div>
+        <div class="district-count">9 courses &middot; 3 partners</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURED COURSES ========== -->
+  <section id="courses" style="padding:5rem 2rem; max-width:1200px; margin:0 auto;">
+    <div class="section-header">
+      <div class="section-eyebrow">Featured Courses</div>
+      <h2 class="section-title">Start Learning Today</h2>
+    </div>
+    <div class="courses-grid">
+      <div class="course-card">
+        <div class="course-card-image" style="background: linear-gradient(135deg, #1a1a3e, #2d1b69);">&#129302;</div>
+        <div class="course-card-body">
+          <span class="course-tag" style="background:rgba(108,99,255,0.15); color:#6C63FF;">CHRON-AI</span>
+          <div class="course-card-title">Introduction to Enterprise AI Governance</div>
+          <div class="course-card-meta">Layer 1 &middot; Entry &middot; 8 modules</div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-card-image" style="background: linear-gradient(135deg, #1a2a1a, #1b4332);">&#127963;</div>
+        <div class="course-card-body">
+          <span class="course-tag" style="background:rgba(16,185,129,0.15); color:#10B981;">CHRON-GOV</span>
+          <div class="course-card-title">Digital Regulatory Frameworks</div>
+          <div class="course-card-meta">Layer 2 &middot; Professional &middot; 12 modules</div>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-card-image" style="background: linear-gradient(135deg, #2a1a1a, #4a1c1c);">&#128269;</div>
+        <div class="course-card-body">
+          <span class="course-tag" style="background:rgba(239,68,68,0.15); color:#EF4444;">CHRON-INV</span>
+          <div class="course-card-title">Blockchain Forensics &amp; Asset Tracing</div>
+          <div class="course-card-meta">Layer 3 &middot; Institutional &middot; 10 modules</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LEARNING LAYERS ========== -->
+  <section id="layers" class="layers-section">
+    <div class="section-header">
+      <div class="section-eyebrow">Learning Architecture</div>
+      <h2 class="section-title">4 Learning Layers</h2>
+      <p class="section-subtitle">From newcomers to thought leaders — everyone has a path.</p>
+    </div>
+    <div class="layers-grid">
+      <div class="layer-card">
+        <div class="layer-number">Layer 1</div>
+        <div class="layer-name">Entry</div>
+        <div class="layer-audience">Students, newcomers, career changers</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-number">Layer 2</div>
+        <div class="layer-name">Professional</div>
+        <div class="layer-audience">Executives, compliance teams, officers</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-number">Layer 3</div>
+        <div class="layer-name">Institutional</div>
+        <div class="layer-audience">Governments, regulators, central banks</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-number">Layer 4</div>
+        <div class="layer-name">Influence</div>
+        <div class="layer-audience">Thought leaders, researchers, advisors</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PARTNERS ========== -->
+  <section id="partners" class="partners-section">
+    <div class="section-header">
+      <div class="section-eyebrow">Knowledge Partners</div>
+      <h2 class="section-title">Trusted by Industry Leaders</h2>
+    </div>
+    <div class="partners-grid">
+      <div class="partner-logo">Ripple</div>
+      <div class="partner-logo">Cardano</div>
+      <div class="partner-logo">Hedera</div>
+      <div class="partner-logo">Chainalysis</div>
+      <div class="partner-logo">TRM Labs</div>
+      <div class="partner-logo">Elliptic</div>
+      <div class="partner-logo">Microsoft AI</div>
+      <div class="partner-logo">Google AI</div>
+      <div class="partner-logo">Tether</div>
+      <div class="partner-logo">Polygon</div>
+      <div class="partner-logo">Chainlink</div>
+    </div>
+  </section>
+
+  <!-- ========== CTA ========== -->
+  <section class="cta-section">
+    <span class="hero-eyebrow">AI-Powered Onboarding</span>
+    <h2>Not sure where to <span class="text-gold">start?</span></h2>
+    <p>Answer 5 quick questions and our AI will recommend the perfect district and learning path for your background.</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn btn-primary btn-lg">Take the Assessment</a>
+      <a href="#" class="btn btn-secondary btn-lg">Browse All Courses</a>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="global-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Chrono<span>poli</span></div>
+        <div class="footer-tagline">The Global Knowledge City for AI, Blockchain &amp; Digital Trust</div>
+        <div class="footer-hosted">Hosted by Dubai Blockchain Center (DBCC)</div>
+      </div>
+      <div class="footer-col">
+        <h4>Districts</h4>
+        <a href="#">AI District</a>
+        <a href="#">Digital Assets</a>
+        <a href="#">Governance</a>
+        <a href="#">Compliance</a>
+        <a href="#">Investigation</a>
+        <a href="#">Risk &amp; Trust</a>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#">Courses</a>
+        <a href="#">Partners</a>
+        <a href="#">Certificates</a>
+        <a href="#">For Organizations</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Chronopoli. All rights reserved.</span>
+      <span>Built on OpenEdX &middot; Powered by DBCC</span>
+    </div>
+  </footer>
+
+</body>
+</html>
