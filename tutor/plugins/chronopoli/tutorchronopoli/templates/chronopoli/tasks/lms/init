@@ -2,7 +2,7 @@
 # Initialize Chronopoli districts as OpenEdX organizations
 echo "Setting up Chronopoli Knowledge Districts..."
 
-python manage.py lms shell -c "
+python manage.py shell -c "
 from organizations.models import Organization
 
 districts = [
@@ -26,7 +26,8 @@ print('Chronopoli districts initialized.')
 "
 
 # Run migrations for Chronopoli apps
-python manage.py lms migrate chronopoli_onboarding --noinput
-python manage.py lms migrate chronopoli_partners --noinput
+python manage.py migrate chronopoli_onboarding --noinput
+python manage.py migrate chronopoli_partners --noinput
+python manage.py migrate chronopoli_discourse_sso --noinput
 
 echo "Chronopoli initialization complete."

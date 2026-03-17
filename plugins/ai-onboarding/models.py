@@ -13,7 +13,6 @@ Flow:
 
 from django.db import models
 from django.contrib.auth import get_user_model
-from opaque_keys.edx.keys import CourseKey
 
 User = get_user_model()
 

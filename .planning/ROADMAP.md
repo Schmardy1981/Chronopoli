@@ -132,9 +132,13 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. AWS Infrastructure | 3/3 | Complete | 2026-03-17 |
-| 2. OpenEdX Installation | 0/3 | Not started | - |
-| 3. Districts Setup | 0/1 | Not started | - |
-| 4. Theme Deployment | 0/2 | Not started | - |
-| 5. AI Onboarding | 0/2 | Not started | - |
-| 6. Partner Ecosystem | 0/2 | Not started | - |
+| 2. OpenEdX Installation | 3/3 | Code complete (deploy pending) | 2026-03-17 |
+| 3. Districts Setup | 1/1 | Code complete (deploy pending) | 2026-03-17 |
+| 4. Theme Deployment | 2/2 | Code complete (deploy pending) | 2026-03-17 |
+| 5. AI Onboarding | 2/2 | Code complete (deploy pending) | 2026-03-17 |
+| 6. Partner Ecosystem | 2/2 | Code complete (deploy pending) | 2026-03-17 |
 | 7. First Course | 0/1 | Not started | - |
+| 8. Stack Extensions | 3/3 | Code complete (deploy pending) | 2026-03-17 |
+
+**Note:** Phase 8 (Stack Extensions) was added to integrate Discourse, Opencast, and Presenton.
+All code-complete phases are ready for deployment — they need AWS credentials + `terraform apply` to go live.

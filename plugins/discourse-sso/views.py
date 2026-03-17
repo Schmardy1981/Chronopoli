@@ -87,9 +87,9 @@ def discourse_sso(request):
         from common.djangoapps.student.models import UserProfile
         profile = UserProfile.objects.get(user=user)
         if profile.profile_image_uploaded_at:
+            lms_base = getattr(settings, "LMS_ROOT_URL", "")
             user_params["avatar_url"] = (
-                f"https://{settings.LMS_ROOT_URL}/static/profile_images/"
-                f"{user.username}_50.jpg"
+                f"{lms_base}/api/profile_images/{user.username}/upload"
             )
     except Exception:
         pass

@@ -15,7 +15,7 @@ from tutor import hooks
 from .__about__ import __version__
 
 # ============================================================
-# CONFIG DEFAULTS
+# CONFIG DEFAULTS (non-secret values)
 # ============================================================
 hooks.Filters.CONFIG_DEFAULTS.add_items(
     [
@@ -34,14 +34,29 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ]),
         ("CHRONOPOLI_AI_ONBOARDING_ENABLED", True),
         ("CHRONOPOLI_AI_ONBOARDING_QUESTIONS", 5),
-        # Discourse SSO
-        ("DISCOURSE_SSO_SECRET", "CHANGE_THIS_TO_YOUR_64_CHAR_SECRET"),
+        # Non-secret service defaults
         ("DISCOURSE_BASE_URL", "https://community.chronopoli.io"),
-        ("DISCOURSE_API_KEY", "CHANGE_THIS_AFTER_DISCOURSE_SETUP"),
-        # Opencast LTI
         ("OPENCAST_LTI_KEY", "chronopoli-openedx"),
-        ("OPENCAST_LTI_SECRET", "CHANGE_THIS_TO_YOUR_32_CHAR_SECRET"),
         ("OPENCAST_BASE_URL", "https://video.chronopoli.io"),
+    ]
+)
+
+# ============================================================
+# CONFIG UNIQUE – secrets auto-generated on `tutor config save`
+# ============================================================
+hooks.Filters.CONFIG_UNIQUE.add_items(
+    [
+        ("DISCOURSE_SSO_SECRET", "{{ 64|random_string }}"),
+        ("OPENCAST_LTI_SECRET", "{{ 32|random_string }}"),
+    ]
+)
+
+# ============================================================
+# CONFIG OVERRIDES – secrets that must be set manually
+# ============================================================
+hooks.Filters.CONFIG_OVERRIDES.add_items(
+    [
+        ("DISCOURSE_API_KEY", ""),
     ]
 )
 
@@ -69,7 +84,7 @@ for path in glob(str(importlib_resources.files("tutorchronopoli") / "patches" / 
         )
 
 # ============================================================
-# INSTALLED APPS – inject Chronopoli Django apps into OpenEdX
+# LMS SETTINGS – inject Chronopoli Django apps into OpenEdX LMS
 # ============================================================
 hooks.Filters.ENV_PATCHES.add_items(
     [
@@ -80,8 +95,8 @@ hooks.Filters.ENV_PATCHES.add_items(
 # CHRONOPOLI PLATFORM SETTINGS
 # ============================================================
 
-PLATFORM_NAME = "Chronopoli"
-PLATFORM_DESCRIPTION = "The Global Knowledge City for AI, Blockchain & Digital Trust"
+PLATFORM_NAME = "{{ PLATFORM_NAME }}"
+PLATFORM_DESCRIPTION = "{{ PLATFORM_DESCRIPTION }}"
 
 # Chronopoli Django apps
 INSTALLED_APPS.append("chronopoli_onboarding")
@@ -93,16 +108,12 @@ CHRONOPOLI_DISTRICTS = {{ CHRONOPOLI_DISTRICTS | tojson }}
 
 # Certificates
 CERT_HTML_VIEW_ENABLED = True
-CERTIFICATES_HTML_VIEW = True
-
-# Course Discovery
-COURSE_CATALOG_API_URL = "https://{{ LMS_HOST }}/api/catalog/v1/"
 
 # Partner content
 CHRONOPOLI_PARTNER_CONTENT_ENABLED = True
 
 # AI Onboarding
-CHRONOPOLI_AI_ONBOARDING_ENABLED = {{ CHRONOPOLI_AI_ONBOARDING_ENABLED }}
+CHRONOPOLI_AI_ONBOARDING_ENABLED = {{ CHRONOPOLI_AI_ONBOARDING_ENABLED | tojson }}
 
 # Discourse SSO Integration
 DISCOURSE_SSO_SECRET = "{{ DISCOURSE_SSO_SECRET }}"
@@ -130,6 +141,23 @@ MKTG_URL_LINK_MAP = {
     "PRIVACY": "privacy",
     "TERMS_OF_SERVICE": "tos",
 }
+""",
+        ),
+    ]
+)
+
+# ============================================================
+# CMS SETTINGS – apps needed in Studio for migrations
+# ============================================================
+hooks.Filters.ENV_PATCHES.add_items(
+    [
+        (
+            "openedx-cms-common-settings",
+            """
+# Chronopoli Django apps (needed for migrations)
+INSTALLED_APPS.append("chronopoli_onboarding")
+INSTALLED_APPS.append("chronopoli_partners")
+INSTALLED_APPS.append("chronopoli_discourse_sso")
 """,
         ),
     ]

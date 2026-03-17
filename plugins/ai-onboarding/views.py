@@ -7,8 +7,8 @@ import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.views.decorators.http import require_GET
 
 from .models import OnboardingProfile, ONBOARDING_QUESTIONS, calculate_recommendations
 
@@ -158,6 +158,7 @@ def onboarding_results(request):
     })
 
 
+@require_GET
 def api_onboarding_status(request):
     """
     API endpoint: check onboarding status for current user.

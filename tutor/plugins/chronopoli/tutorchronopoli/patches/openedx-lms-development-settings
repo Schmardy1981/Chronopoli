@@ -1,3 +1,2 @@
 # Chronopoli development overrides
 CHRONOPOLI_ENVIRONMENT = "development"
-DEBUG = True
