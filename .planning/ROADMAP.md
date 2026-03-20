@@ -2,7 +2,7 @@
 
 ## Overview
 
-Chronopoli launches in 7 phases: provision AWS infrastructure, install OpenEdX via Tutor with our plugin, configure the 6 Knowledge Districts, apply the dark/gold theme, wire up the AI onboarding questionnaire, integrate the partner ecosystem, and create the first foundation course. Each phase builds on the previous and delivers testable functionality.
+Chronopoli launches in 15 phases. Phases 1–8: core platform (infrastructure, OpenEdX, districts, theme, onboarding, partners, content, stack extensions). Phases 9–15: Master Document vision (CHRON-ET district, Stripe e-commerce, Symposia round tables, Company Academies, AI Tutor, Digital Twins, Partner Dashboard). Deploy-first: terraform apply before Phases 9+.
 
 ## Phases
 
@@ -13,6 +13,13 @@ Chronopoli launches in 7 phases: provision AWS infrastructure, install OpenEdX v
 - [ ] **Phase 5: AI Onboarding** - Wire onboarding questionnaire into registration flow
 - [ ] **Phase 6: Partner Ecosystem** - Integrate partner app and create first partner org
 - [ ] **Phase 7: First Course** - Create and publish foundation course in Studio
+- [ ] **Phase 9: Emerging Tech District** - Add CHRON-ET (7th district) across all layers
+- [ ] **Phase 10: E-Commerce / Stripe** - Paid courses, subscriptions, 70/30 creator split
+- [ ] **Phase 11: Symposia Round Tables** - Live IVS sessions + 8-step Step Functions pipeline
+- [ ] **Phase 12: Company Academy** - Partner subdomains, pathways, badges, talent pipeline
+- [ ] **Phase 13: AI Tutor** - Bedrock Knowledge Base RAG + floating chat widget
+- [ ] **Phase 14: Digital Twin / Master Class** - PDF→knowledge→voice clone→avatar→live session
+- [ ] **Phase 15: Partner Dashboard** - Analytics, intelligence reports, Chart.js UI
 
 ## Phase Details
 
@@ -140,5 +147,146 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 7. First Course | 0/1 | Not started | - |
 | 8. Stack Extensions | 3/3 | Code complete (deploy pending) | 2026-03-17 |
 
-**Note:** Phase 8 (Stack Extensions) was added to integrate Discourse, Opencast, and Presenton.
-All code-complete phases are ready for deployment — they need AWS credentials + `terraform apply` to go live.
+### Phase 9: Emerging Tech District (CHRON-ET)
+**Goal**: Add 7th Knowledge District across all platform layers
+**Depends on**: None (standalone)
+**Requirements**: DIST-ET-01 through DIST-ET-07
+**Success Criteria**:
+  1. CHRON-ET appears in plugin CONFIG_DEFAULTS with color #06B6D4
+  2. setup-districts.sh creates CHRON-ET org and ET-101 demo course
+  3. Discourse setup creates emerging-tech-district group
+  4. AI onboarding includes Emerging Technologies option
+  5. Theme renders 7th district card with cyan color
+**Plans**: 2 plans
+
+Plans:
+- [ ] 09-01: Backend config (plugin, scripts, onboarding, discourse SSO, init task)
+- [ ] 09-02: Theme CSS + presenton prompts + verify 7 districts render
+
+### Phase 10: E-Commerce / Stripe
+**Goal**: Paid courses via Stripe with tiered pricing and creator revenue splits
+**Depends on**: v1 deployed (Phases 1–8)
+**Requirements**: ECOM-01 through ECOM-08
+**Success Criteria**:
+  1. Stripe checkout → webhook → auto-enrollment works end-to-end
+  2. Partner gets 70% via Stripe Connect
+  3. Corporate subscription creates with N seats
+  4. SSM Parameter Store holds Stripe keys
+**Plans**: 4 plans
+
+Plans:
+- [ ] 10-01: Django app chronopoli_ecommerce (models, admin, migrations)
+- [ ] 10-02: Stripe checkout flow (stripe_client.py, views, webhook)
+- [ ] 10-03: Team subscriptions + Stripe Connect (partner revenue split)
+- [ ] 10-04: Terraform SSM + plugin wiring + healthcheck
+
+### Phase 11: Symposia — Round Tables + Automation Pipeline
+**Goal**: Live round tables via IVS with 8-step automated content pipeline
+**Depends on**: Phase 9
+**Requirements**: SYMP-01 through SYMP-10
+**Success Criteria**:
+  1. Schedule → Stream → Recording in S3 → Pipeline → 7 outputs → Approve → Publish
+  2. All 8 Lambda functions execute in Step Functions state machine
+  3. Opinion paper PDF generated via WeasyPrint
+  4. Single human approval touchpoint in Django admin
+**Plans**: 5 plans
+
+Plans:
+- [ ] 11-01: Django app chronopoli_symposia (models, admin, views, migrations)
+- [ ] 11-02: Terraform IVS + S3 recording + EventBridge
+- [ ] 11-03: Terraform Step Functions + 8 Lambda functions
+- [ ] 11-04: Terraform SQS + Celery approval polling
+- [ ] 11-05: Plugin wiring + end-to-end integration test
+
+### Phase 12: Company Academy Tenant Model
+**Goal**: Partners operate branded sub-academies with pathways, badges, talent pipeline
+**Depends on**: Phase 10
+**Requirements**: ACAD-01 through ACAD-10
+**Success Criteria**:
+  1. ripple.chronopoli.io renders partner-branded academy
+  2. Pathway completion → badge award → auto job application
+  3. SES email to partner HR with applicant details
+  4. Wildcard DNS + Nginx resolve partner subdomains
+**Plans**: 5 plans
+
+Plans:
+- [ ] 12-01: Extend Partner model + migration 0002
+- [ ] 12-02: Django app chronopoli_academy (Pathway, Badge, UserBadge + admin)
+- [ ] 12-03: Subdomain middleware + academy views + templates
+- [ ] 12-04: Talent pipeline (jobs, auto-apply signal, SES)
+- [ ] 12-05: Terraform wildcard DNS/SSL + Nginx + plugin wiring
+
+### Phase 13: AI Tutor — Bedrock Knowledge Base
+**Goal**: Conversational AI tutor powered by Bedrock RAG, personalized, SSE streaming
+**Depends on**: Phase 11 (content feeds knowledge base)
+**Requirements**: TUTOR-01 through TUTOR-08
+**Success Criteria**:
+  1. Chat widget on every LMS page, streams answers
+  2. Responses cite Symposia papers and course content
+  3. Personalized to user's district/layer from onboarding profile
+  4. Bedrock Knowledge Base syncs from S3 automatically
+**Plans**: 4 plans
+
+Plans:
+- [ ] 13-01: Django app chronopoli_ai_tutor (models, SSE view, bedrock_client)
+- [ ] 13-02: Terraform Bedrock KB + OpenSearch Serverless + S3
+- [ ] 13-03: Floating sidebar widget (JS/CSS) + theme integration
+- [ ] 13-04: Plugin wiring + ingestion task + end-to-end test
+
+### Phase 14: Digital Twin / Master Class
+**Goal**: Experts create AI digital twins for interactive masterclass experiences
+**Depends on**: Phase 11 (IVS reuse), Phase 13 (knowledge base)
+**Requirements**: TWIN-01 through TWIN-08
+**Success Criteria**:
+  1. PDF upload → Textract → Claude analysis → interview questions
+  2. ElevenLabs voice clone + HeyGen avatar video
+  3. Live masterclass via IVS with post-session Symposia pipeline
+**Plans**: 4 plans
+
+Plans:
+- [ ] 14-01: Django app chronopoli_masterclass (models, admin, migrations)
+- [ ] 14-02: Document processing (Textract + Claude + question generation)
+- [ ] 14-03: ElevenLabs voice + HeyGen avatar integration
+- [ ] 14-04: Plugin wiring + IVS reuse + integration test
+
+### Phase 15: Partner Intelligence Dashboard
+**Goal**: Partners see analytics, intelligence reports, talent metrics
+**Depends on**: Phase 11 + Phase 12
+**Requirements**: DASH-01 through DASH-06
+**Success Criteria**:
+  1. Dashboard at /chronopoli/partners/<slug>/dashboard/ with Chart.js
+  2. Weekly SES report email to partner contacts
+  3. Intelligence reports from Symposia pipeline visible
+**Plans**: 3 plans
+
+Plans:
+- [ ] 15-01: Dashboard views + analytics.py + Chart.js templates
+- [ ] 15-02: Weekly SES report task + Celery beat schedule
+- [ ] 15-03: URL wiring + access control + integration test
+
+## Progress
+
+**Execution Order:**
+Phases 1–8: sequential (core platform). Phases 9–15: dependency-driven (see plan).
+Prerequisite: terraform apply + v1 live before Phases 9+.
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. AWS Infrastructure | 3/3 | Complete | 2026-03-17 |
+| 2. OpenEdX Installation | 3/3 | Code complete (deploy pending) | 2026-03-17 |
+| 3. Districts Setup | 1/1 | Code complete (deploy pending) | 2026-03-17 |
+| 4. Theme Deployment | 2/2 | Code complete (deploy pending) | 2026-03-17 |
+| 5. AI Onboarding | 2/2 | Code complete (deploy pending) | 2026-03-17 |
+| 6. Partner Ecosystem | 2/2 | Code complete (deploy pending) | 2026-03-17 |
+| 7. First Course | 0/1 | Not started | - |
+| 8. Stack Extensions | 3/3 | Code complete (deploy pending) | 2026-03-17 |
+| 9. CHRON-ET District | 0/2 | Not started | - |
+| 10. E-Commerce / Stripe | 0/4 | Not started | - |
+| 11. Symposia Pipeline | 0/5 | Not started | - |
+| 12. Company Academy | 0/5 | Not started | - |
+| 13. AI Tutor | 0/4 | Not started | - |
+| 14. Digital Twin | 0/4 | Not started | - |
+| 15. Partner Dashboard | 0/3 | Not started | - |
+
+**Note:** Phases 9–15 close all gaps from the Master Document.
+All code-complete phases need AWS credentials + `terraform apply` to go live.

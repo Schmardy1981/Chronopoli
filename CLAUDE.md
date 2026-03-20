@@ -195,8 +195,8 @@ See `.planning/config.json` for full config. Key settings:
 
 ### GSD Planning Files
 - `.planning/PROJECT.md` – what we're building, core value, constraints, decisions
-- `.planning/REQUIREMENTS.md` – 33 v1 requirements mapped to 8 phases
-- `.planning/ROADMAP.md` – 8 phases with plans (Phase 8 = Stack Extensions)
+- `.planning/REQUIREMENTS.md` – 90 requirements mapped to 15 phases (33 v1 + 57 Master Doc)
+- `.planning/ROADMAP.md` – 15 phases (8 core + 7 Master Document gap closure)
 - `.planning/STATE.md` – current position, velocity, session continuity
 
 ---
@@ -221,14 +221,21 @@ See `.planning/config.json` for full config. Key settings:
 - [x] Presenton per-district brand prompts
 - [x] GSD planning complete (.planning/ with 8 phases)
 - [x] Code review + bug fixes (2026-03-17)
+- [x] Shell script bug fixes — 52 bugs resolved (2026-03-20)
+- [x] Master Document gap analysis — 7 gaps identified, 57 new requirements (2026-03-20)
+- [x] GSD Phases 9–15 planned — REQUIREMENTS.md, ROADMAP.md, STATE.md updated (2026-03-20)
 
 ### In Progress
 - [ ] Deploy to AWS (requires credentials + `terraform apply`)
 
-### Next Milestones
+### Next Milestones (Deploy-First)
 1. **M1**: `terraform apply` + EC2 provisioning – all code ready, needs AWS credentials
-2. **M2**: First foundation course in Studio (Phase 7)
-3. **M3**: Kubernetes migration + auto-scaling (Phase 2 infra)
+2. **M2**: Phase 9 — CHRON-ET district (2h after deploy)
+3. **M3**: Phase 10 — E-Commerce / Stripe (4–6 weeks)
+4. **M4**: Phase 11 — Symposia Round Tables + Pipeline (8–10 weeks, commercial differentiator)
+5. **M5**: Phase 12 — Company Academies (10–14 weeks, closes Ripple deal)
+6. **M6**: Phase 13 — AI Tutor / Bedrock KB (6–8 weeks, platform moat)
+7. **M7**: Phase 14+15 — Digital Twin + Partner Dashboard (6–8 + 3–4 weeks)
 
 ---
 
@@ -261,6 +268,12 @@ All secrets go in AWS Secrets Manager + GitHub Secrets.
 All Chronopoli Django apps prefixed: `chronopoli_`
 - `chronopoli_onboarding` (plugins/ai-onboarding/)
 - `chronopoli_partners` (plugins/partner-ecosystem/)
+- `chronopoli_discourse_sso` (plugins/discourse-sso/)
+- `chronopoli_ecommerce` (plugins/ecommerce/) — Phase 10
+- `chronopoli_symposia` (plugins/symposia/) — Phase 11
+- `chronopoli_academy` (plugins/company-academy/) — Phase 12
+- `chronopoli_ai_tutor` (plugins/ai-tutor/) — Phase 13
+- `chronopoli_masterclass` (plugins/masterclass/) — Phase 14
 - `chronopoli_discourse_sso` (plugins/discourse-sso/)
 
 ---
