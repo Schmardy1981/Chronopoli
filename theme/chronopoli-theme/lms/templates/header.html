@@ -557,3 +557,11 @@ from openedx.core.djangolib.markup import HTML
     }
   })();
 </script>
+
+## ==========================================================================
+##  AI Tutor Widget (floating sidebar — loads on every page for logged-in users)
+## ==========================================================================
+% if user.is_authenticated:
+<link rel="stylesheet" href="${static.url('css/ai-tutor-widget.css')}" />
+<script src="${static.url('js/ai-tutor-widget.js')}" defer></script>
+% endif

@@ -29,6 +29,20 @@ domain_name   = "chronopoli.io"
 lms_subdomain = "learn"
 cms_subdomain = "studio"
 
+# Stripe (Phase 10: E-Commerce) — leave empty until Stripe account created
+stripe_secret_key        = ""
+stripe_publishable_key   = ""
+stripe_webhook_secret    = ""
+stripe_connect_client_id = ""
+
+# Symposia Pipeline (Phase 11)
+symposia_staff_email = "team@chronopoli.io"
+
+# External API Keys (Phase 14: Digital Twin) — leave empty until accounts created
+elevenlabs_api_key = ""
+heygen_api_key     = ""
+anthropic_api_key  = ""
+
 # Tags
 tags = {
   Project      = "Chronopoli"

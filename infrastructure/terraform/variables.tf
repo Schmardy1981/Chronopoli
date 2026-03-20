@@ -153,6 +153,28 @@ variable "symposia_staff_email" {
   default     = "team@chronopoli.io"
 }
 
+# External API Keys (Phase 14: Digital Twin)
+variable "elevenlabs_api_key" {
+  description = "ElevenLabs API key for voice cloning"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "heygen_api_key" {
+  description = "HeyGen API key for avatar video generation"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "anthropic_api_key" {
+  description = "Anthropic API key for Claude (Lambda pipeline)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 # Tags
 variable "tags" {
   description = "Common tags for all resources"

@@ -39,6 +39,11 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ("DISCOURSE_BASE_URL", "https://community.chronopoli.io"),
         ("OPENCAST_LTI_KEY", "chronopoli-openedx"),
         ("OPENCAST_BASE_URL", "https://video.chronopoli.io"),
+        # AI Tutor (Phase 13)
+        ("CHRONOPOLI_AI_TUTOR_ENABLED", True),
+        ("BEDROCK_MODEL_ID", "anthropic.claude-3-5-sonnet-20241022-v2:0"),
+        # Partner Dashboard (Phase 15)
+        ("PARTNER_WEEKLY_REPORT_ENABLED", True),
     ]
 )
 
@@ -58,10 +63,17 @@ hooks.Filters.CONFIG_UNIQUE.add_items(
 hooks.Filters.CONFIG_OVERRIDES.add_items(
     [
         ("DISCOURSE_API_KEY", ""),
+        # Stripe
         ("STRIPE_SECRET_KEY", ""),
         ("STRIPE_PUBLISHABLE_KEY", ""),
         ("STRIPE_WEBHOOK_SECRET", ""),
         ("STRIPE_CONNECT_CLIENT_ID", ""),
+        # Bedrock AI Tutor
+        ("BEDROCK_KNOWLEDGE_BASE_ID", ""),
+        ("BEDROCK_DATA_SOURCE_ID", ""),
+        # External APIs (Digital Twin)
+        ("ELEVENLABS_API_KEY", ""),
+        ("HEYGEN_API_KEY", ""),
     ]
 )
 
@@ -134,6 +146,23 @@ DISCOURSE_API_KEY = "{{ DISCOURSE_API_KEY }}"
 OPENCAST_LTI_KEY = "{{ OPENCAST_LTI_KEY }}"
 OPENCAST_LTI_SECRET = "{{ OPENCAST_LTI_SECRET }}"
 OPENCAST_BASE_URL = "{{ OPENCAST_BASE_URL }}"
+
+# AI Tutor (Bedrock)
+CHRONOPOLI_AI_TUTOR_ENABLED = {{ CHRONOPOLI_AI_TUTOR_ENABLED | tojson }}
+BEDROCK_KNOWLEDGE_BASE_ID = "{{ BEDROCK_KNOWLEDGE_BASE_ID }}"
+BEDROCK_DATA_SOURCE_ID = "{{ BEDROCK_DATA_SOURCE_ID }}"
+BEDROCK_MODEL_ID = "{{ BEDROCK_MODEL_ID }}"
+
+# Digital Twin / Master Class (External APIs)
+ELEVENLABS_API_KEY = "{{ ELEVENLABS_API_KEY }}"
+HEYGEN_API_KEY = "{{ HEYGEN_API_KEY }}"
+
+# Celery Beat: weekly partner reports (every Monday 8am)
+CELERY_BEAT_SCHEDULE = getattr(globals(), "CELERY_BEAT_SCHEDULE", {})
+CELERY_BEAT_SCHEDULE["chronopoli_weekly_partner_reports"] = {
+    "task": "chronopoli_partners.analytics.send_all_weekly_reports",
+    "schedule": 604800,  # weekly
+}
 
 # Stripe Payment Integration
 STRIPE_SECRET_KEY = "{{ STRIPE_SECRET_KEY }}"

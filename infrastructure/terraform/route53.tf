@@ -71,6 +71,15 @@ resource "aws_route53_record" "slides" {
   records = [aws_eip.chronopoli.public_ip]
 }
 
+# Wildcard: *.chronopoli.io → EC2 (Company Academy subdomains)
+resource "aws_route53_record" "wildcard" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "*.${var.domain_name}"
+  type    = "A"
+  ttl     = 300
+  records = [aws_eip.chronopoli.public_ip]
+}
+
 # ACM DNS validation records
 resource "aws_route53_record" "acm_validation" {
   for_each = {
