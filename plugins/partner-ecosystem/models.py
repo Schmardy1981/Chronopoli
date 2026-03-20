@@ -39,6 +39,36 @@ class Partner(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Academy fields (Phase 12)
+    subdomain = models.SlugField(
+        max_length=100, blank=True, null=True, unique=True,
+        help_text="Subdomain for the partner academy, e.g. 'ripple' for ripple.chronopoli.io",
+    )
+    stripe_connect_account_id = models.CharField(
+        max_length=255, blank=True,
+        help_text="Stripe Connect account ID for revenue sharing.",
+    )
+    brand_primary_color = models.CharField(
+        max_length=7, blank=True, default="#D4AF37",
+        help_text="Hex color for primary brand, e.g. #D4AF37",
+    )
+    brand_secondary_color = models.CharField(
+        max_length=7, blank=True, default="#1A1A2E",
+        help_text="Hex color for secondary brand, e.g. #1A1A2E",
+    )
+    custom_logo_url = models.URLField(
+        blank=True,
+        help_text="URL for the partner's custom academy logo.",
+    )
+    academy_enabled = models.BooleanField(
+        default=False,
+        help_text="Whether this partner has an active academy subdomain.",
+    )
+    hr_notification_email = models.EmailField(
+        blank=True,
+        help_text="Email address for talent pipeline HR notifications.",
+    )
+
     class Meta:
         verbose_name = "Knowledge Partner"
         verbose_name_plural = "Knowledge Partners"
