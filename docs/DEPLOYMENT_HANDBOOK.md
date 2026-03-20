@@ -3,7 +3,7 @@
 **For: DevOps Engineer**
 **Platform: OpenEdX (Tutor) on AWS**
 **Region: me-central-1 (UAE) — fallback: eu-west-1**
-**Last updated: 2026-03-17**
+**Last updated: 2026-03-20**
 
 ---
 
@@ -55,7 +55,7 @@ Everything is automated where possible — your job is to:
 
 ### Multi-Tenant Architecture
 
-Chronopoli uses **6 Knowledge Districts**, each mapped to a separate OpenEdX Organization:
+Chronopoli uses **7 Knowledge Districts**, each mapped to a separate OpenEdX Organization:
 
 | District | Org Code | Audience |
 |----------|----------|----------|
@@ -65,6 +65,7 @@ Chronopoli uses **6 Knowledge Districts**, each mapped to a separate OpenEdX Org
 | Compliance | CHRON-COMP | MLROs, compliance officers |
 | Investigation | CHRON-INV | Law enforcement, FIUs |
 | Risk & Trust | CHRON-RISK | CROs, risk managers |
+| Emerging Tech | CHRON-ET | Researchers, innovation leaders |
 
 **Key rule:** Every course belongs to exactly one district (org). Users are routed to their district via the AI Onboarding questionnaire. Partners host courses within specific districts.
 
@@ -266,8 +267,8 @@ bash scripts/setup-districts.sh --env-file /data/chronopoli/production.env
 
 **This creates:**
 - Admin superuser
-- 6 Knowledge Districts (OpenEdX Organizations)
-- 6 demo courses (one per district)
+- 7 Knowledge Districts (OpenEdX Organizations)
+- 7 demo courses (one per district)
 - Runs Chronopoli app migrations
 - Applies the Chronopoli theme
 
@@ -324,7 +325,7 @@ sudo bash scripts/setup-discourse.sh --env-file /data/chronopoli/production.env
 bash scripts/setup-discourse-categories.sh --env-file /data/chronopoli/production.env
 ```
 
-**This creates:** 6 district groups, 6 top-level categories, 24+ sub-categories (learning layers + partner tracks).
+**This creates:** 7 district groups, 7 top-level categories, 28+ sub-categories (learning layers + partner tracks).
 
 ### 6.5 Verify SSO
 
@@ -423,7 +424,7 @@ sudo cp infrastructure/nginx/extensions.conf /etc/nginx/sites-available/chronopo
 sudo ln -s /etc/nginx/sites-available/chronopoli-extensions.conf /etc/nginx/sites-enabled/
 
 # Get SSL certificates
-sudo certbot certonly --nginx -d video.chronopoli.io -d slides.chronopoli.io
+sudo certbot certonly --nginx -d community.chronopoli.io -d video.chronopoli.io -d slides.chronopoli.io
 
 # Test and reload
 sudo nginx -t && sudo systemctl reload nginx
@@ -437,7 +438,81 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ---
 
-## Step 9: Smoke Test
+## Step 9: Stripe E-Commerce Setup
+
+Stripe enables paid courses, corporate subscriptions, and partner revenue sharing.
+
+### 9.1 Get Stripe Keys
+
+1. Create a Stripe account at [stripe.com](https://stripe.com)
+2. Go to **Developers > API Keys** — copy:
+   - Secret key (`sk_live_...`)
+   - Publishable key (`pk_live_...`)
+3. Go to **Developers > Webhooks > Add endpoint**:
+   - URL: `https://learn.chronopoli.io/chronopoli/ecommerce/webhook/stripe/`
+   - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+   - Copy the webhook signing secret (`whsec_...`)
+4. For partner revenue splitting: enable **Stripe Connect** in Dashboard > Settings
+
+### 9.2 Store Keys in AWS SSM (recommended)
+
+```bash
+# From your local machine (with AWS CLI configured):
+aws ssm put-parameter --name "/chronopoli/stripe/secret_key" \
+  --type SecureString --value "sk_live_YOUR_KEY" --region me-central-1
+
+aws ssm put-parameter --name "/chronopoli/stripe/webhook_secret" \
+  --type SecureString --value "whsec_YOUR_SECRET" --region me-central-1
+
+aws ssm put-parameter --name "/chronopoli/stripe/publishable_key" \
+  --type String --value "pk_live_YOUR_KEY" --region me-central-1
+```
+
+### 9.3 Configure Tutor with Stripe Keys
+
+```bash
+# On EC2:
+tutor config save \
+  --set STRIPE_SECRET_KEY="sk_live_YOUR_KEY" \
+  --set STRIPE_PUBLISHABLE_KEY="pk_live_YOUR_KEY" \
+  --set STRIPE_WEBHOOK_SECRET="whsec_YOUR_SECRET"
+
+tutor local restart lms
+```
+
+### 9.4 Create Course Pricing
+
+In Django Admin (`/admin/chronopoli_ecommerce/coursepricingtier/`):
+
+1. Click **Add Course Pricing Tier**
+2. Set:
+   - Course Key: `course-v1:CHRON-AI+AI-101+2026`
+   - Layer: L1 (Entry)
+   - Price: `49.00`
+   - Is Free: unchecked
+   - District: `CHRON-AI`
+3. Repeat for each paid course
+
+### 9.5 Test Checkout Flow
+
+1. Open `https://learn.chronopoli.io/chronopoli/ecommerce/checkout/course-v1:CHRON-AI+AI-101+2026/`
+2. Should redirect to Stripe Checkout
+3. Use test card: `4242 4242 4242 4242` (any future date, any CVC)
+4. After payment: redirected back to success page + auto-enrolled in course
+5. Verify in Django Admin: Purchase record shows `status=completed, enrolled=True`
+
+### 9.6 Set Up Partner Revenue Split (Stripe Connect)
+
+For partners like Ripple, Chainalysis etc.:
+
+1. Partner creates a Stripe Express account via the onboarding link
+2. In Django Admin (`/admin/chronopoli_partners/partner/`), add:
+   - `stripe_connect_account_id`: Partner's Stripe account ID (`acct_...`)
+3. When a student buys a partner course: 70% auto-transfers to partner, 30% retained
+
+---
+
+## Step 10: Smoke Test
 
 ```bash
 bash scripts/healthcheck.sh
@@ -448,7 +523,7 @@ This checks:
 - LMS and Studio responding (HTTP 200)
 - API endpoints alive
 - SSL certificate valid
-- All 6 districts exist
+- All 7 districts exist
 - Database connectivity
 - Disk and memory usage
 - Extension services (Discourse, Opencast, Presenton)
@@ -457,7 +532,7 @@ This checks:
 
 ---
 
-## Step 10: Verify Manually
+## Step 11: Verify Manually
 
 Open in your browser:
 
@@ -466,7 +541,7 @@ Open in your browser:
 | `https://learn.chronopoli.io` | LMS homepage loads |
 | `https://learn.chronopoli.io/admin` | Django admin (login with admin credentials) |
 | `https://studio.chronopoli.io` | Studio loads |
-| `https://learn.chronopoli.io/admin/organizations/organization/` | All 6 districts visible |
+| `https://learn.chronopoli.io/admin/organizations/organization/` | All 7 districts visible |
 | `https://learn.chronopoli.io/courses` | Demo courses visible |
 | `https://community.chronopoli.io` | Discourse forum loads |
 | `https://video.chronopoli.io` | Opencast admin loads |
@@ -475,13 +550,13 @@ Open in your browser:
 ### Verify Multi-Tenant Isolation
 
 In Django Admin (`/admin`):
-1. Go to **Organizations > Organizations** — verify 6 districts exist
+1. Go to **Organizations > Organizations** — verify 7 districts exist
 2. Go to **Organization Courses** — verify each demo course is linked to its district
 3. Create a test user, go through the onboarding flow at `/chronopoli/onboarding/start/`
 
 ---
 
-## Step 11: SES Email Verification
+## Step 12: SES Email Verification
 
 AWS SES starts in sandbox mode. You need to:
 
@@ -493,7 +568,7 @@ Until production access is granted, you can only send to verified email addresse
 
 ---
 
-## Step 12: Backups
+## Step 13: Backups
 
 ### Automated Backup (cron)
 
@@ -516,7 +591,7 @@ Backups go to `s3://chronopoli-backups-production/` with Glacier archival at 30 
 
 ---
 
-## Step 13: Monitoring
+## Step 14: Monitoring
 
 ### Logs
 
@@ -661,7 +736,10 @@ tutor config save
 | `infrastructure/production.env.template` | Environment variable template |
 | `tutor/config.yml` | Tutor base config (reference only) |
 | `tutor/plugins/chronopoli/` | Custom Tutor plugin |
+| `plugins/ai-onboarding/` | AI onboarding questionnaire Django app |
+| `plugins/partner-ecosystem/` | Partner management Django app |
 | `plugins/discourse-sso/` | Discourse SSO Django app |
+| `plugins/ecommerce/` | Stripe payment integration Django app |
 | `docs/presenton-prompts.md` | Per-district AI slide generation prompts |
 
 ---
@@ -726,5 +804,5 @@ bash scripts/deploy.sh production
 
 ---
 
-*Generated: 2026-03-17*
+*Generated: 2026-03-20*
 *Platform: Chronopoli — The Global Knowledge City*
