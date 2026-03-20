@@ -30,5 +30,6 @@ print('Chronopoli districts initialized.')
 python manage.py migrate chronopoli_onboarding --noinput
 python manage.py migrate chronopoli_partners --noinput
 python manage.py migrate chronopoli_discourse_sso --noinput
+python manage.py migrate chronopoli_ecommerce --noinput
 
 echo "Chronopoli initialization complete."

@@ -118,6 +118,34 @@ variable "cms_subdomain" {
   default     = "studio"
 }
 
+# Stripe (E-Commerce)
+variable "stripe_secret_key" {
+  description = "Stripe secret key (sk_live_...)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "stripe_publishable_key" {
+  description = "Stripe publishable key (pk_live_...)"
+  type        = string
+  default     = ""
+}
+
+variable "stripe_webhook_secret" {
+  description = "Stripe webhook signing secret (whsec_...)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "stripe_connect_client_id" {
+  description = "Stripe Connect platform client ID"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 # Tags
 variable "tags" {
   description = "Common tags for all resources"

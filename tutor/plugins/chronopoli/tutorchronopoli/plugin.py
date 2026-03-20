@@ -58,6 +58,10 @@ hooks.Filters.CONFIG_UNIQUE.add_items(
 hooks.Filters.CONFIG_OVERRIDES.add_items(
     [
         ("DISCOURSE_API_KEY", ""),
+        ("STRIPE_SECRET_KEY", ""),
+        ("STRIPE_PUBLISHABLE_KEY", ""),
+        ("STRIPE_WEBHOOK_SECRET", ""),
+        ("STRIPE_CONNECT_CLIENT_ID", ""),
     ]
 )
 
@@ -103,6 +107,7 @@ PLATFORM_DESCRIPTION = "{{ PLATFORM_DESCRIPTION }}"
 INSTALLED_APPS.append("chronopoli_onboarding")
 INSTALLED_APPS.append("chronopoli_partners")
 INSTALLED_APPS.append("chronopoli_discourse_sso")
+INSTALLED_APPS.append("chronopoli_ecommerce")
 
 # Chronopoli Districts config
 CHRONOPOLI_DISTRICTS = {{ CHRONOPOLI_DISTRICTS | tojson }}
@@ -125,6 +130,12 @@ DISCOURSE_API_KEY = "{{ DISCOURSE_API_KEY }}"
 OPENCAST_LTI_KEY = "{{ OPENCAST_LTI_KEY }}"
 OPENCAST_LTI_SECRET = "{{ OPENCAST_LTI_SECRET }}"
 OPENCAST_BASE_URL = "{{ OPENCAST_BASE_URL }}"
+
+# Stripe Payment Integration
+STRIPE_SECRET_KEY = "{{ STRIPE_SECRET_KEY }}"
+STRIPE_PUBLISHABLE_KEY = "{{ STRIPE_PUBLISHABLE_KEY }}"
+STRIPE_WEBHOOK_SECRET = "{{ STRIPE_WEBHOOK_SECRET }}"
+STRIPE_CONNECT_CLIENT_ID = "{{ STRIPE_CONNECT_CLIENT_ID }}"
 
 # Enable LTI Provider
 FEATURES["ENABLE_LTI_PROVIDER"] = True
@@ -159,6 +170,7 @@ hooks.Filters.ENV_PATCHES.add_items(
 INSTALLED_APPS.append("chronopoli_onboarding")
 INSTALLED_APPS.append("chronopoli_partners")
 INSTALLED_APPS.append("chronopoli_discourse_sso")
+INSTALLED_APPS.append("chronopoli_ecommerce")
 """,
         ),
     ]
@@ -177,6 +189,7 @@ urlpatterns += [
     path("chronopoli/", include("chronopoli_onboarding.urls")),
     path("chronopoli/partners/", include("chronopoli_partners.urls")),
     path("auth/discourse/", include("chronopoli_discourse_sso.urls")),
+    path("chronopoli/ecommerce/", include("chronopoli_ecommerce.urls")),
 ]
 """,
         ),
