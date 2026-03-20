@@ -12,6 +12,7 @@ districts = [
     {'name': 'Chronopoli Compliance District', 'short_name': 'CHRON-COMP', 'description': 'AML, KYC, sanctions, travel rule, compliance design'},
     {'name': 'Chronopoli Investigation District', 'short_name': 'CHRON-INV', 'description': 'Blockchain forensics, financial crime, tracing'},
     {'name': 'Chronopoli Risk & Trust District', 'short_name': 'CHRON-RISK', 'description': 'Operational risk, cyber risk, enterprise trust frameworks'},
+    {'name': 'Chronopoli Emerging Tech District', 'short_name': 'CHRON-ET', 'description': 'Quantum computing, IoT, autonomous systems, spatial computing, frontier technology'},
 ]
 
 for d in districts:

@@ -31,6 +31,7 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
             {"code": "CHRON-COMP", "name": "Compliance District",     "color": "#3B82F6"},
             {"code": "CHRON-INV",  "name": "Investigation District",  "color": "#EF4444"},
             {"code": "CHRON-RISK", "name": "Risk & Trust District",   "color": "#8B5CF6"},
+            {"code": "CHRON-ET",   "name": "Emerging Tech District", "color": "#06B6D4"},
         ]),
         ("CHRONOPOLI_AI_ONBOARDING_ENABLED", True),
         ("CHRONOPOLI_AI_ONBOARDING_QUESTIONS", 5),

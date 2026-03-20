@@ -147,6 +147,7 @@ ONBOARDING_QUESTIONS = [
             {"value": "CHRON-COMP", "label": "Compliance & AML"},
             {"value": "CHRON-INV", "label": "Financial Crime Investigation"},
             {"value": "CHRON-RISK", "label": "Risk Management & Cybersecurity"},
+            {"value": "CHRON-ET", "label": "Emerging Technologies (Quantum, IoT, Spatial)"},
         ]
     },
     {
@@ -205,6 +206,7 @@ def calculate_recommendations(answers: dict) -> dict:
         'CHRON-COMP': ['CHRON-INV', 'CHRON-DA'],
         'CHRON-INV':  ['CHRON-COMP', 'CHRON-DA'],
         'CHRON-RISK': ['CHRON-AI', 'CHRON-COMP'],
+        'CHRON-ET':   ['CHRON-AI', 'CHRON-DA'],
     }
     secondary_districts = secondary_map.get(primary_district, ['CHRON-DA', 'CHRON-COMP'])
     

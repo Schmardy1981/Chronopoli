@@ -106,6 +106,7 @@ def discourse_sso(request):
                 "CHRON-COMP": "compliance-district",
                 "CHRON-INV": "investigation-district",
                 "CHRON-RISK": "risk-trust-district",
+                "CHRON-ET":   "emerging-tech-district",
             }.get(onboarding.primary_district, "")
             if district_group:
                 user_params["add_groups"] = district_group

@@ -102,6 +102,7 @@ create_group "governance-district"      "Governance District Members"
 create_group "compliance-district"      "Compliance District Members"
 create_group "investigation-district"   "Investigation District Members"
 create_group "risk-trust-district"      "Risk & Trust District Members"
+create_group "emerging-tech-district"  "Emerging Tech District Members"
 
 log "Groups created ✓"
 
@@ -116,6 +117,7 @@ GOV_ID=$(create_category "Governance District" "10B981")
 COMP_ID=$(create_category "Compliance District" "3B82F6")
 INV_ID=$(create_category "Investigation District" "EF4444")
 RISK_ID=$(create_category "Risk and Trust District" "8B5CF6")
+ET_ID=$(create_category "Emerging Tech District" "06B6D4")
 
 log "District categories created ✓"
 
@@ -176,14 +178,22 @@ if [[ -n "$RISK_ID" ]]; then
   create_category "Partner Tracks"  "8B5CF6" "$RISK_ID"
 fi
 
+# Emerging Tech District
+if [[ -n "$ET_ID" ]]; then
+  create_category "Entry Level"     "06B6D4" "$ET_ID"
+  create_category "Professional"    "06B6D4" "$ET_ID"
+  create_category "Institutional"   "06B6D4" "$ET_ID"
+  create_category "Partner Tracks"  "06B6D4" "$ET_ID"
+fi
+
 log "Sub-categories created ✓"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════╗"
 echo "║  DISCOURSE CATEGORIES COMPLETE ✓                         ║"
 echo "╠══════════════════════════════════════════════════════════╣"
-echo "║  6 district groups created                               ║"
-echo "║  6 top-level categories                                  ║"
-echo "║  24+ sub-categories (layers + partner tracks)            ║"
+echo "║  7 district groups created                               ║"
+echo "║  7 top-level categories                                  ║"
+echo "║  28+ sub-categories (layers + partner tracks)            ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""

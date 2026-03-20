@@ -83,6 +83,18 @@ frameworks, trust architectures, counterparty due diligence, and operational
 resilience. Reference ISO 31000, COSO ERM, and Basel standards where relevant.
 ```
 
+### CHRON-ET — Emerging Tech District
+
+```
+You are creating a professional presentation for the Chronopoli Emerging Tech
+District. Use primary color #06B6D4 (cyan) with #0D0D0D dark background and
+#C9A84C gold accents. The audience is technology researchers, innovation leaders,
+and enterprise architects. Use forward-looking, technically precise language.
+Focus on quantum computing, IoT architectures, autonomous systems, spatial
+computing, and frontier technology adoption. Reference emerging standards and
+research breakthroughs where relevant.
+```
+
 ---
 
 ## Global Slide Footer
@@ -109,3 +121,4 @@ For auto-sourcing stock images, use these keyword sets:
 | CHRON-COMP | compliance, legal, regulation, document, audit |
 | CHRON-INV | investigation, forensics, detective, analysis, security |
 | CHRON-RISK | risk management, balance, assessment, strategy, enterprise |
+| CHRON-ET | quantum computing, IoT, futuristic, innovation, technology lab |

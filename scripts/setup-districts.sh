@@ -112,6 +112,12 @@ districts = [
         'description': 'Operational risk management, cyber risk, enterprise trust frameworks, digital identity',
         'logo': None,
     },
+    {
+        'short_name': 'CHRON-ET',
+        'name': 'Chronopoli Emerging Tech District',
+        'description': 'Quantum computing, IoT, autonomous systems, spatial computing, frontier technology',
+        'logo': None,
+    },
 ]
 
 created_count = 0
@@ -211,6 +217,14 @@ demo_courses = [
         'display_name': 'Enterprise Risk Management Foundations',
         'layer': 'L1',
     },
+    # Emerging Tech District
+    {
+        'org': 'CHRON-ET',
+        'number': 'ET-101',
+        'run': '2026',
+        'display_name': 'Frontier Technologies: Quantum, IoT & Spatial Computing',
+        'layer': 'L1',
+    },
 ]
 
 store = modulestore()
@@ -286,8 +300,9 @@ echo "║    • CHRON-GOV   — Governance District                   ║"
 echo "║    • CHRON-COMP  — Compliance District                   ║"
 echo "║    • CHRON-INV   — Investigation District                ║"
 echo "║    • CHRON-RISK  — Risk & Trust District                 ║"
+echo "║    • CHRON-ET    — Emerging Tech District                ║"
 echo "║                                                          ║"
-echo "║  Demo Courses: 6 (one per district)                      ║"
+echo "║  Demo Courses: 7 (one per district)                      ║"
 echo "║  Admin User:   ${ADMIN_USER:-admin}                      "
 echo "║                                                          ║"
 echo "║  Multi-Tenant Architecture:                              ║"

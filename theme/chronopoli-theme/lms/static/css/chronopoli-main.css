@@ -28,7 +28,8 @@
   --district-comp:   #3B82F6;
   --district-inv:    #EF4444;
   --district-risk:   #8B5CF6;
-  
+  --district-et:     #06B6D4;
+
   /* Typography */
   --font-heading:    'Inter', 'Segoe UI', sans-serif;
   --font-body:       'Inter', 'Segoe UI', sans-serif;
@@ -101,7 +102,7 @@ h4 { font-size: 1.25rem; }
 .logo-wrap .platform-name {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--cp-white);
+  color: var(--cp-gold);
   letter-spacing: -0.02em;
 }
 
@@ -278,6 +279,7 @@ h4 { font-size: 1.25rem; }
 .district-card[data-district="comp"] { --district-color: var(--district-comp); }
 .district-card[data-district="inv"]  { --district-color: var(--district-inv); }
 .district-card[data-district="risk"] { --district-color: var(--district-risk); }
+.district-card[data-district="et"]   { --district-color: var(--district-et); }
 
 .district-icon {
   font-size: 2rem;
@@ -437,7 +439,7 @@ h4 { font-size: 1.25rem; }
 .footer-brand {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--cp-white);
+  color: var(--cp-gold);
   margin-bottom: 0.5rem;
 }
 

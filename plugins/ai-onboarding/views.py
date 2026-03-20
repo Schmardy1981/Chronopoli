@@ -22,6 +22,7 @@ DISCOURSE_DISTRICT_GROUPS = {
     "CHRON-COMP": "compliance-district",
     "CHRON-INV":  "investigation-district",
     "CHRON-RISK": "risk-trust-district",
+    "CHRON-ET":   "emerging-tech-district",
 }
 
 
@@ -137,6 +138,7 @@ def onboarding_results(request):
         'CHRON-COMP': {'name': 'Compliance District',     'color': '#3B82F6', 'icon': '🛡️'},
         'CHRON-INV':  {'name': 'Investigation District',  'color': '#EF4444', 'icon': '🔍'},
         'CHRON-RISK': {'name': 'Risk & Trust District',   'color': '#8B5CF6', 'icon': '⚖️'},
+        'CHRON-ET':   {'name': 'Emerging Tech District', 'color': '#06B6D4', 'icon': '🚀'},
     }
     
     primary = district_info.get(profile.primary_district, {})
