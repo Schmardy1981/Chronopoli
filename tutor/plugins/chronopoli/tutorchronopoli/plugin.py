@@ -108,6 +108,10 @@ INSTALLED_APPS.append("chronopoli_onboarding")
 INSTALLED_APPS.append("chronopoli_partners")
 INSTALLED_APPS.append("chronopoli_discourse_sso")
 INSTALLED_APPS.append("chronopoli_ecommerce")
+INSTALLED_APPS.append("chronopoli_symposia")
+INSTALLED_APPS.append("chronopoli_academy")
+INSTALLED_APPS.append("chronopoli_ai_tutor")
+INSTALLED_APPS.append("chronopoli_masterclass")
 
 # Chronopoli Districts config
 CHRONOPOLI_DISTRICTS = {{ CHRONOPOLI_DISTRICTS | tojson }}
@@ -171,6 +175,10 @@ INSTALLED_APPS.append("chronopoli_onboarding")
 INSTALLED_APPS.append("chronopoli_partners")
 INSTALLED_APPS.append("chronopoli_discourse_sso")
 INSTALLED_APPS.append("chronopoli_ecommerce")
+INSTALLED_APPS.append("chronopoli_symposia")
+INSTALLED_APPS.append("chronopoli_academy")
+INSTALLED_APPS.append("chronopoli_ai_tutor")
+INSTALLED_APPS.append("chronopoli_masterclass")
 """,
         ),
     ]
@@ -190,6 +198,10 @@ urlpatterns += [
     path("chronopoli/partners/", include("chronopoli_partners.urls")),
     path("auth/discourse/", include("chronopoli_discourse_sso.urls")),
     path("chronopoli/ecommerce/", include("chronopoli_ecommerce.urls")),
+    path("chronopoli/symposia/", include("chronopoli_symposia.urls")),
+    path("chronopoli/academy/", include("chronopoli_academy.urls")),
+    path("chronopoli/ai-tutor/", include("chronopoli_ai_tutor.urls")),
+    path("chronopoli/masterclass/", include("chronopoli_masterclass.urls")),
 ]
 """,
         ),

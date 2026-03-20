@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if partner %}{{ partner.name }} Academy{% else %}Chronopoli Academy{% endif %}</title>
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-secondary: #1A1A2E;
+            --bg-card: #16213E;
+            --gold: #D4AF37;
+            --gold-light: #F5D77A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent-blue: #3B82F6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        header { background: var(--bg-secondary); border-bottom: 2px solid var(--gold); padding: 20px 0; }
+        header h1 { font-size: 1.8rem; color: var(--gold); }
+        header p { color: var(--text-secondary); margin-top: 4px; }
+        .section { padding: 48px 0; }
+        .section h2 { font-size: 1.4rem; color: var(--gold-light); margin-bottom: 24px; border-bottom: 1px solid var(--bg-card); padding-bottom: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+        .card { background: var(--bg-card); border-radius: 12px; padding: 24px; border: 1px solid rgba(212, 175, 55, 0.15); transition: border-color 0.2s; }
+        .card:hover { border-color: var(--gold); }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .card h3 a { color: var(--text-primary); text-decoration: none; }
+        .card h3 a:hover { color: var(--gold); }
+        .card p { color: var(--text-secondary); font-size: 0.9rem; }
+        .badge-tag { display: inline-block; background: rgba(212, 175, 55, 0.2); color: var(--gold); padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; margin-top: 12px; }
+        .meta { color: var(--text-secondary); font-size: 0.8rem; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{% if partner %}{{ partner.name }} Academy{% else %}Chronopoli Academy{% endif %}</h1>
+            <p>{% if partner %}Powered by Chronopoli &mdash; {{ partner.get_tier_display }}{% else %}Partner learning pathways, badges, and career opportunities{% endif %}</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="section">
+            <h2>Learning Pathways</h2>
+            {% if pathways %}
+            <div class="grid">
+                {% for pw in pathways %}
+                <div class="card">
+                    <h3><a href="{% url 'chronopoli_academy:pathway_detail' slug=pw.slug %}">{{ pw.title }}</a></h3>
+                    <p>{{ pw.description|truncatewords:30 }}</p>
+                    <span class="badge-tag">{{ pw.get_level_display }}</span>
+                    <span class="badge-tag">{{ pw.district_code }}</span>
+                    <div class="meta">{{ pw.estimated_hours }}h &middot; {{ pw.steps.count }} courses</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color:var(--text-secondary);">No published pathways yet.</p>
+            {% endif %}
+        </section>
+
+        <section class="section">
+            <h2>Open Positions</h2>
+            {% if jobs %}
+            <div class="grid">
+                {% for job in jobs %}
+                <div class="card">
+                    <h3><a href="{% url 'chronopoli_academy:job_list' %}">{{ job.title }}</a></h3>
+                    <p>{{ job.partner.name }} &middot; {{ job.location }}</p>
+                    <div class="meta">Posted {{ job.posted_at|timesince }} ago</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color:var(--text-secondary);">No open positions at this time.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

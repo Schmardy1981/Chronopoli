@@ -1,0 +1,4 @@
+boto3
+anthropic
+weasyprint
+jinja2

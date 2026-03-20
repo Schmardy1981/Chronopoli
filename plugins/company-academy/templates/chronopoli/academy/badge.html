@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ badge.name }} | Chronopoli Badge</title>
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-secondary: #1A1A2E;
+            --bg-card: #16213E;
+            --gold: #D4AF37;
+            --gold-light: #F5D77A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --green: #10B981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+        header { background: var(--bg-secondary); border-bottom: 2px solid var(--gold); padding: 20px 0; }
+        header .breadcrumb { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; }
+        header .breadcrumb a { color: var(--gold); text-decoration: none; }
+        .badge-hero { text-align: center; padding: 48px 0 32px; }
+        .badge-hero img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+        .badge-hero h1 { font-size: 1.6rem; color: var(--gold); margin-top: 16px; }
+        .badge-hero .issuer { color: var(--text-secondary); font-size: 0.9rem; }
+        .earned-banner { background: var(--green); color: #fff; text-align: center; padding: 12px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; }
+        .section { padding: 0 0 32px; }
+        .section h2 { font-size: 1.1rem; color: var(--gold-light); margin-bottom: 12px; }
+        .section p { color: var(--text-secondary); }
+        .card { background: var(--bg-card); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+        .card a { color: var(--gold); text-decoration: none; }
+        .meta-row { display: flex; gap: 24px; flex-wrap: wrap; color: var(--text-secondary); font-size: 0.85rem; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="breadcrumb"><a href="{% url 'chronopoli_academy:academy_home' %}">Academy</a> / Badge</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="badge-hero">
+            {% if badge.image_url %}
+            <img src="{{ badge.image_url }}" alt="{{ badge.name }}">
+            {% endif %}
+            <h1>{{ badge.name }}</h1>
+            <div class="issuer">Issued by {{ badge.issuer_name }}</div>
+        </div>
+
+        {% if user_has_badge %}
+        <div class="earned-banner">You have earned this badge.</div>
+        {% endif %}
+
+        <section class="section">
+            <h2>Description</h2>
+            <p>{{ badge.description }}</p>
+        </section>
+
+        <section class="section">
+            <h2>Criteria</h2>
+            <div class="card">
+                <p>{{ badge.criteria_text|default:"Complete the associated learning pathway." }}</p>
+                {% if badge.criteria_url %}
+                <p style="margin-top: 8px;"><a href="{{ badge.criteria_url }}">View full criteria</a></p>
+                {% endif %}
+            </div>
+        </section>
+
+        {% if badge.pathway %}
+        <section class="section">
+            <h2>Linked Pathway</h2>
+            <div class="card">
+                <a href="{% url 'chronopoli_academy:pathway_detail' slug=badge.pathway.slug %}">{{ badge.pathway.title }}</a>
+                <div class="meta-row">
+                    <span>{{ badge.pathway.partner.name }}</span>
+                    <span>{{ badge.pathway.estimated_hours }}h</span>
+                    <span>{{ badge.pathway.district_code }}</span>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if badge.district_code %}
+        <section class="section">
+            <h2>District</h2>
+            <p>{{ badge.district_code }}</p>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>

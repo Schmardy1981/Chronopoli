@@ -1,0 +1,93 @@
+{% extends "main.html" %}
+{% block title %}Round Tables – Chronopoli Symposia{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 960px; margin: 2rem auto; padding: 0 1rem;">
+
+  <h1 style="color: #D4AF37; margin-bottom: 0.5rem;">Round Tables</h1>
+  <p style="color: #ccc; margin-bottom: 2rem;">
+    Expert panels and live discussions across Chronopoli Knowledge Districts.
+  </p>
+
+  <!-- Filters -->
+  <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+    <form method="get" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <select name="status" style="background: #1a1a2e; color: #fff; border: 1px solid #333; padding: 0.5rem; border-radius: 4px;">
+        <option value="">All Statuses</option>
+        <option value="open" {% if status_filter == "open" %}selected{% endif %}>Open</option>
+        <option value="confirmed" {% if status_filter == "confirmed" %}selected{% endif %}>Confirmed</option>
+        <option value="live" {% if status_filter == "live" %}selected{% endif %}>Live</option>
+        <option value="completed" {% if status_filter == "completed" %}selected{% endif %}>Completed</option>
+        <option value="published" {% if status_filter == "published" %}selected{% endif %}>Published</option>
+      </select>
+      <select name="district" style="background: #1a1a2e; color: #fff; border: 1px solid #333; padding: 0.5rem; border-radius: 4px;">
+        <option value="">All Districts</option>
+        <option value="CHRON-AI" {% if district_filter == "CHRON-AI" %}selected{% endif %}>AI District</option>
+        <option value="CHRON-DA" {% if district_filter == "CHRON-DA" %}selected{% endif %}>Digital Assets</option>
+        <option value="CHRON-GOV" {% if district_filter == "CHRON-GOV" %}selected{% endif %}>Governance</option>
+        <option value="CHRON-COMP" {% if district_filter == "CHRON-COMP" %}selected{% endif %}>Compliance</option>
+        <option value="CHRON-INV" {% if district_filter == "CHRON-INV" %}selected{% endif %}>Investigation</option>
+        <option value="CHRON-RISK" {% if district_filter == "CHRON-RISK" %}selected{% endif %}>Risk &amp; Trust</option>
+      </select>
+      <button type="submit" style="background: #D4AF37; color: #0d0d1a; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600;">
+        Filter
+      </button>
+    </form>
+  </div>
+
+  <!-- Round Table Cards -->
+  {% if roundtables %}
+    {% for rt in roundtables %}
+    <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <a href="{% url 'chronopoli_symposia:detail' slug=rt.slug %}"
+             style="color: #D4AF37; font-size: 1.25rem; font-weight: 600; text-decoration: none;">
+            {{ rt.title }}
+          </a>
+          <p style="color: #999; margin: 0.25rem 0 0;">
+            Initiated by {{ rt.initiator.get_full_name|default:rt.initiator.username }}
+          </p>
+        </div>
+        <span style="
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          {% if rt.status == 'live' %}
+            background: #10B981; color: #fff;
+          {% elif rt.status == 'published' %}
+            background: #6C63FF; color: #fff;
+          {% elif rt.status == 'open' %}
+            background: #F59E0B; color: #0d0d1a;
+          {% else %}
+            background: #333; color: #ccc;
+          {% endif %}
+        ">
+          {{ rt.get_status_display }}
+        </span>
+      </div>
+
+      <p style="color: #ddd; margin: 0.75rem 0;">{{ rt.description|truncatewords:40 }}</p>
+
+      <div style="display: flex; gap: 1.5rem; color: #999; font-size: 0.85rem; flex-wrap: wrap;">
+        {% if rt.scheduled_at %}
+          <span>{{ rt.scheduled_at|date:"M d, Y H:i" }} UTC</span>
+        {% endif %}
+        <span>{{ rt.duration_mins }} min</span>
+        {% for code in rt.district_codes %}
+          <span style="color: #D4AF37;">{{ code }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div style="text-align: center; padding: 3rem; color: #666;">
+      <p style="font-size: 1.1rem;">No Round Tables found matching your criteria.</p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

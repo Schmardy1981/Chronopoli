@@ -146,6 +146,13 @@ variable "stripe_connect_client_id" {
   default     = ""
 }
 
+# Symposia Pipeline
+variable "symposia_staff_email" {
+  description = "Email address for Symposia pipeline notifications"
+  type        = string
+  default     = "team@chronopoli.io"
+}
+
 # Tags
 variable "tags" {
   description = "Common tags for all resources"

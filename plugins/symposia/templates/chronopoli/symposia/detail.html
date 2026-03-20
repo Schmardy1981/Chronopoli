@@ -1,0 +1,173 @@
+{% extends "main.html" %}
+{% block title %}{{ rt.title }} – Chronopoli Symposia{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 960px; margin: 2rem auto; padding: 0 1rem;">
+
+  <!-- Header -->
+  <div style="margin-bottom: 2rem;">
+    <a href="{% url 'chronopoli_symposia:list' %}" style="color: #D4AF37; text-decoration: none; font-size: 0.9rem;">
+      &larr; Back to Round Tables
+    </a>
+    <h1 style="color: #D4AF37; margin: 0.5rem 0 0.25rem;">{{ rt.title }}</h1>
+    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+      <span style="
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        {% if rt.status == 'live' %}
+          background: #10B981; color: #fff;
+        {% elif rt.status == 'published' %}
+          background: #6C63FF; color: #fff;
+        {% elif rt.status == 'open' %}
+          background: #F59E0B; color: #0d0d1a;
+        {% else %}
+          background: #333; color: #ccc;
+        {% endif %}
+      ">
+        {{ rt.get_status_display }}
+      </span>
+      <span style="color: #999; font-size: 0.9rem;">
+        Initiated by {{ rt.initiator.get_full_name|default:rt.initiator.username }}
+      </span>
+      {% if rt.scheduled_at %}
+        <span style="color: #999; font-size: 0.9rem;">
+          {{ rt.scheduled_at|date:"M d, Y H:i" }} UTC
+        </span>
+      {% endif %}
+      <span style="color: #999; font-size: 0.9rem;">{{ rt.duration_mins }} min</span>
+    </div>
+  </div>
+
+  <!-- Description & Agenda -->
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <h3 style="color: #D4AF37; margin-top: 0;">Description</h3>
+    <p style="color: #ddd; line-height: 1.6;">{{ rt.description }}</p>
+
+    {% if rt.agenda %}
+    <h3 style="color: #D4AF37; margin-top: 1.5rem;">Agenda</h3>
+    <p style="color: #ddd; line-height: 1.6; white-space: pre-line;">{{ rt.agenda }}</p>
+    {% endif %}
+
+    <div style="margin-top: 1rem;">
+      <strong style="color: #ccc;">Districts:</strong>
+      {% for code in rt.district_codes %}
+        <span style="display: inline-block; background: #333; color: #D4AF37; padding: 0.2rem 0.6rem; border-radius: 4px; margin-right: 0.5rem; font-size: 0.85rem;">
+          {{ code }}
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- IVS Player (if live or recording) -->
+  {% if rt.ivs_playback_url and rt.status in "live,recording" %}
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <h3 style="color: #10B981; margin-top: 0;">Live Stream</h3>
+    <p style="color: #999; font-size: 0.85rem;">Playback URL: {{ rt.ivs_playback_url }}</p>
+    <div style="background: #0d0d1a; border-radius: 4px; padding: 3rem; text-align: center; color: #666;">
+      IVS Player would render here
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Panelists -->
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <h3 style="color: #D4AF37; margin-top: 0;">Panelists &amp; Invitations</h3>
+    {% if invitations %}
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="border-bottom: 1px solid #333;">
+            <th style="text-align: left; padding: 0.5rem; color: #999; font-weight: 500;">Name</th>
+            <th style="text-align: left; padding: 0.5rem; color: #999; font-weight: 500;">Organization</th>
+            <th style="text-align: left; padding: 0.5rem; color: #999; font-weight: 500;">Role</th>
+            <th style="text-align: left; padding: 0.5rem; color: #999; font-weight: 500;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in invitations %}
+          <tr style="border-bottom: 1px solid #222;">
+            <td style="padding: 0.5rem; color: #ddd;">{{ inv.invitee_name }}</td>
+            <td style="padding: 0.5rem; color: #999;">{{ inv.invitee_org|default:"—" }}</td>
+            <td style="padding: 0.5rem; color: #ccc;">{{ inv.get_role_display }}</td>
+            <td style="padding: 0.5rem;">
+              <span style="
+                padding: 0.15rem 0.5rem;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                {% if inv.status == 'accepted' %}
+                  background: #10B981; color: #fff;
+                {% elif inv.status == 'declined' %}
+                  background: #EF4444; color: #fff;
+                {% else %}
+                  background: #333; color: #ccc;
+                {% endif %}
+              ">
+                {{ inv.get_status_display }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="color: #666;">No invitations sent yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Outputs -->
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <h3 style="color: #D4AF37; margin-top: 0;">Generated Content</h3>
+    {% if outputs %}
+      {% for out in outputs %}
+      <div style="border-bottom: 1px solid #222; padding: 0.75rem 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="color: #ddd;">{{ out.get_output_type_display }}</strong>
+          <span style="
+            padding: 0.15rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            {% if out.status == 'approved' %}
+              background: #10B981; color: #fff;
+            {% elif out.status == 'published' %}
+              background: #6C63FF; color: #fff;
+            {% elif out.status == 'rejected' %}
+              background: #EF4444; color: #fff;
+            {% elif out.status == 'generated' %}
+              background: #F59E0B; color: #0d0d1a;
+            {% else %}
+              background: #333; color: #ccc;
+            {% endif %}
+          ">
+            {{ out.get_status_display }}
+          </span>
+        </div>
+        {% if out.content_preview %}
+        <p style="color: #999; font-size: 0.85rem; margin-top: 0.5rem;">
+          {{ out.content_preview|truncatewords:50 }}
+        </p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <p style="color: #666;">No content generated yet. Content is produced after the session recording is processed.</p>
+    {% endif %}
+  </div>
+
+  <!-- Pipeline Runs -->
+  {% if pipeline_runs %}
+  <div style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <h3 style="color: #D4AF37; margin-top: 0;">Pipeline Runs</h3>
+    {% for run in pipeline_runs %}
+    <div style="border-bottom: 1px solid #222; padding: 0.5rem 0; display: flex; justify-content: space-between; color: #999; font-size: 0.85rem;">
+      <span>Run #{{ run.pk }} – {{ run.get_status_display }}</span>
+      <span>{{ run.started_at|date:"M d, Y H:i" }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

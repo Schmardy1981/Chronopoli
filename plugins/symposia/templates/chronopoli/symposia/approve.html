@@ -1,0 +1,95 @@
+{% extends "main.html" %}
+{% block title %}Approve Outputs – Chronopoli Symposia{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 960px; margin: 2rem auto; padding: 0 1rem;">
+
+  <h1 style="color: #D4AF37; margin-bottom: 0.5rem;">Content Approval</h1>
+  <p style="color: #ccc; margin-bottom: 2rem;">
+    Review and approve AI-generated content from Round Table sessions before publication.
+  </p>
+
+  {% if pending_outputs %}
+    {% for out in pending_outputs %}
+    <div id="output-{{ out.pk }}" style="background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <a href="{% url 'chronopoli_symposia:detail' slug=out.round_table.slug %}"
+             style="color: #D4AF37; text-decoration: none; font-weight: 600;">
+            {{ out.round_table.title }}
+          </a>
+          <span style="color: #999; margin-left: 0.5rem;">{{ out.get_output_type_display }}</span>
+        </div>
+        <span style="color: #666; font-size: 0.85rem;">
+          {% if out.generated_at %}
+            Generated {{ out.generated_at|date:"M d, Y H:i" }}
+          {% endif %}
+        </span>
+      </div>
+
+      {% if out.content_preview %}
+      <div style="background: #0d0d1a; border-radius: 4px; padding: 1rem; margin: 1rem 0; color: #ddd; font-size: 0.9rem; line-height: 1.6;">
+        {{ out.content_preview }}
+      </div>
+      {% endif %}
+
+      <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem;">
+        <button onclick="approveOutput({{ out.pk }}, 'approve')"
+                style="background: #10B981; color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; cursor: pointer; font-weight: 600;">
+          Approve
+        </button>
+        <button onclick="approveOutput({{ out.pk }}, 'reject')"
+                style="background: #EF4444; color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; cursor: pointer; font-weight: 600;">
+          Reject
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div style="text-align: center; padding: 3rem; color: #666;">
+      <p style="font-size: 1.1rem;">No outputs awaiting approval.</p>
+    </div>
+  {% endif %}
+
+</div>
+
+<script>
+function approveOutput(outputId, action) {
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!csrfToken) {
+        // Try cookie fallback
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                csrfToken = cookie.substring('csrftoken='.length);
+                break;
+            }
+        }
+    } else {
+        csrfToken = csrfToken.value;
+    }
+
+    fetch('/chronopoli/api/symposia/output/' + outputId + '/approve/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken || ''
+        },
+        body: JSON.stringify({action: action})
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        var card = document.getElementById('output-' + outputId);
+        if (card) {
+            card.style.opacity = '0.5';
+            card.innerHTML = '<p style="color: #999; padding: 1rem;">Output ' +
+                data.output_type + ' — ' + data.status + '</p>';
+        }
+    })
+    .catch(function(err) {
+        alert('Error: ' + err.message);
+    });
+}
+</script>
+{% endblock %}

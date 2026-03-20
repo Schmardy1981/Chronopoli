@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if partner %}{{ partner.name }} Jobs{% else %}Chronopoli Jobs{% endif %}</title>
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-secondary: #1A1A2E;
+            --bg-card: #16213E;
+            --gold: #D4AF37;
+            --gold-light: #F5D77A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent-blue: #3B82F6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+        header { background: var(--bg-secondary); border-bottom: 2px solid var(--gold); padding: 20px 0; }
+        header .breadcrumb { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; }
+        header .breadcrumb a { color: var(--gold); text-decoration: none; }
+        header h1 { font-size: 1.6rem; color: var(--gold); }
+        .jobs { padding: 40px 0; }
+        .job-card { background: var(--bg-card); border-radius: 12px; padding: 24px; margin-bottom: 16px; border: 1px solid rgba(212, 175, 55, 0.1); transition: border-color 0.2s; }
+        .job-card:hover { border-color: var(--gold); }
+        .job-card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+        .job-card .partner-name { color: var(--gold); font-size: 0.9rem; }
+        .job-card .desc { color: var(--text-secondary); font-size: 0.9rem; margin-top: 8px; }
+        .job-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; color: var(--text-secondary); font-size: 0.8rem; }
+        .badge-tag { display: inline-block; background: rgba(212, 175, 55, 0.15); color: var(--gold-light); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-right: 6px; margin-top: 8px; }
+        .empty { color: var(--text-secondary); padding: 40px 0; text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="breadcrumb"><a href="{% url 'chronopoli_academy:academy_home' %}">Academy</a> / Jobs</div>
+            <h1>{% if partner %}{{ partner.name }} – Open Positions{% else %}Chronopoli – Open Positions{% endif %}</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="jobs">
+            {% if jobs %}
+                {% for job in jobs %}
+                <div class="job-card">
+                    <h3>{{ job.title }}</h3>
+                    <div class="partner-name">{{ job.partner.name }}</div>
+                    <div class="desc">{{ job.description|truncatewords:40 }}</div>
+                    <div class="job-meta">
+                        <span>{{ job.location }}</span>
+                        <span>Posted {{ job.posted_at|timesince }} ago</span>
+                        {% if job.expires_at %}<span>Expires {{ job.expires_at|date:"M d, Y" }}</span>{% endif %}
+                    </div>
+                    {% if job.required_badges.all %}
+                    <div>
+                        {% for b in job.required_badges.all %}
+                        <span class="badge-tag">{{ b.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if job.required_district %}
+                    <span class="badge-tag">{{ job.required_district }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty">No open positions at this time. Check back soon.</div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

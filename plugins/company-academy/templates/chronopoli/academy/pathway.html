@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ pathway.title }} | {% if partner %}{{ partner.name }} Academy{% else %}Chronopoli Academy{% endif %}</title>
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-secondary: #1A1A2E;
+            --bg-card: #16213E;
+            --gold: #D4AF37;
+            --gold-light: #F5D77A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --green: #10B981;
+            --red: #EF4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        header { background: var(--bg-secondary); border-bottom: 2px solid var(--gold); padding: 20px 0; }
+        header .breadcrumb { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; }
+        header .breadcrumb a { color: var(--gold); text-decoration: none; }
+        header h1 { font-size: 1.6rem; color: var(--gold); }
+        header .meta { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+        .progress-section { padding: 32px 0; }
+        .progress-bar-bg { background: var(--bg-card); border-radius: 8px; height: 12px; overflow: hidden; }
+        .progress-bar-fill { background: var(--gold); height: 100%; border-radius: 8px; transition: width 0.4s; }
+        .progress-label { color: var(--text-secondary); font-size: 0.85rem; margin-top: 6px; }
+        .steps { padding: 0 0 48px; }
+        .steps h2 { font-size: 1.2rem; color: var(--gold-light); margin-bottom: 16px; }
+        .step { background: var(--bg-card); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; border-left: 4px solid var(--bg-secondary); }
+        .step.completed { border-left-color: var(--green); }
+        .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: var(--gold); flex-shrink: 0; }
+        .step.completed .step-num { background: var(--green); color: #fff; }
+        .step-info h3 { font-size: 1rem; margin-bottom: 2px; }
+        .step-info .course-key { color: var(--text-secondary); font-size: 0.8rem; }
+        .optional-tag { color: var(--text-secondary); font-size: 0.75rem; font-style: italic; }
+        .badges-section { padding: 0 0 48px; }
+        .badges-section h2 { font-size: 1.2rem; color: var(--gold-light); margin-bottom: 16px; }
+        .badge-card { background: var(--bg-card); border-radius: 10px; padding: 20px; display: inline-block; margin-right: 16px; }
+        .badge-card a { color: var(--gold); text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="breadcrumb"><a href="{% url 'chronopoli_academy:academy_home' %}">Academy</a> / Pathway</div>
+            <h1>{{ pathway.title }}</h1>
+            <div class="meta">
+                {{ pathway.partner.name }} &middot;
+                {{ pathway.get_level_display }} &middot;
+                {{ pathway.estimated_hours }}h &middot;
+                {{ pathway.district_code }}
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="progress-section">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: {{ progress_pct }}%;"></div>
+            </div>
+            <div class="progress-label">{{ progress_pct }}% complete</div>
+        </section>
+
+        <section class="steps">
+            <h2>Course Steps</h2>
+            {% for step in steps %}
+            <div class="step {% if step.course_key in completed_courses %}completed{% endif %}">
+                <div class="step-num">{{ step.order }}</div>
+                <div class="step-info">
+                    <h3>{{ step.title }}</h3>
+                    <div class="course-key">{{ step.course_key }}</div>
+                    {% if not step.is_required %}<span class="optional-tag">Optional</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        {% if badges %}
+        <section class="badges-section">
+            <h2>Earn These Badges</h2>
+            {% for badge in badges %}
+            <div class="badge-card">
+                <a href="{% url 'chronopoli_academy:badge_detail' slug=badge.slug %}">{{ badge.name }}</a>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <p style="color:var(--text-secondary); padding-bottom: 48px;">{{ pathway.description }}</p>
+    </main>
+</body>
+</html>
