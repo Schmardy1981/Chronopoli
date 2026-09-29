@@ -6,7 +6,7 @@ Discovery: tutor.plugin.v1 entry point in pyproject.toml
 """
 from __future__ import annotations
 
-import importlib_resources
+import importlib.resources
 from glob import glob
 import os
 
@@ -81,7 +81,7 @@ hooks.Filters.CONFIG_OVERRIDES.add_items(
 # TEMPLATE ROOTS & TARGETS
 # ============================================================
 hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    str(importlib_resources.files("tutorchronopoli") / "templates")
+    str(importlib.resources.files("tutorchronopoli") / "templates")
 )
 
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
@@ -93,7 +93,7 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
 # ============================================================
 # PATCHES (loaded from tutorchronopoli/patches/ directory)
 # ============================================================
-for path in glob(str(importlib_resources.files("tutorchronopoli") / "patches" / "*")):
+for path in glob(str(importlib.resources.files("tutorchronopoli") / "patches" / "*")):
     with open(path, encoding="utf-8") as patch_file:
         patch_name = os.path.basename(path)
         hooks.Filters.ENV_PATCHES.add_item(

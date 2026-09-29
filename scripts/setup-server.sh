@@ -179,7 +179,7 @@ python3 -m venv "$VENV_DIR"
 source "$VENV_DIR/bin/activate"
 
 pip install --upgrade pip
-pip install "tutor[full]"
+pip install "tutor[full]>=22.0.2,<23"
 
 # Create symlink so tutor is on PATH
 ln -sf "$VENV_DIR/bin/tutor" /usr/local/bin/tutor

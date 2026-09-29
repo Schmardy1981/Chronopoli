@@ -2,7 +2,7 @@
 
 ## What is Tutor?
 
-Tutor is the official Docker-based deployment tool for OpenEdX. It replaces the old Ansible-based setup and is the only supported production method as of OpenEdX Redwood (2024+).
+Tutor is the official Docker-based deployment tool for OpenEdX. It replaces the old Ansible-based setup and is the only supported production method. Chronopoli targets OpenEdX Verawood (Tutor 22).
 
 **Why Tutor:**
 - Docker-based: consistent, reproducible deployments
@@ -59,7 +59,7 @@ docker compose version
 ## 2. Install Tutor
 
 ```bash
-pip install "tutor[full]"
+pip install "tutor[full]>=22.0.2,<23"
 
 # Add to PATH
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
@@ -294,7 +294,7 @@ tutor local do exec mysql mysql -u root -p
 tutor local do exec mysql mysqldump -u root -p openedx > backup.sql
 
 # Update OpenEdX
-tutor upgrade --from=redwood
+tutor upgrade --from=ulmo
 tutor local start -d
 ```
 
