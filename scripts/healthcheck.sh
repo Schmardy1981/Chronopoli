@@ -196,7 +196,7 @@ echo ""
 # ============================================================
 echo -e "${BLUE}[6/8] Knowledge Districts${NC}"
 
-DISTRICT_OUTPUT=$(tutor local exec lms python manage.py shell -c "
+DISTRICT_OUTPUT=$(tutor local exec lms ./manage.py lms shell -c "
 from organizations.models import Organization
 districts = ['CHRON-AI','CHRON-DA','CHRON-GOV','CHRON-COMP','CHRON-INV','CHRON-RISK']
 for code in districts:
@@ -225,7 +225,7 @@ echo ""
 # ============================================================
 echo -e "${BLUE}[7/8] Database${NC}"
 
-DB_CHECK=$(tutor local exec lms python manage.py shell -c "
+DB_CHECK=$(tutor local exec lms ./manage.py lms shell -c "
 from django.db import connection
 cursor = connection.cursor()
 cursor.execute('SELECT 1')

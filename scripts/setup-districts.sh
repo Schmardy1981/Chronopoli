@@ -72,7 +72,7 @@ log "Admin user created: $ADMIN_USER ($ADMIN_EMAIL) ✓"
 # ============================================================
 log "Step 2/5: Creating Knowledge Districts (OpenEdX Organizations)..."
 
-tutor local exec lms python manage.py shell -c "
+tutor local exec lms ./manage.py lms shell -c "
 from organizations.models import Organization
 
 districts = [
@@ -146,10 +146,10 @@ log "Knowledge Districts configured ✓"
 # ============================================================
 log "Step 3/5: Running Chronopoli Django migrations..."
 
-tutor local exec lms python manage.py migrate chronopoli_onboarding --noinput 2>/dev/null || \
+tutor local exec lms ./manage.py lms migrate chronopoli_onboarding --noinput 2>/dev/null || \
   warn "chronopoli_onboarding migration skipped (app may not be installed yet)"
 
-tutor local exec lms python manage.py migrate chronopoli_partners --noinput 2>/dev/null || \
+tutor local exec lms ./manage.py lms migrate chronopoli_partners --noinput 2>/dev/null || \
   warn "chronopoli_partners migration skipped (app may not be installed yet)"
 
 log "Migrations complete ✓"
@@ -159,7 +159,7 @@ log "Migrations complete ✓"
 # ============================================================
 log "Step 4/5: Creating demo courses for each district..."
 
-tutor local exec lms python manage.py shell -c "
+tutor local exec lms ./manage.py lms shell -c "
 from cms.djangoapps.contentstore.utils import add_instructor
 from xmodule.modulestore.django import modulestore
 from opaque_keys.edx.keys import CourseKey
