@@ -82,6 +82,10 @@ def discourse_sso(request):
         "moderator": "true" if user.is_staff else "false",
     }
 
+    # Inactive (email not yet verified) accounts must confirm their email in Discourse
+    if not user.is_active:
+        user_params["require_activation"] = "true"
+
     # Add avatar URL if available
     try:
         from common.djangoapps.student.models import UserProfile
