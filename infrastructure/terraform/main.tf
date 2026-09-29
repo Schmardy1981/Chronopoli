@@ -4,12 +4,16 @@
 # ============================================================
 
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.14.0"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
+    }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.8"
     }
   }
 
@@ -33,14 +37,14 @@ provider "aws" {
 # DATA SOURCES
 # ============================================================
 
-# Latest Ubuntu 22.04 LTS AMI
+# Latest Ubuntu 24.04 LTS AMI
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["099720109477"] # Canonical
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
   }
 
   filter {
@@ -138,10 +142,14 @@ resource "aws_instance" "chronopoli" {
     #!/bin/bash
     set -e
     apt-get update && apt-get upgrade -y
-    apt-get install -y git curl wget python3 python3-pip docker.io docker-compose-plugin
+    apt-get install -y git curl wget python3 python3-pip python3-venv docker.io docker-compose-v2
     systemctl enable docker && systemctl start docker
     usermod -aG docker ubuntu
-    pip3 install "tutor[full]"
+    # Ubuntu 24.04 blocks system-wide pip (PEP 668): use the same venv as setup-server.sh
+    mkdir -p /opt/chronopoli
+    python3 -m venv /opt/chronopoli/venv
+    /opt/chronopoli/venv/bin/pip install "tutor[full]>=22.0.2,<23"
+    ln -sf /opt/chronopoli/venv/bin/tutor /usr/local/bin/tutor
     echo "Chronopoli EC2 initialized" > /var/log/chronopoli-init.log
   EOF
 

@@ -28,7 +28,7 @@ fi
 
 EXPECTED_OS="Ubuntu"
 if ! grep -qi "$EXPECTED_OS" /etc/os-release 2>/dev/null; then
-  err "This script requires Ubuntu 22.04 LTS"
+  err "This script requires Ubuntu 24.04 LTS"
 fi
 
 log "Starting Chronopoli server setup..."

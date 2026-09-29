@@ -227,7 +227,7 @@ resource "aws_lambda_function" "symposia_transcribe" {
   function_name    = "${var.project_name}-symposia-transcribe-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 60
   memory_size      = 256
   filename         = data.archive_file.transcribe.output_path
@@ -250,7 +250,7 @@ resource "aws_lambda_function" "symposia_check_transcription" {
   function_name    = "${var.project_name}-symposia-check-transcription-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 60
   memory_size      = 256
   filename         = data.archive_file.check_transcription.output_path
@@ -273,7 +273,7 @@ resource "aws_lambda_function" "symposia_analyze" {
   function_name    = "${var.project_name}-symposia-analyze-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 300
   memory_size      = 512
   filename         = data.archive_file.analyze.output_path
@@ -296,7 +296,7 @@ resource "aws_lambda_function" "symposia_opinion_paper" {
   function_name    = "${var.project_name}-symposia-opinion-paper-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 300
   memory_size      = 1024
   filename         = data.archive_file.opinion_paper.output_path
@@ -319,7 +319,7 @@ resource "aws_lambda_function" "symposia_linkedin" {
   function_name    = "${var.project_name}-symposia-linkedin-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 60
   memory_size      = 256
   filename         = data.archive_file.linkedin.output_path
@@ -342,7 +342,7 @@ resource "aws_lambda_function" "symposia_instagram" {
   function_name    = "${var.project_name}-symposia-instagram-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 60
   memory_size      = 256
   filename         = data.archive_file.instagram.output_path
@@ -365,7 +365,7 @@ resource "aws_lambda_function" "symposia_partner_report" {
   function_name    = "${var.project_name}-symposia-partner-report-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 60
   memory_size      = 256
   filename         = data.archive_file.partner_report.output_path
@@ -388,7 +388,7 @@ resource "aws_lambda_function" "symposia_notify" {
   function_name    = "${var.project_name}-symposia-notify-${var.environment}"
   role             = aws_iam_role.symposia_lambda.arn
   handler          = "handler.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.13"
   timeout          = 60
   memory_size      = 256
   filename         = data.archive_file.notify.output_path

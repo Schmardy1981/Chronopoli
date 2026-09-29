@@ -28,7 +28,7 @@ variable "ec2_instance_type" {
 }
 
 variable "ec2_ami" {
-  description = "Ubuntu 22.04 LTS AMI ID (region-specific)"
+  description = "Ubuntu 24.04 LTS AMI ID (region-specific)"
   type        = string
   default     = ""
 }

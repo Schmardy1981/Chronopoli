@@ -40,7 +40,7 @@ resource "aws_db_instance" "chronopoli" {
   identifier = "${var.project_name}-${var.environment}"
 
   engine               = "mysql"
-  engine_version       = "8.0"
+  engine_version       = "8.4"
   instance_class       = var.rds_instance_class
   allocated_storage    = var.rds_allocated_storage
   max_allocated_storage = var.rds_max_allocated_storage

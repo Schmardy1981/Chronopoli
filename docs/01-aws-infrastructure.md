@@ -6,7 +6,7 @@ Chronopoli runs on AWS with the following architecture:
 
 ```
 Internet → Route53 → CloudFront → ALB → EC2 (OpenEdX/Tutor)
-                                    └──→ RDS PostgreSQL
+                                    └──→ RDS MySQL
                                     └──→ ElastiCache Redis
                                     └──→ S3 (Media/Assets)
 ```
@@ -27,7 +27,7 @@ Alternative: `eu-west-1` (Ireland) for lower latency to European partners.
 | Parameter        | Value                    |
 |------------------|--------------------------|
 | Instance Type    | `t3.xlarge` (4 vCPU, 16GB RAM) |
-| OS               | Ubuntu 22.04 LTS         |
+| OS               | Ubuntu 24.04 LTS         |
 | Root Volume      | 50 GB gp3 SSD            |
 | Data Volume      | 100 GB gp3 SSD (mounted at /var) |
 | Elastic IP       | Yes                      |
@@ -36,7 +36,7 @@ Alternative: `eu-west-1` (Ireland) for lower latency to European partners.
 | Parameter        | Value                    |
 |------------------|--------------------------|
 | Instance Type    | `t3.medium` (2 vCPU, 4GB RAM) |
-| OS               | Ubuntu 22.04 LTS         |
+| OS               | Ubuntu 24.04 LTS         |
 
 ### EC2 Security Group Rules
 ```
@@ -52,11 +52,11 @@ Outbound:
 
 ---
 
-## 3. RDS PostgreSQL
+## 3. RDS MySQL
 
 | Parameter        | Value                         |
 |------------------|-------------------------------|
-| Engine           | PostgreSQL 14                 |
+| Engine           | MySQL 8.4                     |
 | Instance Class   | `db.t3.medium`                |
 | Storage          | 50 GB gp3, auto-scaling to 200 GB |
 | Multi-AZ         | Yes (production)              |
