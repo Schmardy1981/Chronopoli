@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 _bedrock_agent = None
 _bedrock_runtime = None
 
+# Yielded to the client when streaming fails; never stored as conversation history
+STREAM_ERROR_MESSAGE = "\n\n[Error: AI Tutor temporarily unavailable. Please try again.]"
+
 
 def _get_clients():
     global _bedrock_agent, _bedrock_runtime
@@ -117,7 +120,7 @@ def generate_streaming_response(
                     yield text
     except Exception as e:
         logger.error("Bedrock streaming failed: %s", e)
-        yield f"\n\n[Error: AI Tutor temporarily unavailable. Please try again.]"
+        yield STREAM_ERROR_MESSAGE
 
 
 def sync_knowledge_base():

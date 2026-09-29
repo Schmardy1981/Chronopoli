@@ -11,7 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, StreamingHttpResponse
 from django.views.decorators.http import require_GET, require_POST
 
-from .bedrock_client import generate_streaming_response, retrieve_context
+from .bedrock_client import (
+    STREAM_ERROR_MESSAGE,
+    generate_streaming_response,
+    retrieve_context,
+)
 from .models import TutorMessage, TutorSession
 from .prompts import build_system_prompt
 
@@ -59,11 +63,18 @@ def tutor_chat(request):
     # Retrieve context from Knowledge Base
     context_chunks = retrieve_context(question)
 
-    # Build conversation history (last 10 messages)
+    # Build conversation history (last 10 messages). Claude needs it to start
+    # with a user turn, so drop leading assistant messages, and merge
+    # consecutive same-role turns (e.g. a question whose answer failed).
     history = TutorMessage.objects.filter(session=session).order_by("-created_at")[:10]
-    messages = [
-        {"role": m.role, "content": m.content} for m in reversed(history)
-    ]
+    messages = []
+    for m in reversed(history):
+        if not m.content or (not messages and m.role != "user"):
+            continue
+        if messages and messages[-1]["role"] == m.role:
+            messages[-1]["content"] += "\n\n" + m.content
+        else:
+            messages.append({"role": m.role, "content": m.content})
 
     # Extract source citations for saving
     sources = [
@@ -75,22 +86,27 @@ def tutor_chat(request):
     def sse_stream():
         """Generator for Server-Sent Events."""
         full_response = ""
+        failed = False
 
         # Send session ID first
         yield f"data: {json.dumps({'type': 'session', 'session_id': session.id})}\n\n"
 
         # Stream response chunks
         for chunk in generate_streaming_response(messages, system_prompt, context_chunks):
-            full_response += chunk
+            if chunk == STREAM_ERROR_MESSAGE:
+                failed = True
+            else:
+                full_response += chunk
             yield f"data: {json.dumps({'type': 'chunk', 'text': chunk})}\n\n"
 
-        # Save assistant message
-        TutorMessage.objects.create(
-            session=session,
-            role="assistant",
-            content=full_response,
-            sources=sources,
-        )
+        # Save assistant message (never persist the error notice as history)
+        if full_response and not failed:
+            TutorMessage.objects.create(
+                session=session,
+                role="assistant",
+                content=full_response,
+                sources=sources,
+            )
 
         # Send done signal
         yield f"data: {json.dumps({'type': 'done', 'sources': sources})}\n\n"
