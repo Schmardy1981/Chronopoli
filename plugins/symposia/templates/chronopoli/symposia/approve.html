@@ -70,7 +70,11 @@ function approveOutput(outputId, action) {
         csrfToken = csrfToken.value;
     }
 
-    fetch('/chronopoli/api/symposia/output/' + outputId + '/approve/', {
+    // Reverse the URL in Django so the include() mount prefix is always right
+    var approveUrl = "{% url 'chronopoli_symposia:api-approve-output' output_id=0 %}"
+        .replace('/0/approve/', '/' + outputId + '/approve/');
+
+    fetch(approveUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
