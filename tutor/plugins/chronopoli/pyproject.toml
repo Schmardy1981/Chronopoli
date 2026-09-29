@@ -34,3 +34,7 @@ version = {attr = "tutorchronopoli.__about__.__version__"}
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["tutorchronopoli*"]
+
+# Ship patches/ and templates/ (read at runtime) in non-editable installs too
+[tool.setuptools.package-data]
+tutorchronopoli = ["patches/*", "templates/**/*"]

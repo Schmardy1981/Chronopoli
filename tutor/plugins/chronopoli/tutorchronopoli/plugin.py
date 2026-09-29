@@ -44,6 +44,10 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ("BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6"),
         # Partner Dashboard (Phase 15)
         ("PARTNER_WEEKLY_REPORT_ENABLED", True),
+        # E-Commerce (Phase 10): chronopoli_ecommerce imports stripe, so install it
+        # in the openedx image. This replaces Tutor's core default ([]); if you set
+        # OPENEDX_EXTRA_PIP_REQUIREMENTS in config.yml, keep "stripe==15.6.1" in it.
+        ("OPENEDX_EXTRA_PIP_REQUIREMENTS", ["stripe==15.6.1"]),
     ]
 )
 
@@ -89,6 +93,23 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
         ("chronopoli/tasks", "plugins"),
     ]
 )
+
+# ============================================================
+# INIT TASKS – run by `tutor local do init` / `tutor local launch`
+# ============================================================
+# Each task is ("<service>", ("<path>", "<to>", "<template>")) under templates/
+CHRONOPOLI_INIT_TASKS: list[tuple[str, tuple[str, ...]]] = [
+    ("lms", ("chronopoli", "tasks", "lms", "init")),
+]
+
+for service, template_path in CHRONOPOLI_INIT_TASKS:
+    full_path: str = str(
+        importlib.resources.files("tutorchronopoli")
+        / os.path.join("templates", *template_path)
+    )
+    with open(full_path, encoding="utf-8") as init_task_file:
+        init_task: str = init_task_file.read()
+    hooks.Filters.CLI_DO_INIT_TASKS.add_item((service, init_task))
 
 # ============================================================
 # PATCHES (loaded from tutorchronopoli/patches/ directory)
@@ -158,7 +179,7 @@ ELEVENLABS_API_KEY = "{{ ELEVENLABS_API_KEY }}"
 HEYGEN_API_KEY = "{{ HEYGEN_API_KEY }}"
 
 # Celery Beat: weekly partner reports (every Monday 8am)
-CELERY_BEAT_SCHEDULE = getattr(globals(), "CELERY_BEAT_SCHEDULE", {})
+CELERY_BEAT_SCHEDULE = globals().get("CELERY_BEAT_SCHEDULE", {})
 CELERY_BEAT_SCHEDULE["chronopoli_weekly_partner_reports"] = {
     "task": "chronopoli_partners.analytics.send_all_weekly_reports",
     "schedule": 604800,  # weekly
