@@ -78,7 +78,7 @@ def generate_streaming_response(
     """
     _, runtime_client = _get_clients()
     model_id = getattr(
-        settings, "BEDROCK_MODEL_ID", "anthropic.claude-3-5-sonnet-20241022-v2:0"
+        settings, "BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6"
     )
 
     # Build context block from KB retrieval

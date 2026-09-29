@@ -126,7 +126,12 @@ resource "aws_iam_role_policy" "symposia_lambda_bedrock" {
         Action = [
           "bedrock:InvokeModel"
         ]
-        Resource = "arn:aws:bedrock:${var.aws_region}::foundation-model/anthropic.claude-*"
+        Resource = [
+          "arn:aws:bedrock:${var.aws_region}::foundation-model/anthropic.claude-*",
+          # Global cross-region inference profiles (e.g. global.anthropic.claude-sonnet-4-6)
+          "arn:aws:bedrock:*:*:inference-profile/global.anthropic.*",
+          "arn:aws:bedrock:*::foundation-model/anthropic.*",
+        ]
       }
     ]
   })
@@ -283,6 +288,7 @@ resource "aws_lambda_function" "symposia_analyze" {
     variables = {
       S3_BUCKET_OUTPUTS = aws_s3_bucket.symposia_outputs.id
       AWS_REGION_NAME   = var.aws_region
+      BEDROCK_MODEL_ID  = var.bedrock_model_id
     }
   }
 
@@ -329,6 +335,7 @@ resource "aws_lambda_function" "symposia_linkedin" {
     variables = {
       S3_BUCKET_OUTPUTS = aws_s3_bucket.symposia_outputs.id
       AWS_REGION_NAME   = var.aws_region
+      BEDROCK_MODEL_ID  = var.bedrock_model_id
     }
   }
 
@@ -352,6 +359,7 @@ resource "aws_lambda_function" "symposia_instagram" {
     variables = {
       S3_BUCKET_OUTPUTS = aws_s3_bucket.symposia_outputs.id
       AWS_REGION_NAME   = var.aws_region
+      BEDROCK_MODEL_ID  = var.bedrock_model_id
     }
   }
 
@@ -375,6 +383,7 @@ resource "aws_lambda_function" "symposia_partner_report" {
     variables = {
       S3_BUCKET_OUTPUTS = aws_s3_bucket.symposia_outputs.id
       AWS_REGION_NAME   = var.aws_region
+      BEDROCK_MODEL_ID  = var.bedrock_model_id
     }
   }
 

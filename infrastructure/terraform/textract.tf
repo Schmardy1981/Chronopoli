@@ -37,13 +37,19 @@ resource "aws_iam_role_policy" "bedrock_access" {
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream",
         ]
-        Resource = "arn:aws:bedrock:${var.aws_region}::foundation-model/*"
+        Resource = [
+          "arn:aws:bedrock:${var.aws_region}::foundation-model/*",
+          # Global cross-region inference profiles (e.g. global.anthropic.claude-sonnet-4-6)
+          "arn:aws:bedrock:*:*:inference-profile/global.anthropic.*",
+          "arn:aws:bedrock:*::foundation-model/anthropic.*",
+        ]
       },
       {
         Effect = "Allow"
         Action = [
-          "bedrock-agent:Retrieve",
-          "bedrock-agent:RetrieveAndGenerate",
+          "bedrock:Retrieve",
+          "bedrock:RetrieveAndGenerate",
+          "bedrock:StartIngestionJob",
         ]
         Resource = "*"
       },

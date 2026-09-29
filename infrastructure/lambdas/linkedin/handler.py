@@ -13,6 +13,7 @@ logger.setLevel(logging.INFO)
 
 S3_BUCKET_OUTPUTS = os.environ["S3_BUCKET_OUTPUTS"]
 AWS_REGION = os.environ.get("AWS_REGION", "me-central-1")
+BEDROCK_MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6")
 
 s3 = boto3.client("s3", region_name=AWS_REGION)
 bedrock = boto3.client("bedrock-runtime", region_name=AWS_REGION)
@@ -63,7 +64,7 @@ def handler(event, context):
         )
 
         response = bedrock.invoke_model(
-            modelId="anthropic.claude-3-5-sonnet-20241022-v2:0",
+            modelId=BEDROCK_MODEL_ID,
             contentType="application/json",
             accept="application/json",
             body=json.dumps({

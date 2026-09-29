@@ -153,6 +153,12 @@ variable "symposia_staff_email" {
   default     = "team@chronopoli.io"
 }
 
+variable "bedrock_model_id" {
+  description = "Amazon Bedrock model or inference profile ID used by the Symposia Lambdas"
+  type        = string
+  default     = "global.anthropic.claude-sonnet-4-6"
+}
+
 # External API Keys (Phase 14: Digital Twin)
 variable "elevenlabs_api_key" {
   description = "ElevenLabs API key for voice cloning"

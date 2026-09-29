@@ -57,7 +57,7 @@ def process_document(document_id):
         # Step 2: Claude analysis via Bedrock
         bedrock = boto3.client("bedrock-runtime", region_name=region)
         model_id = getattr(
-            settings, "BEDROCK_MODEL_ID", "anthropic.claude-3-5-sonnet-20241022-v2:0"
+            settings, "BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6"
         )
 
         analysis_prompt = f"""Analyze this expert document and extract:
@@ -123,7 +123,7 @@ def generate_questions(twin_id):
         region = getattr(settings, "AWS_REGION", "me-central-1")
         bedrock = boto3.client("bedrock-runtime", region_name=region)
         model_id = getattr(
-            settings, "BEDROCK_MODEL_ID", "anthropic.claude-3-5-sonnet-20241022-v2:0"
+            settings, "BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6"
         )
 
         prompt = f"""Based on this expert's knowledge analysis, generate 20 interview questions

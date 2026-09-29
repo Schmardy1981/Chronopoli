@@ -41,7 +41,7 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ("OPENCAST_BASE_URL", "https://video.chronopoli.io"),
         # AI Tutor (Phase 13)
         ("CHRONOPOLI_AI_TUTOR_ENABLED", True),
-        ("BEDROCK_MODEL_ID", "anthropic.claude-3-5-sonnet-20241022-v2:0"),
+        ("BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6"),
         # Partner Dashboard (Phase 15)
         ("PARTNER_WEEKLY_REPORT_ENABLED", True),
     ]
