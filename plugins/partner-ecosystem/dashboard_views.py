@@ -144,13 +144,21 @@ def _get_intelligence_reports(partner):
     try:
         from chronopoli_symposia.models import RoundTableOutput
 
+        # TODO: RoundTable has no relation to Partner yet. Until one exists, only
+        # show reports from round tables in the partner's districts instead of
+        # every partner's reports.
+        partner_districts = set(partner.districts or [])
+        if not partner_districts:
+            return reports
+
         outputs = RoundTableOutput.objects.filter(
             output_type="partner_report",
             status__in=["approved", "published"],
-        ).select_related("round_table").order_by("-created_at")[:20]
+        ).select_related("round_table").order_by("-created_at")
 
         for output in outputs:
-            # Check if this report mentions the partner
+            if not partner_districts.intersection(output.round_table.district_codes or []):
+                continue
             # (In production, partner_reports.json contains per-partner sections)
             reports.append({
                 "round_table_title": output.round_table.title,
@@ -158,6 +166,8 @@ def _get_intelligence_reports(partner):
                 "generated_at": output.generated_at.isoformat() if output.generated_at else None,
                 "status": output.status,
             })
+            if len(reports) >= 20:
+                break
     except (ImportError, Exception) as e:
         logger.warning("Could not fetch intelligence reports: %s", e)
 

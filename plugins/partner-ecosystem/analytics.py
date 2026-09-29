@@ -8,6 +8,7 @@ Used by dashboard views and weekly SES reports.
 import logging
 from datetime import timedelta
 
+from celery import shared_task
 from django.utils import timezone
 
 from .models import Partner
@@ -157,3 +158,14 @@ def send_weekly_partner_report(partner: Partner):
 
     except Exception as e:
         logger.error("Failed to send weekly report to %s: %s", partner.name, e)
+
+
+@shared_task(name="chronopoli_partners.analytics.send_all_weekly_reports")
+def send_all_weekly_reports():
+    """Celery Beat entry point: send the weekly report to every active partner."""
+    count = 0
+    for partner in Partner.objects.filter(is_active=True):
+        send_weekly_partner_report(partner)
+        count += 1
+    logger.info("Weekly partner reports processed for %d partners", count)
+    return count
