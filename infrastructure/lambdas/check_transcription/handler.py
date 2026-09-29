@@ -24,8 +24,8 @@ def handler(event, context):
         {"job_name": "chronopoli-rt-123-...", "round_table_id": "123"}
     Returns:
         {"status": "COMPLETED"|"IN_PROGRESS"|"FAILED",
-         "transcript_text": "...",        # only when COMPLETED
-         "transcript_s3_key": "...",       # only when COMPLETED
+         "transcript_text": "...",        # "" unless COMPLETED
+         "transcript_s3_key": "...",       # "" unless COMPLETED
          "job_name": "...",
          "round_table_id": "..."}
     """
@@ -41,8 +41,12 @@ def handler(event, context):
         job = response["TranscriptionJob"]
         status = job["TranscriptionJobStatus"]
 
+        # Always include the transcript keys: the Step Functions ResultSelector
+        # references them on every poll and fails if they are missing.
         result = {
             "status": status,
+            "transcript_text": "",
+            "transcript_s3_key": "",
             "job_name": job_name,
             "round_table_id": round_table_id,
         }
