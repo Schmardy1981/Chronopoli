@@ -121,7 +121,7 @@ def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
     """
     Verify Stripe webhook signature and return parsed event.
 
-    Returns: Stripe Event object or raises ValueError.
+    Returns: the Stripe Event as a plain dict, or raises ValueError.
     """
     stripe = _get_stripe()
     webhook_secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", "")
@@ -130,4 +130,6 @@ def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
         raise ValueError("STRIPE_WEBHOOK_SECRET not configured")
 
     event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
-    return event
+    # StripeObjects (stripe 15.x) are not dicts: callers use .get() and store the
+    # payload in a JSONField, so hand back plain JSON-serializable data.
+    return event.to_dict(for_json=True)

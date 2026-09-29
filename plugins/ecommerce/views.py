@@ -136,7 +136,10 @@ def stripe_webhook(request):
         return HttpResponse("Already processed", status=200)
 
     try:
-        if event_type == "checkout.session.completed":
+        if event_type in (
+            "checkout.session.completed",
+            "checkout.session.async_payment_succeeded",
+        ):
             _handle_checkout_completed(event["data"]["object"])
         elif event_type == "customer.subscription.updated":
             _handle_subscription_updated(event["data"]["object"])
@@ -165,6 +168,15 @@ def _handle_checkout_completed(session):
         logger.warning("No purchase found for session %s", session_id)
         return
 
+    # Delayed payment methods complete the session before funds arrive;
+    # wait for checkout.session.async_payment_succeeded in that case.
+    if session.get("payment_status") != "paid":
+        logger.info(
+            "Checkout session %s completed but not paid (payment_status=%s)",
+            session_id, session.get("payment_status"),
+        )
+        return
+
     purchase.stripe_payment_intent_id = session.get("payment_intent", "")
     purchase.status = "completed"
     purchase.completed_at = timezone.now()
@@ -173,8 +185,7 @@ def _handle_checkout_completed(session):
     ])
 
     # Enroll user in OpenEdX course
-    _enroll_user(purchase.user, purchase.course_key)
-    purchase.enrolled = True
+    purchase.enrolled = _enroll_user(purchase.user, purchase.course_key)
     purchase.save(update_fields=["enrolled"])
 
     # Create partner payout record if applicable
@@ -249,6 +260,7 @@ def _enroll_user(user, course_key):
     """
     Enroll a user in an OpenEdX course via the enrollment API.
     Falls back gracefully if enrollment module is not available.
+    Returns True if the enrollment succeeded, False otherwise.
     """
     try:
         from common.djangoapps.student.models import CourseEnrollment
@@ -257,10 +269,12 @@ def _enroll_user(user, course_key):
         key = OpaqueKey.from_string(course_key)
         CourseEnrollment.enroll(user, key, mode="honor")
         logger.info("Enrolled %s in %s", user.username, course_key)
+        return True
     except ImportError:
         logger.warning("OpenEdX enrollment module not available — skipping enrollment")
     except Exception as e:
         logger.error("Enrollment failed for %s in %s: %s", user.username, course_key, e)
+    return False
 
 
 def _get_partner_connect_id(course_key):

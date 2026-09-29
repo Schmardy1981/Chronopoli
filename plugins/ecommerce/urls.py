@@ -4,10 +4,10 @@ from . import views
 app_name = "chronopoli_ecommerce"
 
 urlpatterns = [
-    # Checkout flow
-    path("checkout/<str:course_key>/", views.checkout_start, name="checkout"),
+    # Checkout flow (success/cancel must precede the <course_key> catch-all)
     path("checkout/success/", views.checkout_success, name="checkout-success"),
     path("checkout/cancel/", views.checkout_cancel, name="checkout-cancel"),
+    path("checkout/<str:course_key>/", views.checkout_start, name="checkout"),
 
     # Stripe webhook (no CSRF — Stripe signs the payload)
     path("webhook/stripe/", views.stripe_webhook, name="stripe-webhook"),

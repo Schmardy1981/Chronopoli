@@ -106,7 +106,10 @@ class PartnerPayout(models.Model):
     ]
 
     partner_slug = models.CharField(max_length=100)
-    stripe_transfer_id = models.CharField(max_length=100, unique=True, blank=True)
+    # NULL until a transfer exists: unique=True would reject a second empty string
+    stripe_transfer_id = models.CharField(
+        max_length=100, unique=True, null=True, blank=True, default=None,
+    )
     stripe_connect_account_id = models.CharField(max_length=100)
     course_key = models.CharField(max_length=255)
     buyer_email = models.EmailField()
