@@ -69,7 +69,7 @@ templates:
 params:
   db_default_text_search_config: "pg_catalog.english"
   db_shared_buffers: "256MB"
-  version: tests-passed
+  version: latest
 
 env:
   LC_ALL: en_US.UTF-8
