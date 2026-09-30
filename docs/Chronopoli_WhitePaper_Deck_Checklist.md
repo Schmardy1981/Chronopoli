@@ -3,7 +3,7 @@
 Legende: ✅ im Deck abgedeckt · ⚠️ teilweise / anders benannt · ❌ fehlt · 🔒 bewusste Entscheidung nötig
 
 ## A. Marke & Identität
-**Entscheidung:** Es gibt nur noch **Chronopoli**. „Origen Valley“ war der Arbeitsname im White Paper und entfällt; alles, was dort über Chronopoli steht, gilt jetzt für Chronopoli (Initiative + Plattform).
+**Entscheidung:** Es gibt nur noch **Chronopoli**. „Origen Valley“ war der Arbeitsname im White Paper und entfällt; alles, was dort über Origen Valley steht, gilt jetzt für Chronopoli (Initiative + Plattform).
 
 | # | Thema | Maßnahme |
 |---|---|---|
