@@ -1,24 +1,24 @@
-# Abgleich: Origen Valley White Paper (v4, März 2026) ↔ Pitch-Deck (Chronopoli)
+# Abgleich: White Paper v4 (März 2026, Arbeitsname „Origen Valley“) ↔ Chronopoli Pitch-Deck
 
 Legende: ✅ im Deck abgedeckt · ⚠️ teilweise / anders benannt · ❌ fehlt · 🔒 bewusste Entscheidung nötig
 
 ## A. Marke & Identität
-**Entscheidung:** Die Marke bleibt **Chronopoli**. Origen Valley ist die Institution aus dem White Paper (vormals Dubai Blockchain Center); Chronopoli ist ihre Wissensplattform.
+**Entscheidung:** Es gibt nur noch **Chronopoli**. „Origen Valley“ war der Arbeitsname im White Paper und entfällt; alles, was dort über Chronopoli steht, gilt jetzt für Chronopoli (Initiative + Plattform).
 
-| # | White Paper | Deck | Status | Maßnahme |
-|---|---|---|---|---|
-| A1 | Origen Valley als Trägerinstitution | „hosted by Dubai Blockchain Center“ | ⚠️ | „Chronopoli – the knowledge platform of Origen Valley (formerly Dubai Blockchain Center) · Area 2071, Emirates Towers“ |
-| A2 | Name, Screenshots, URLs chronopoli.io | Chronopoli | ✅ | bleiben unverändert |
-| A3 | Namensgeschichte Origen | fehlt | optional | kurz als Kontext zur Trägerinstitution |
+| # | Thema | Maßnahme |
+|---|---|---|
+| A1 | Name „Origen Valley“ | kommt im Deck nicht vor |
+| A2 | Chronopoli-Branding, Screenshots, URLs | bleiben unverändert |
+| A3 | Tagline aus dem White Paper | darf als Chronopoli-Tagline genutzt werden |
 
-## B. Einordnung in die Origen-Valley-Architektur
+## B. Einordnung in die Chronopoli-Architektur laut White Paper
 | # | White Paper | Deck | Status | Maßnahme |
 |---|---|---|---|---|
 | B1 | Vier Programm-Säulen: I Research/Anchor Lab · II Global Events (Frontier Tech Summit, private Roundtables) · III Education & Research (UNDP Government Academy, Knowledge Fund, Unis) · IV Startup Growth (Aether VC) | Deck erklärt nur die Lernplattform, ohne Bezug zu den Säulen | ❌ | Neue Folie „Where the platform fits“: Plattform = digitale Lern- und Convening-Schicht aller vier Säulen |
 | B2 | Dual-Track (Programm-Institution sofort + Free Zone parallel) | fehlt | ❌ | Eine Zeile auf der Einordnungsfolie (Kontext, kein Schwerpunkt) |
 | B3 | Frontier-Domänen: AI, Tokenisierung/Blockchain, Robotics & Physical AI, Quantum, Advanced Manufacturing, AI Safety | 7 Districts: AI, Digital Assets, Governance, Compliance, Investigation, Risk & Trust, Emerging Tech (Quantum, IoT, Spatial) | ⚠️ | Mapping-Folie; **Lücke Robotics & Physical AI** (Anchor Lab!) als Emerging-Tech-Track bzw. neuer District ausweisen |
 | B4 | Dubai Frontier Technologies Summit + kuratierte private Roundtables | Symposia (Chatham House, KI-Pipeline) | ✅/⚠️ | Symposia als „Summit & private roundtables module“ bezeichnen |
-| B5 | Proprietäres Risk-Intelligence-Tool: jede eingeladene Person ist verifiziert | fehlt | ❌ | Bei Symposia: „verified invitations, screened by the Origen Valley risk intelligence tool“ (Integration = Roadmap, nicht im Code) |
+| B5 | Proprietäres Risk-Intelligence-Tool: jede eingeladene Person ist verifiziert | fehlt | ❌ | Bei Symposia: „verified invitations, screened by the Chronopoli risk intelligence tool“ (Integration = Roadmap, nicht im Code) |
 | B6 | UNDP Government Academy (Behörden aus MENA, Afrika, Südasien: AI Governance, Blockchain Policy, Quantum Readiness) | Governance District, L3 Institutional, Company Academies | ⚠️ | Academy-Feature explizit als Träger der Government-Academy-Kohorten zeigen |
 | B7 | Knowledge Fund: PhD-Fellowships, Visiting Scientists, Joint Labs | fehlt | ❌ | Auf Einordnungsfolie; Plattform stellt Kurse/Kohorten/Credentials bereit |
 | B8 | Hochschulen: bestehende MOUs mit University of Nicosia, GUS, BUiD; NUD in Gründung | nur „Universities“ generisch | ❌ | Institutionelle Partner-Folie mit genau diesem Status |
