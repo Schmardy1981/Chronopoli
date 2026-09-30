@@ -1,15 +1,15 @@
-# Abgleich: Origen Valley White Paper (v4, März 2026) ↔ Pitch-Deck (ehemals Chronopoli)
+# Abgleich: Origen Valley White Paper (v4, März 2026) ↔ Pitch-Deck (Chronopoli)
 
 Legende: ✅ im Deck abgedeckt · ⚠️ teilweise / anders benannt · ❌ fehlt · 🔒 bewusste Entscheidung nötig
 
 ## A. Marke & Identität
-| # | White Paper | Deck (Stand Chronopoli) | Status | Maßnahme |
+**Entscheidung:** Die Marke bleibt **Chronopoli**. Origen Valley ist die Institution aus dem White Paper (vormals Dubai Blockchain Center); Chronopoli ist ihre Wissensplattform.
+
+| # | White Paper | Deck | Status | Maßnahme |
 |---|---|---|---|---|
-| A1 | Name „Origen Valley“ | überall „Chronopoli“ (Titel, Texte, Screenshots, URLs) | ❌ | Komplett umbenennen, inkl. Screenshots |
-| A2 | Tagline „Where Ancient Wisdom Meets the Frontier of Human Possibility“ | „Global Knowledge City for the digital economy“ | ❌ | Tagline übernehmen; „Knowledge City“ nur noch als Beschreibung der Lernplattform |
-| A3 | Domain origenvalley.com | chronopoli.io, learn./studio.chronopoli.io | ❌ | URLs → origenvalley.com / learn.origenvalley.com / studio.origenvalley.com |
-| A4 | Origen Valley = Transformation von DBCC; Sitz Area 2071, Emirates Towers; später Al-Quoz-Campus | „hosted by Dubai Blockchain Center“ | ⚠️ | „Origen Valley (formerly Dubai Blockchain Center) · Area 2071, Emirates Towers“ |
-| A5 | Namensgeschichte Origen von Alexandria | fehlt | ❌ | Kurz auf dem Cover bzw. einer Story-Folie |
+| A1 | Origen Valley als Trägerinstitution | „hosted by Dubai Blockchain Center“ | ⚠️ | „Chronopoli – the knowledge platform of Origen Valley (formerly Dubai Blockchain Center) · Area 2071, Emirates Towers“ |
+| A2 | Name, Screenshots, URLs chronopoli.io | Chronopoli | ✅ | bleiben unverändert |
+| A3 | Namensgeschichte Origen | fehlt | optional | kurz als Kontext zur Trägerinstitution |
 
 ## B. Einordnung in die Origen-Valley-Architektur
 | # | White Paper | Deck | Status | Maßnahme |
@@ -47,4 +47,3 @@ Legende: ✅ im Deck abgedeckt · ⚠️ teilweise / anders benannt · ❌ fehlt
 | E1 | Regierungs-Budget (AED 31–45M netto p.a.) und Einreichung an H.H. Sheikh Hamdan sind **vertraulich** | **Nicht** ins Partner-/Investoren-Deck |
 | E2 | Technische Org-Codes CHRON-AI … in Kurs-IDs der echten Open-edX-Screens | Beibehalten, Fußnote „technical codes from the pre-rebrand build“; Umbenennung (OV-*) = eigene Code-Aufgabe |
 | E3 | Partner-Roadmap (Ripple, Cardano, Tether …) steht nicht im White Paper | Behalten als „roadmap targets“, ergänzt um die White-Paper-Partner (UNDP, Aether VC, Unis, DFF, DET, Medien) mit exaktem Status |
-| E4 | Repo/Theme heißt technisch noch Chronopoli | Screens im Render-Harness auf Origen Valley umgebrandet und so beschriftet; Code-Rebrand separat |
