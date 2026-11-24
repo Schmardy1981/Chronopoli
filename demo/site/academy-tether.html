@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tether Stablecoin Infrastructure Academy (illustrative)</title>
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-secondary: #1A1A2E;
+            --bg-card: #16213E;
+            --gold: #D4AF37;
+            --gold-light: #F5D77A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --accent-blue: #3B82F6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        header { background: var(--bg-secondary); border-bottom: 2px solid var(--gold); padding: 20px 0; }
+        header h1 { font-size: 1.8rem; color: var(--gold); }
+        header p { color: var(--text-secondary); margin-top: 4px; }
+        .section { padding: 48px 0; }
+        .section h2 { font-size: 1.4rem; color: var(--gold-light); margin-bottom: 24px; border-bottom: 1px solid var(--bg-card); padding-bottom: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+        .card { background: var(--bg-card); border-radius: 12px; padding: 24px; border: 1px solid rgba(212, 175, 55, 0.15); transition: border-color 0.2s; }
+        .card:hover { border-color: var(--gold); }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .card h3 a { color: var(--text-primary); text-decoration: none; }
+        .card h3 a:hover { color: var(--gold); }
+        .card p { color: var(--text-secondary); font-size: 0.9rem; }
+        .badge-tag { display: inline-block; background: rgba(212, 175, 55, 0.2); color: var(--gold); padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; margin-top: 12px; }
+        .meta { color: var(--text-secondary); font-size: 0.8rem; margin-top: 8px; }
+    </style>
+<style id="cp-demo-min">:root {
+  /* Brand colors */
+  --cp-black:        #0A0A0F;
+  --cp-dark:         #12121A;
+  --cp-card:         #1A1A26;
+  --cp-border:       #2A2A3A;
+  --cp-white:        #FFFFFF;
+  --cp-text:         #E8E8F0;
+  --cp-muted:        #888899;
+  
+  /* Accent: Gold (Dubai feel) */
+  --cp-gold:         #C9A84C;
+  --cp-gold-light:   #F0C96B;
+  --cp-gold-dark:    #9B7A2E;
+  
+  /* Districts */
+  --district-ai:     #6C63FF;
+  --district-da:     #F59E0B;
+  --district-gov:    #10B981;
+  --district-comp:   #3B82F6;
+  --district-inv:    #EF4444;
+  --district-risk:   #8B5CF6;
+  --district-et:     #06B6D4;
+
+  /* Typography */
+  --font-heading:    'Inter', 'Segoe UI', sans-serif;
+  --font-body:       'Inter', 'Segoe UI', sans-serif;
+  --font-mono:       'JetBrains Mono', monospace;
+  
+  /* Spacing */
+  --radius-sm:       6px;
+  --radius-md:       12px;
+  --radius-lg:       20px;
+  --radius-xl:       32px;
+}
+
+
+
+.cp-header__link.is-active { position: relative; color: var(--cp-white) !important; background: var(--cpx-white-a06); }
+
+.cp-header__link.is-active .cp-header__link-icon { opacity: 1; }
+
+.cp-header__link.is-active::after {
+  content: ""; position: absolute; left: 0.75rem; right: 0.75rem; bottom: -14px; height: 2px;
+  background: var(--cp-gold); border-radius: 2px;
+}
+
+.cp-header__link--service.is-active { color: var(--cp-gold) !important; background: var(--cpx-gold-a10); }
+
+.cp-header__user-toggle.is-current, .cp-header__user-toggle.is-open { border-color: var(--cp-border); background: var(--cpx-white-a04); }
+
+.cp-header__dropdown-item.is-active { background: var(--cpx-gold-a10); color: var(--cp-gold-light); box-shadow: inset 2px 0 0 var(--cp-gold); }
+
+
+/* Illustrative demo data marker (required on every Tether-branded screen) */
+.cpx-demo-marker {
+  position: fixed; left: 18px; bottom: 18px; z-index: 9998;
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--cp-gold-light); background: color-mix(in srgb, var(--cp-black) 88%, transparent);
+  border: 1px dashed var(--cpx-gold-a35); border-radius: 100px; padding: 7px 11px;
+}
+
+.cpx-demo-marker::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--cp-gold); }
+:root{--cpx-gold-a35:color-mix(in srgb,#C9A84C 35%,transparent);--cpx-gold-a10:color-mix(in srgb,#C9A84C 10%,transparent);--cpx-white-a04:rgba(255,255,255,.04);--cpx-white-a06:rgba(255,255,255,.06)}</style><link rel="stylesheet" href="assets/demo/demo.css">
+</head>
+<body><style>header.cp-header{padding:0!important;border-bottom:1px solid #2A2A3A!important}</style>
+
+
+
+<header class="cp-header" role="banner">
+  <a class="cp-header__skip" href="#main">Skip to main content</a>
+
+  <nav class="cp-header__nav" aria-label="Main navigation">
+    <div class="cp-header__inner">
+
+      <a class="cp-header__brand" href="home.html">
+        <span class="cp-header__logo-text">
+          Chrono<span class="cp-header__logo-accent">poli</span>
+        </span>
+      </a>
+
+      <button
+        class="cp-header__mobile-toggle"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="cp-nav-menu"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line class="cp-hamburger-top" x1="3" y1="6" x2="21" y2="6"/>
+          <line class="cp-hamburger-mid" x1="3" y1="12" x2="21" y2="12"/>
+          <line class="cp-hamburger-bot" x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="cp-header__menu" id="cp-nav-menu">
+
+        <ul class="cp-header__links cp-header__links--primary">
+          <li>
+            <a href="dashboard.html" class="cp-header__link">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="catalogue.html" class="cp-header__link">
+              Courses
+            </a>
+          </li>
+          <li>
+            <a href="districts.html" class="cp-header__link is-active">
+              Districts
+            </a>
+          </li>
+        </ul>
+
+        <ul class="cp-header__links cp-header__links--services">
+          <li>
+            <a href="community.html"
+               class="cp-header__link cp-header__link--service">
+              <svg class="cp-header__link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Community
+            </a>
+          </li>
+          <li>
+            <a href="video-library.html"
+               class="cp-header__link cp-header__link--service">
+              <svg class="cp-header__link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              </svg>
+              Video Library
+            </a>
+          </li>
+        </ul>
+
+        <div class="cp-header__user">
+            <div class="cp-header__user-menu">
+              <button
+                class="cp-header__user-toggle"
+                aria-label="User menu"
+                aria-expanded="false"
+                aria-controls="cp-user-dropdown"
+              >
+                <span class="cp-header__avatar">
+                  L
+                </span>
+                <span class="cp-header__username">layla.almansoori</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              <ul class="cp-header__dropdown" id="cp-user-dropdown" role="menu">
+                <li role="none">
+                  <a href="dashboard.html" class="cp-header__dropdown-item" role="menuitem">
+                    Dashboard
+                  </a>
+                </li>
+                <li role="none">
+                  <a href="profile.html" class="cp-header__dropdown-item" role="menuitem">
+                    Profile
+                  </a>
+                </li>
+                <li role="none">
+                  <a href="account-settings.html" class="cp-header__dropdown-item" role="menuitem">
+                    Account Settings
+                  </a>
+                </li>
+                <li role="none" class="cp-header__dropdown-divider"></li>
+                <li role="none">
+                  <a href="home.html" class="cp-header__dropdown-item" role="menuitem">
+                    Sign Out
+                  </a>
+                </li>
+              </ul>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  
+  .wrapper-header { display: none !important; }
+
+  /* ── Header shell ───────────────────────────────────────────── */
+  .cp-header {
+    background-color: #0D0D0D;
+    border-bottom: 1px solid #2A2A3A;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+  }
+
+  .cp-header__skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 10000;
+    background: #C9A84C;
+    color: #0D0D0D;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .cp-header__skip:focus {
+    left: 0;
+  }
+
+  .cp-header__nav {
+    width: 100%;
+  }
+
+  .cp-header__inner {
+    display: flex;
+    align-items: center;
+    height: 64px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── Brand ──────────────────────────────────────────────────── */
+  .cp-header__brand {
+    text-decoration: none;
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+
+  .cp-header__logo-text {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #C9A84C;
+    letter-spacing: -0.02em;
+  }
+
+  .cp-header__logo-accent {
+    color: #C9A84C;
+  }
+
+  /* ── Mobile toggle ──────────────────────────────────────────── */
+  .cp-header__mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #E8E8F0;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── Menu container ─────────────────────────────────────────── */
+  .cp-header__menu {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 0.5rem;
+  }
+
+  /* ── Link lists ─────────────────────────────────────────────── */
+  .cp-header__links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+  }
+
+  .cp-header__links--primary {
+    margin-left: 1.5rem;
+  }
+
+  .cp-header__links--services {
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid #2A2A3A;
+  }
+
+  .cp-header__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: #888899;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: color 0.2s, background-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .cp-header__link:hover,
+  .cp-header__link:focus {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .cp-header__link--service {
+    color: #888899;
+  }
+
+  .cp-header__link--service:hover,
+  .cp-header__link--service:focus {
+    color: #C9A84C;
+    background-color: rgba(201, 168, 76, 0.08);
+  }
+
+  .cp-header__link-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .cp-header__link:hover .cp-header__link-icon {
+    opacity: 1;
+  }
+
+  /* ── Staff badge (Slide Builder) ────────────────────────────── */
+  .cp-header__staff-badge {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(201, 168, 76, 0.15);
+    color: #C9A84C;
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    padding: 0.1rem 0.4rem;
+    border-radius: 100px;
+    margin-left: 0.25rem;
+  }
+
+  /* ── User area ──────────────────────────────────────────────── */
+  .cp-header__user {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .cp-header__link--login {
+    color: #E8E8F0 !important;
+    font-weight: 600;
+  }
+
+  .cp-header__register-btn {
+    padding: 0.5rem 1.125rem;
+    font-size: 0.8125rem;
+    border-radius: 6px;
+  }
+
+  .cp-header__user-menu {
+    position: relative;
+  }
+
+  .cp-header__user-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1px solid transparent;
+    color: #E8E8F0;
+    cursor: pointer;
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .cp-header__user-toggle:hover,
+  .cp-header__user-toggle:focus {
+    border-color: #2A2A3A;
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .cp-header__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C9A84C, #9B7A2E);
+    color: #0D0D0D;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .cp-header__username {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ── Dropdown ───────────────────────────────────────────────── */
+  .cp-header__dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 200px;
+    background: #1A1A26;
+    border: 1px solid #2A2A3A;
+    border-radius: 8px;
+    padding: 0.375rem 0;
+    list-style: none;
+    margin: 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+  }
+
+  .cp-header__dropdown.is-open {
+    display: block;
+  }
+
+  .cp-header__dropdown-item {
+    display: block;
+    padding: 0.625rem 1rem;
+    color: #E8E8F0;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: background-color 0.15s, color 0.15s;
+  }
+
+  .cp-header__dropdown-item:hover,
+  .cp-header__dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+  }
+
+  .cp-header__dropdown-item--staff {
+    color: #C9A84C;
+  }
+
+  .cp-header__dropdown-divider {
+    height: 1px;
+    background: #2A2A3A;
+    margin: 0.375rem 0;
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────── */
+  @media (max-width: 960px) {
+    .cp-header__mobile-toggle {
+      display: block;
+    }
+
+    .cp-header__menu {
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: #0D0D0D;
+      border-bottom: 1px solid #2A2A3A;
+      padding: 1rem 1.5rem 1.5rem;
+      gap: 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .cp-header__menu.is-open {
+      display: flex;
+    }
+
+    .cp-header__links {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .cp-header__links--primary {
+      margin-left: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #2A2A3A;
+    }
+
+    .cp-header__links--services {
+      margin-left: 0;
+      padding-left: 0;
+      border-left: none;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #2A2A3A;
+    }
+
+    .cp-header__link {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .cp-header__user {
+      margin-left: 0;
+      padding-top: 0.75rem;
+      justify-content: flex-start;
+    }
+
+    .cp-header__username {
+      max-width: none;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    'use strict';
+
+    // Mobile menu toggle
+    var mobileToggle = document.querySelector('.cp-header__mobile-toggle');
+    var menu = document.getElementById('cp-nav-menu');
+
+    if (mobileToggle && menu) {
+      mobileToggle.addEventListener('click', function() {
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        menu.classList.toggle('is-open');
+      });
+    }
+
+    // User dropdown toggle
+    var userToggle = document.querySelector('.cp-header__user-toggle');
+    var dropdown = document.getElementById('cp-user-dropdown');
+
+    if (userToggle && dropdown) {
+      userToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        dropdown.classList.toggle('is-open');
+      });
+
+      // Close dropdown on outside click
+      document.addEventListener('click', function(e) {
+        if (dropdown.classList.contains('is-open') && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('is-open');
+          userToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Close dropdown on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && dropdown.classList.contains('is-open')) {
+          dropdown.classList.remove('is-open');
+          userToggle.setAttribute('aria-expanded', 'false');
+          userToggle.focus();
+        }
+      });
+    }
+
+    // Highlight current nav link
+    var currentPath = window.location.pathname;
+    var navLinks = document.querySelectorAll('.cp-header__links--primary .cp-header__link');
+    for (var i = 0; i < navLinks.length; i++) {
+      var href = navLinks[i].getAttribute('href');
+      if (currentPath === href || (href !== '/' && currentPath.indexOf(href) === 0)) {
+        navLinks[i].style.color = '#FFFFFF';
+      }
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="assets/theme/ai-tutor-widget.css" />
+<script src="assets/theme/ai-tutor-widget.js" defer></script>
+
+
+    <header>
+        <div class="container">
+            <h1>Tether Stablecoin Infrastructure Academy (illustrative)</h1>
+            <p>Powered by Chronopoli &mdash; Target partner · Illustrative demo</p>
+        </div>
+    </header>
+
+    <main id="main" class="container">
+        <section class="section">
+            <h2>Learning Pathways</h2>
+            
+            <div class="grid">
+                
+                <div class="card">
+                    <h3><a href="academy-tether.html" data-cpxd-msg="The demo includes one pathway: Stablecoin Payments &amp; Treasury Specialist." data-cpxd-ex="pathway-treasury-specialist.html" data-cpxd-exl="Open the pathway">Stablecoin Foundations</a></h3>
+                    <p>Start here. Understand how a fiat-backed stablecoin is issued, redeemed and moved across networks, and earn the Stablecoin Foundations badge.</p>
+                    <span class="badge-tag">Entry</span>
+                    <span class="badge-tag">Digital Assets</span>
+                    <div class="meta">10h &middot; 2 courses</div>
+                </div>
+                
+                <div class="card">
+                    <h3><a href="pathway-treasury-specialist.html">Stablecoin Payments &amp; Treasury Specialist</a></h3>
+                    <p>For treasury, payments and settlement teams: run stablecoin liquidity, payouts and reconciliation with bank-grade controls.</p>
+                    <span class="badge-tag">Professional</span>
+                    <span class="badge-tag">Digital Assets</span>
+                    <div class="meta">28h &middot; 4 courses</div>
+                </div>
+                
+                <div class="card">
+                    <h3><a href="academy-tether.html" data-cpxd-msg="The demo includes one pathway: Stablecoin Payments &amp; Treasury Specialist." data-cpxd-ex="pathway-treasury-specialist.html" data-cpxd-exl="Open the pathway">Stablecoin Compliance Professional</a></h3>
+                    <p>Risk-based AML/CFT for stablecoin businesses, from Travel Rule data exchange to reserve-risk disclosures.</p>
+                    <span class="badge-tag">Professional</span>
+                    <span class="badge-tag">Compliance</span>
+                    <div class="meta">33h &middot; 3 courses</div>
+                </div>
+                
+                <div class="card">
+                    <h3><a href="academy-tether.html" data-cpxd-msg="The demo includes one pathway: Stablecoin Payments &amp; Treasury Specialist." data-cpxd-ex="pathway-treasury-specialist.html" data-cpxd-exl="Open the pathway">Stablecoin Investigator</a></h3>
+                    <p>For investigators and financial intelligence analysts: trace stablecoin flows, prepare freezing requests and build court-ready evidence.</p>
+                    <span class="badge-tag">Advanced</span>
+                    <span class="badge-tag">Investigation</span>
+                    <div class="meta">47h &middot; 3 courses</div>
+                </div>
+                
+                <div class="card">
+                    <h3><a href="academy-tether.html" data-cpxd-msg="The demo includes one pathway: Stablecoin Payments &amp; Treasury Specialist." data-cpxd-ex="pathway-treasury-specialist.html" data-cpxd-exl="Open the pathway">Stablecoin Policy Practitioner</a></h3>
+                    <p>For supervisors and policy teams designing stablecoin rules, licensing and cross-border coordination.</p>
+                    <span class="badge-tag">Advanced</span>
+                    <span class="badge-tag">Governance</span>
+                    <div class="meta">35h &middot; 3 courses</div>
+                </div>
+                
+                <div class="card">
+                    <h3><a href="academy-tether.html" data-cpxd-msg="The demo includes one pathway: Stablecoin Payments &amp; Treasury Specialist." data-cpxd-ex="pathway-treasury-specialist.html" data-cpxd-exl="Open the pathway">Stablecoin Executive Fellow</a></h3>
+                    <p>Live five-day cohort for executives setting stablecoin strategy and governance.</p>
+                    <span class="badge-tag">Advanced</span>
+                    <span class="badge-tag">Digital Assets</span>
+                    <div class="meta">40h &middot; 2 courses</div>
+                </div>
+                
+            </div>
+            
+        </section>
+
+        <section class="section">
+            <h2>Open Positions</h2>
+            
+            <div class="grid">
+                
+                <div class="card">
+                    <h3><a href="job-apply.html">Stablecoin Partnerships Manager, MENA</a></h3>
+                    <p>Tether (illustrative demo) &middot; Dubai, UAE · Hybrid</p>
+                    <div class="meta">Posted 3 days ago</div>
+                </div>
+                
+                <div class="card">
+                    <h3><a href="jobs.html">Stablecoin Treasury Analyst</a></h3>
+                    <p>Tether (illustrative demo) &middot; Dubai, UAE · Hybrid</p>
+                    <div class="meta">Posted 1 week ago</div>
+                </div>
+                
+            </div>
+            
+        </section>
+    </main>
+<div class="cpx-demo-marker">Illustrative demo data</div>
+<script>
+window.addEventListener('load', function(){
+  try { if (window.CPX_TUTOR) window.CPX_TUTOR(); } catch (e) { console.error(e); }
+  try { if (window.CPX_STATE) window.CPX_STATE(); } catch (e) { console.error(e); }
+  document.documentElement.setAttribute('data-cp-ready', '1');
+});
+</script>
+<script>window.CPXD_SLUG = "academy-tether";</script>
+<script src="assets/demo/pagemap.js"></script>
+<script src="assets/demo/rules.js"></script>
+<script src="assets/demo/tutor-kb.js"></script>
+<script src="assets/demo/demo.js"></script>
+<script id="cpxw-wire">
+/* In-page interactions for this window (clickable demo). Runs before the demo layer's own click rules. */
+(function () {
+  'use strict';
+  var NW = 'Demo: not wired in this preview.';
+  var SKIP = '.cp-header, #cp-tutor-widget, .cpxd-nav, .cpxd-map, .cpxd-toast';
+  var ACTS = [], LIVE = [], toasted = {};
+
+  function norm(s) { return String(s || '').replace(/\s+/g, ' ').replace(/[\s→↓↑↗›»]+$/, '').trim(); }
+  function txt(el) { return norm(el.innerText || el.textContent); }
+  function match(el, m) {
+    if (m == null) return true;
+    if (typeof m === 'string') m = { t: m };
+    if (m['in'] && !el.closest(m['in'])) return false;
+    if (m.t == null && m.p == null && m.has == null && m.re == null) return true;
+    var s = txt(el);
+    if (m.t != null && s !== m.t) return false;
+    if (m.p != null && s.indexOf(m.p) !== 0) return false;
+    if (m.has != null && s.indexOf(m.has) < 0) return false;
+    if (m.re != null && !(new RegExp(m.re)).test(s)) return false;
+    return true;
+  }
+  function all(sel, root) { try { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); } catch (e) { return []; } }
+  function one(sel, m) { return all(sel).filter(function (el) { return match(el, m); })[0] || null; }
+
+  /* bind(sel, match, action[, opts]) - action: 'file.html' | {go} | {toast, ex, exl} | {tutor} | {scroll} | function(el, e) | 'noop' */
+  function bind(sel, m, action, opts) {
+    opts = opts || {};
+    var hits = all(sel).filter(function (el) { return !el.closest(SKIP) && match(el, m); });
+    if (opts.inner !== false) hits = hits.filter(function (el) { return !hits.some(function (o) { return o !== el && el.contains(o); }); });
+    if (m && m.nth != null) hits = hits.slice(m.nth, m.nth + 1);
+    hits.forEach(function (el) { attach(el, action, opts); });
+    return hits;
+  }
+  function attach(el, action, opts) {
+    if (!el || el.hasAttribute('data-cpxw') || el.closest(SKIP)) return; // first binding wins
+    el.setAttribute('data-cpxw', String(ACTS.length));
+    if (!opts || opts.hot !== false) el.classList.add('cpxd-hot');
+    ACTS.push(action);
+  }
+  function bindEls(els, action, opts) { (els || []).forEach(function (el) { attach(el, action, opts || {}); }); }
+  /* rules evaluated at click time, for content that is rendered later (AI Tutor replay) */
+  function live(sel, m, action) { LIVE.push({ s: sel, m: m, a: action }); }
+
+  function toast(msg, href, label) {
+    var a = document.createElement('a');
+    a.setAttribute('data-cpxd-msg', msg);
+    if (href) { a.setAttribute('data-cpxd-ex', href); a.setAttribute('data-cpxd-exl', label || 'Open'); }
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.parentNode.removeChild(a);
+  }
+  function once(key, msg, href, label) { if (toasted[key]) return; toasted[key] = 1; toast(msg, href, label); }
+  function go(href) { if (href) window.location.href = href; }
+  function flash(el, noScroll) {
+    if (!el) return;
+    if (!noScroll) { try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { el.scrollIntoView(); } }
+    el.classList.remove('cpxw-flash'); void el.offsetWidth; el.classList.add('cpxw-flash');
+    setTimeout(function () { el.classList.remove('cpxw-flash'); }, 1700);
+  }
+  function card(titleHas, sel) {
+    var t = one((sel || '.cpx-card__title'), { has: titleHas });
+    return t ? (t.closest('.cpx-card') || t) : null;
+  }
+  function activate(el, groupSel, cls) {
+    cls = cls || 'is-active';
+    var p = el.parentNode;
+    all(groupSel || ':scope > *', p).forEach(function (s) { s.classList.remove(cls); });
+    el.classList.add(cls);
+  }
+  function tutor(q) {
+    var w = document.getElementById('cp-tutor-widget');
+    if (!w) { toast('The AI Tutor opens from the gold button at the bottom right.'); return; }
+    w.style.setProperty('display', 'block', 'important');
+    var panel = document.getElementById('cp-tutor-panel'), tg = document.getElementById('cp-tutor-toggle');
+    if (panel && panel.classList.contains('cp-tutor-hidden') && tg) tg.click();
+    var input = document.getElementById('cp-tutor-input');
+    if (input) { if (q) input.value = q; try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); } }
+  }
+
+  function run(a, el, e) {
+    if (!a || a === 'noop') return;
+    if (typeof a === 'function') { a(el, e); return; }
+    if (typeof a === 'string') { go(a); return; }
+    if (a.go) { go(a.go); return; }
+    if (a.toast) { toast(a.toast, a.ex, a.exl); return; }
+    if (a.nw) { toast(typeof a.nw === 'string' ? a.nw : NW, a.ex, a.exl); return; }
+    if (a.tutor != null) { tutor(a.tutor || ''); return; }
+    if (a.scroll) { var t = typeof a.scroll === 'function' ? a.scroll() : document.querySelector(a.scroll); flash(t); if (a.then) a.then(el); return; }
+  }
+
+  window.addEventListener('click', function (e) {
+    if (e.button !== 0 || e.defaultPrevented) return;
+    var t = e.target;
+    if (!t || !t.closest || t.closest('.cpxd-nav, .cpxd-map, .cpxd-toast')) return;
+    var hit = null, act = null;
+    for (var i = 0; i < LIVE.length && !hit; i++) {
+      var c = t.closest(LIVE[i].s);
+      if (c && match(c, LIVE[i].m)) { hit = c; act = LIVE[i].a; }
+    }
+    if (!hit) {
+      hit = t.closest('[data-cpxw]');
+      if (!hit || hit.closest(SKIP)) return;
+      var inner = t.closest('[data-cpxd-r], [data-cpxd-msg], a[href]');
+      if (inner && inner !== hit && hit.contains(inner)) return; // a deeper demo rule or real link wins
+      act = ACTS[+hit.getAttribute('data-cpxw')];
+    }
+    e.preventDefault(); e.stopPropagation();
+    run(act, hit, e);
+  }, true);
+
+  var css = document.createElement('style');
+  css.id = 'cpxw-style';
+  css.textContent = '.cpxw-flash{outline:2px solid rgba(226,200,120,.95)!important;outline-offset:3px;border-radius:inherit;transition:outline-color .4s}'
+    + '.cpxw-dim{opacity:.28!important;filter:saturate(.4);transition:opacity .25s,filter .25s}'
+    + '.cpxw-hide{display:none!important}';
+  document.head.appendChild(css);
+
+  var W = { NW: NW, bind: bind, els: bindEls, live: live, toast: toast, once: once, go: go, flash: flash, card: card, one: one, all: all,
+    activate: activate, tutor: tutor, txt: txt, nw: function (msg, ex, exl) { return { nw: msg || true, ex: ex, exl: exl }; } };
+
+  (function () {
+    W.bind('.card h3 a', 'Stablecoin Foundations', W.nw('You completed this pathway and earned its badge on 14 Oct.', 'badge-stablecoin-foundations.html', 'Open the badge'));
+    W.bind('.card h3 a', 'Stablecoin Partnerships Manager, MENA', 'job-apply.html');
+    W.bind('.card h3 a', 'Stablecoin Treasury Analyst', 'jobs.html');
+  })();
+})();
+</script>
+</body>
+</html>

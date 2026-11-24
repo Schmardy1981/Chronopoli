@@ -1,0 +1,127 @@
+/* Chronopoli clickable demo: navigator, map, toasts, hotspots. Everything is prefixed cpxd- */
+:root {
+  --cpxd-gold: #C9A84C;
+  --cpxd-gold-2: #E2C878;
+  --cpxd-ink: #0D0D0D;
+  --cpxd-panel: rgba(16, 16, 24, 0.94);
+  --cpxd-line: rgba(201, 168, 76, 0.38);
+  --cpxd-text: #E8E8F0;
+  --cpxd-muted: #9A9AB0;
+  --cpxd-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* keeps the end of every page reachable above the navigator (positioned by demo.js) */
+.cpxd-spacer { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; visibility: hidden; }
+
+/* the account menu opens above an open AI Tutor panel (both used z-index 9999, so the panel hid "Sign Out") */
+.cp-header { z-index: 10000 !important; }
+
+/* AI Tutor panel: never taller/wider than the window (some states were sized for a 1000px screenshot) */
+#cp-tutor-panel { max-height: calc(100vh - 96px) !important; max-width: calc(100vw - 48px) !important; }
+
+/* ---------------- navigator ---------------- */
+.cpxd-nav {
+  position: fixed; left: 0; right: 0; bottom: 14px; margin: 0 auto; z-index: 2147483000;
+  width: -webkit-max-content; width: max-content; max-width: min(900px, calc(100vw - 24px));
+  display: flex; align-items: center; gap: 2px;
+  padding: 5px; border-radius: 999px; background: var(--cpxd-panel);
+  border: 1px solid var(--cpxd-line); box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  font: 500 12.5px/1 var(--cpxd-font); color: var(--cpxd-text); letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+.cpxd-nav * { box-sizing: border-box; font-family: inherit; }
+.cpxd-nav.is-left { right: auto; margin: 0; left: 12px; }
+.cpxd-nav button, .cpxd-nav a {
+  all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 11px; border-radius: 999px; color: var(--cpxd-text); white-space: nowrap;
+  font: 600 12.5px/1 var(--cpxd-font);
+}
+.cpxd-nav button:hover, .cpxd-nav a:hover { background: rgba(201, 168, 76, 0.14); color: #fff; }
+.cpxd-nav button:focus-visible, .cpxd-nav a:focus-visible { outline: 2px solid var(--cpxd-gold); outline-offset: 1px; }
+.cpxd-nav .cpxd-next { background: var(--cpxd-gold); color: var(--cpxd-ink); }
+.cpxd-nav .cpxd-next:hover { background: var(--cpxd-gold-2); color: var(--cpxd-ink); }
+.cpxd-nav .is-disabled { opacity: .35; pointer-events: none; }
+.cpxd-count { font: 700 12px/1 var(--cpxd-font); color: var(--cpxd-gold); padding: 0 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cpxd-where { display: flex; flex-direction: column; justify-content: center; gap: 3px; min-width: 0; padding: 0 8px; max-width: 360px; flex: 0 1 auto; }
+.cpxd-where b { font: 600 12.5px/1.15 var(--cpxd-font); color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cpxd-where span { font: 500 10.5px/1.1 var(--cpxd-font); color: var(--cpxd-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: .01em; }
+.cpxd-sep { width: 1px; height: 20px; background: rgba(255, 255, 255, 0.12); margin: 0 3px; flex: none; }
+.cpxd-persona { display: inline-flex; align-items: center; gap: 7px; padding: 0 10px 0 4px; height: 30px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); white-space: nowrap; max-width: 230px; }
+.cpxd-persona i { font-style: normal; flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #C9A84C, #8E6E25); color: #0D0D0D; font: 800 9.5px/1 var(--cpxd-font); }
+.cpxd-persona i.is-visitor { background: #2A2A3A; color: #C9C9D6; }
+.cpxd-persona span { overflow: hidden; text-overflow: ellipsis; font: 600 11.5px/1 var(--cpxd-font); color: #DADAE6; }
+.cpxd-persona em { font-style: normal; color: var(--cpxd-muted); font-weight: 500; }
+.cpxd-kind { flex: none; font: 700 9px/1 var(--cpxd-font); letter-spacing: .08em; text-transform: uppercase; padding: 4px 6px; border-radius: 4px; margin-left: 2px; }
+.cpxd-kind.is-built { color: #0D0D0D; background: #6FCF97; }
+.cpxd-kind.is-preview { color: var(--cpxd-gold-2); border: 1px dashed var(--cpxd-line); }
+.cpxd-nav .cpxd-icon { width: 30px; padding: 0; justify-content: center; color: var(--cpxd-muted); }
+.cpxd-nav svg { width: 14px; height: 14px; flex: none; }
+
+/* collapsed pill */
+.cpxd-nav.is-collapsed { padding: 4px; gap: 0; }
+.cpxd-nav.is-collapsed > :not(.cpxd-pill) { display: none !important; }
+.cpxd-pill { display: none !important; }
+.cpxd-nav.is-collapsed .cpxd-pill { display: inline-flex !important; color: var(--cpxd-gold); }
+.cpxd-pill b { color: #fff; font-weight: 600; }
+
+/* next to an open AI Tutor panel */
+.cpxd-nav.is-compact .cpxd-where, .cpxd-nav.is-compact .cpxd-kind, .cpxd-nav.is-compact .cpxd-persona span { display: none; }
+.cpxd-nav.is-compact .cpxd-persona { padding: 0 4px; }
+
+/* narrow windows: drop the path line and the persona text */
+@media (max-width: 1180px) { .cpxd-where span, .cpxd-persona span { display: none; } .cpxd-persona { padding: 0 4px; } }
+@media (max-width: 900px) { .cpxd-where { display: none; } .cpxd-kind { display: none; } }
+
+/* ---------------- toast ---------------- */
+.cpxd-toast {
+  position: fixed; left: 50%; bottom: 66px; transform: translate(-50%, 12px); z-index: 2147483001; opacity: 0; pointer-events: none;
+  display: flex; align-items: center; gap: 12px; max-width: min(560px, calc(100vw - 32px));
+  padding: 10px 12px 10px 14px; border-radius: 12px; background: var(--cpxd-panel); border: 1px solid var(--cpxd-line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5); color: var(--cpxd-text); font: 500 13px/1.4 var(--cpxd-font);
+  transition: opacity .18s ease, transform .18s ease;
+}
+.cpxd-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+.cpxd-toast.is-on a { pointer-events: auto; }
+.cpxd-toast::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--cpxd-gold); }
+.cpxd-toast a { all: unset; cursor: pointer; flex: none; padding: 6px 10px; border-radius: 8px; background: var(--cpxd-gold); color: #0D0D0D; font: 700 12px/1 var(--cpxd-font); white-space: nowrap; }
+.cpxd-toast a:hover { background: var(--cpxd-gold-2); }
+
+/* ---------------- hotspots ---------------- */
+.cpxd-hot { cursor: pointer !important; }
+html.cpxd-show-hot .cpxd-hot { outline: 2px dashed rgba(226, 200, 120, 0.95) !important; outline-offset: 2px; animation: cpxd-pulse 1.4s ease-in-out infinite; }
+@keyframes cpxd-pulse { 50% { outline-color: rgba(226, 200, 120, 0.35); } }
+
+/* ---------------- map overlay ---------------- */
+.cpxd-map { position: fixed; inset: 0; z-index: 2147483002; display: none; background: rgba(5, 5, 9, 0.72);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); font-family: var(--cpxd-font); -webkit-font-smoothing: antialiased; }
+.cpxd-map.is-open { display: flex; align-items: flex-start; justify-content: center; padding: 4vh 16px; }
+.cpxd-map__box { width: min(1180px, 100%); max-height: 92vh; display: flex; flex-direction: column; border-radius: 18px;
+  background: #101018; border: 1px solid var(--cpxd-line); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); overflow: hidden; }
+.cpxd-map__head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.cpxd-map__head h2 { margin: 0; font: 800 18px/1.2 var(--cpxd-font); color: #fff; letter-spacing: -0.01em; }
+.cpxd-map__head h2 span { color: var(--cpxd-gold); }
+.cpxd-map__head p { margin: 2px 0 0; font: 500 12px/1.3 var(--cpxd-font); color: var(--cpxd-muted); }
+.cpxd-map__head .cpxd-grow { flex: 1; min-width: 0; }
+.cpxd-map__btn { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.14); color: var(--cpxd-text); font: 600 12.5px/1 var(--cpxd-font); white-space: nowrap; }
+.cpxd-map__btn:hover { border-color: var(--cpxd-gold); color: #fff; }
+.cpxd-map__btn.is-on { background: rgba(201, 168, 76, 0.16); border-color: var(--cpxd-gold); color: var(--cpxd-gold-2); }
+.cpxd-map__btn--gold { background: var(--cpxd-gold); border-color: var(--cpxd-gold); color: #0D0D0D; }
+.cpxd-map__btn--gold:hover { background: var(--cpxd-gold-2); color: #0D0D0D; }
+.cpxd-map__body { overflow: auto; padding: 18px 20px 22px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px 22px; }
+.cpxd-map__ch h3 { margin: 0 0 8px; display: flex; align-items: baseline; gap: 8px; font: 700 11px/1.2 var(--cpxd-font); letter-spacing: .09em; text-transform: uppercase; color: var(--cpxd-gold); }
+.cpxd-map__ch h3 em { font-style: normal; color: var(--cpxd-muted); font-weight: 600; letter-spacing: .04em; }
+.cpxd-map__ch ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.cpxd-map__ch a { all: unset; cursor: pointer; display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; color: #D7D7E3; font: 500 12.5px/1.3 var(--cpxd-font); }
+.cpxd-map__ch a:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+.cpxd-map__ch a.is-current { background: rgba(201, 168, 76, 0.16); color: #fff; box-shadow: inset 2px 0 0 var(--cpxd-gold); }
+.cpxd-map__ch a b { flex: none; width: 22px; text-align: right; font: 700 11px/1 var(--cpxd-font); color: var(--cpxd-muted); font-variant-numeric: tabular-nums; }
+.cpxd-map__ch a span { flex: 1; min-width: 0; }
+.cpxd-map__ch a i { flex: none; font-style: normal; font: 700 8.5px/1 var(--cpxd-font); letter-spacing: .07em; padding: 3px 4px; border-radius: 3px; }
+.cpxd-map__ch a i.is-built { background: #6FCF97; color: #0D0D0D; }
+.cpxd-map__ch a i.is-preview { color: var(--cpxd-gold-2); border: 1px dashed var(--cpxd-line); }
+.cpxd-map__foot { padding: 10px 20px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--cpxd-muted); font: 500 11.5px/1.4 var(--cpxd-font); }
+.cpxd-map__foot kbd { display: inline-block; min-width: 18px; padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font: 600 11px/1.2 var(--cpxd-font); text-align: center; }

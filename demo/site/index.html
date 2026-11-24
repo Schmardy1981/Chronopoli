@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronopoli Clickable Demo</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+:root {
+  --gold: #C9A84C; --gold-2: #E2C878; --gold-a: rgba(201,168,76,.38); --ink: #0D0D0D; --bg: #0B0B10; --panel: #12121A;
+  --panel-2: #171722; --line: #262636; --text: #E8E8F0; --muted: #9A9AB0; --dim: #6E6E86; --green: #6FCF97;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 15px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.ix-wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+.ix-top { position: sticky; top: 0; z-index: 10; background: rgba(13,13,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.ix-top .ix-wrap { display: flex; align-items: center; gap: 14px; height: 60px; }
+.ix-logo { font: 800 21px/1 var(--font); color: var(--gold); letter-spacing: -.02em; text-decoration: none; }
+.ix-tag { font: 600 11px/1 var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; }
+.ix-grow { flex: 1; min-width: 0; }
+.ix-chip { display: inline-flex; align-items: center; gap: 7px; font: 600 10.5px/1 var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--gold-2);
+  border: 1px dashed var(--gold-a); border-radius: 999px; padding: 7px 11px; white-space: nowrap; }
+.ix-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.ix-btn { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 26px; border-radius: 12px; font: 700 16px/1 var(--font); text-decoration: none; white-space: nowrap; }
+.ix-btn--gold { background: linear-gradient(135deg, #D8B95C, #B08D35); color: var(--ink); box-shadow: 0 10px 30px rgba(201,168,76,.25); }
+.ix-btn--gold:hover { background: linear-gradient(135deg, #E6C870, #C29C3E); }
+.ix-btn--ghost { border: 1px solid #34344A; color: var(--text); }
+.ix-btn--ghost:hover { border-color: var(--gold); }
+.ix-btn svg { width: 18px; height: 18px; }
+.ix-btn--sm { height: 40px; padding: 0 16px; font-size: 14px; border-radius: 10px; }
+
+/* hero */
+.ix-hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line);
+  background: radial-gradient(900px 420px at 85% 10%, rgba(201,168,76,.13), transparent 70%), radial-gradient(700px 400px at 0% 100%, rgba(108,99,255,.10), transparent 70%); }
+.ix-hero .ix-wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 48px; align-items: center; padding-top: 64px; padding-bottom: 64px; }
+.ix-eyebrow { font: 700 12px/1 var(--font); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 0 0 18px; }
+.ix-hero h1 { margin: 0; font: 800 clamp(36px, 5.2vw, 60px)/1.04 var(--font); letter-spacing: -.035em; color: #fff; }
+.ix-hero h1 span { color: var(--gold); }
+.ix-lead { margin: 20px 0 0; font-size: 18px; line-height: 1.6; color: #C9C9D8; max-width: 560px; }
+.ix-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.ix-resume { margin-top: 14px; font-size: 13.5px; color: var(--muted); min-height: 20px; }
+.ix-resume a { color: var(--gold-2); font-weight: 600; text-decoration: none; }
+.ix-resume a:hover { text-decoration: underline; }
+.ix-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
+.ix-stats b { display: block; font: 800 26px/1 var(--font); color: #fff; letter-spacing: -.02em; }
+.ix-stats span { display: block; margin-top: 6px; font: 500 12px/1.2 var(--font); color: var(--muted); }
+.ix-stack { position: relative; aspect-ratio: 16 / 11.5; }
+.ix-stack img { position: absolute; width: 74%; border-radius: 12px; border: 1px solid #33334A; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+.ix-stack img:nth-child(1) { left: 0; top: 0; opacity: .75; }
+.ix-stack img:nth-child(2) { right: 0; top: 16%; opacity: .9; }
+.ix-stack img:nth-child(3) { left: 12%; bottom: 0; border-color: var(--gold-a); box-shadow: 0 30px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(201,168,76,.25); }
+
+/* sections */
+.ix-sec { padding: 56px 0 8px; }
+.ix-sec > .ix-wrap > h2 { margin: 0 0 6px; font: 800 26px/1.2 var(--font); letter-spacing: -.02em; color: #fff; }
+.ix-sub { margin: 0 0 24px; color: var(--muted); font-size: 15px; }
+.ix-how { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ix-box { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+.ix-box h3 { margin: 0 0 8px; display: flex; align-items: center; gap: 10px; font: 700 15px/1.3 var(--font); color: #fff; }
+.ix-box h3 i { font-style: normal; width: 26px; height: 26px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(201,168,76,.14); color: var(--gold); font: 800 12px/1 var(--font); }
+.ix-box p { margin: 0; color: #B9B9CA; font-size: 14px; line-height: 1.55; }
+.ix-keys { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: center; font-size: 13.5px; color: #B9B9CA; }
+kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 24px; padding: 0 6px; border-radius: 6px; border: 1px solid #3A3A52;
+  border-bottom-width: 2px; background: #1B1B27; color: #fff; font: 600 12px/1 var(--font); }
+.ix-mock { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; padding: 5px 6px 5px 10px; border-radius: 999px; background: rgba(16,16,24,.94);
+  border: 1px solid var(--gold-a); font: 600 11.5px/1 var(--font); color: var(--text); flex-wrap: wrap; }
+.ix-mock b { color: var(--gold); }
+.ix-mock em { font-style: normal; background: var(--gold); color: var(--ink); padding: 6px 10px; border-radius: 999px; }
+.ix-personas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ix-persona { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.ix-persona__top { display: flex; align-items: center; gap: 12px; }
+.ix-persona__top > div { flex: 1; min-width: 0; }
+.ix-persona h3 { margin: 0; font: 700 15px/1.25 var(--font); color: #fff; }
+.ix-role { margin: 3px 0 0; font: 500 12px/1.3 var(--font); color: var(--gold-2); }
+.ix-persona > p { margin: 0; color: #B9B9CA; font-size: 13.5px; line-height: 1.55; }
+.ix-av { flex: none; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #C9A84C, #8E6E25); color: var(--ink); font: 800 13px/1 var(--font); }
+.ix-av.is-visitor { background: #2A2A3A; color: #C9C9D6; }
+.ix-count { align-self: flex-start; margin-top: auto; font: 600 11px/1 var(--font); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; }
+.ix-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ix-legend .ix-box { display: flex; gap: 14px; align-items: flex-start; }
+.ix-kind { display: inline-flex; align-items: center; font: 700 10px/1 var(--font); letter-spacing: .08em; text-transform: uppercase; padding: 5px 7px; border-radius: 5px; white-space: nowrap; }
+.ix-kind.is-built { background: var(--green); color: var(--ink); }
+.ix-kind.is-preview { color: var(--gold-2); background: rgba(13,13,13,.85); border: 1px dashed var(--gold-a); }
+.ix-legend .ix-kind { margin-top: 2px; flex: none; }
+
+/* map */
+.ix-jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.ix-jump a { text-decoration: none; font: 600 12.5px/1 var(--font); color: #CFCFDC; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; background: var(--panel); }
+.ix-jump a:hover { border-color: var(--gold); color: #fff; }
+.ix-ch { padding: 30px 0 6px; scroll-margin-top: 70px; }
+.ix-ch__head { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.ix-ch__n { font: 800 28px/1 var(--font); color: var(--gold); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ix-ch__head h3 { margin: 0; font: 700 19px/1.2 var(--font); color: #fff; }
+.ix-ch__head p { margin: 4px 0 0; font: 500 12.5px/1.3 var(--font); color: var(--muted); }
+.ix-ch__count { font: 600 12px/1 var(--font); color: var(--muted); white-space: nowrap; }
+.ix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(236px, 1fr)); gap: 16px; }
+.ix-card { display: flex; flex-direction: column; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+.ix-card:hover { border-color: var(--gold-a); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.45); }
+.ix-card__img { position: relative; display: block; aspect-ratio: 16 / 10; background: #0F0F16; border-bottom: 1px solid var(--line); }
+.ix-card__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ix-card__img .ix-kind { position: absolute; left: 8px; top: 8px; }
+.ix-num { position: absolute; right: 8px; top: 8px; min-width: 26px; height: 22px; padding: 0 6px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(13,13,13,.85); border: 1px solid #3A3A52; color: #fff; font: 700 11px/1 var(--font); font-variant-numeric: tabular-nums; }
+.ix-card__body { display: flex; flex-direction: column; gap: 6px; padding: 12px 13px 13px; flex: 1; }
+.ix-card__path { font: 600 10.5px/1.35 var(--font); letter-spacing: .02em; color: var(--gold); }
+.ix-card__title { font: 600 14px/1.35 var(--font); color: #F2F2F8; }
+.ix-card__who { margin-top: auto; padding-top: 4px; display: inline-flex; align-items: center; gap: 7px; font: 500 12px/1 var(--font); color: var(--muted); }
+.ix-card__who i { font-style: normal; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #C9A84C, #8E6E25); color: var(--ink); font: 800 8.5px/1 var(--font); }
+.ix-card__who i.is-visitor { background: #2A2A3A; color: #C9C9D6; }
+.ix-foot { margin-top: 56px; border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 13px; }
+.ix-foot .ix-wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; }
+.ix-foot strong { color: var(--gold-2); font-weight: 600; }
+
+@media (max-width: 1020px) {
+  .ix-hero .ix-wrap { grid-template-columns: 1fr; padding-top: 44px; padding-bottom: 44px; }
+  .ix-stack { max-width: 620px; }
+  .ix-how, .ix-personas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .ix-wrap { padding: 0 16px; }
+  .ix-top .ix-tag, .ix-top .ix-chip { display: none; }
+  .ix-how, .ix-personas, .ix-legend { grid-template-columns: 1fr; }
+  .ix-ch__head { flex-wrap: wrap; }
+  .ix-btn { height: 48px; padding: 0 20px; font-size: 15px; }
+  .ix-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="ix-top"><div class="ix-wrap">
+  <a class="ix-logo" href="index.html">Chronopoli</a><span class="ix-tag">Clickable Demo</span>
+  <span class="ix-grow"></span><span class="ix-chip">Illustrative demo data</span>
+  <a class="ix-btn ix-btn--gold ix-btn--sm" href="home.html">Start the tour</a>
+</div></div>
+
+<section class="ix-hero"><div class="ix-wrap">
+  <div>
+    <p class="ix-eyebrow">Clickable product demo · works offline</p>
+    <h1>Chronopoli <span>—</span> Clickable&nbsp;Demo</h1>
+    <p class="ix-lead">Walk through 58 windows of the Global Knowledge City, hosted by Dubai Blockchain Center, as a visitor,
+      a learner, a team admin, a partner admin and a staff member. Menus, buttons and the AI Tutor respond like a real product,
+      straight from this folder, with no internet connection.</p>
+    <div class="ix-ctas">
+      <a class="ix-btn ix-btn--gold" href="home.html">Start the tour
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="ix-btn ix-btn--ghost" href="#map">Browse all windows</a>
+    </div>
+    <p class="ix-resume" id="ix-resume"></p>
+    <div class="ix-stats">
+      <div><b>58</b><span>windows in tour order</span></div>
+      <div><b>10</b><span>chapters</span></div>
+      <div><b>4</b><span>points of view</span></div>
+      <div><b>11</b><span>built screens</span></div>
+      <div><b>47</b><span>design previews</span></div>
+    </div>
+  </div>
+  <div class="ix-stack" aria-hidden="true">
+    <img src="assets/thumbs/home.jpg" alt=""><img src="assets/thumbs/course-player.jpg" alt=""><img src="assets/thumbs/dashboard.jpg" alt="">
+  </div>
+</div></section>
+
+<section class="ix-sec"><div class="ix-wrap">
+  <h2>How to use the demo</h2>
+  <p class="ix-sub">Keep the unzipped folder together and open <b>index.html</b> in any current web browser. Nothing needs to be installed.
+    The windows are designed for a 1600&nbsp;px wide screen; on a smaller screen they are scaled to fit.</p>
+  <div class="ix-how">
+    <div class="ix-box"><h3><i>1</i>Start</h3><p>Press <b>Start the tour</b> or open any window below. Then click around as in a real product:
+      the top menu (Dashboard, Courses, Districts, Community, Video Library) and the account menu at the top right all lead somewhere.</p></div>
+    <div class="ix-box"><h3><i>2</i>Navigator</h3><p>The bar at the bottom shows window <b>n / 58</b>, the menu path and title, and who is signed in.
+      <b>Prev</b> and <b>Next</b> follow the story; <b>Map</b> lists every window. Collapse it to a small pill with the minus button.</p>
+      <span class="ix-mock">‹ Prev <b>12 / 58</b> Courses › Course page <em>Next ›</em> ☰ Map</span></div>
+    <div class="ix-box"><h3><i>3</i>Keyboard</h3><div class="ix-keys">
+      <span><kbd>←</kbd> <kbd>→</kbd></span><span>previous / next window</span>
+      <span><kbd>M</kbd></span><span>open the map of all windows</span>
+      <span><kbd>H</kbd></span><span>highlight what you can click</span>
+      <span><kbd>F</kbd></span><span>fit windows to the browser width (on by default)</span>
+      <span><kbd>Esc</kbd></span><span>close the map</span></div></div>
+    <div class="ix-box"><h3><i>4</i>AI Tutor</h3><p>Open the gold AI Tutor button, type a question and press Enter. The answer streams in with its sources,
+      offline, from a small sample of course material. Try “How should I size an intraday liquidity buffer?”</p></div>
+  </div>
+</div></section>
+
+<section class="ix-sec"><div class="ix-wrap">
+  <h2>Who is signed in</h2>
+  <p class="ix-sub">Each window is seen through one person. The chip on the navigator always shows who it is.</p>
+  <div class="ix-personas"><article class="ix-persona">
+  <div class="ix-persona__top"><span class="ix-av is-visitor">?</span>
+    <div><h3>Visitor</h3><p class="ix-role">Not signed in</p></div></div>
+  <p>Sees the public home page, the seven districts and the sign-up form.</p>
+  <span class="ix-count">3 windows</span>
+</article>
+<article class="ix-persona">
+  <div class="ix-persona__top"><span class="ix-av">LA</span>
+    <div><h3>Layla Al-Mansoori</h3><p class="ix-role">Learner · team admin</p></div></div>
+  <p>Head of Digital Assets at Gulf Digital Exchange. Takes courses, joins Round Tables, earns badges and, as team admin, manages 25 seats and the training evidence report.</p>
+  <span class="ix-count">42 windows</span>
+</article>
+<article class="ix-persona">
+  <div class="ix-persona__top"><span class="ix-av">NK</span>
+    <div><h3>Nadia Karim</h3><p class="ix-role">Partner admin</p></div></div>
+  <p>Runs the illustrative Tether demo academy: analytics, reports, payouts, branding, course authoring and hiring.</p>
+  <span class="ix-count">8 windows</span>
+</article>
+<article class="ix-persona">
+  <div class="ix-persona__top"><span class="ix-av">AH</span>
+    <div><h3>Dr. Amira Haddad</h3><p class="ix-role">Programme Director · staff</p></div></div>
+  <p>Moderates Round Tables, approves every generated output, builds slide decks and runs the admin console.</p>
+  <span class="ix-count">5 windows</span>
+</article></div>
+</div></section>
+
+<section class="ix-sec"><div class="ix-wrap">
+  <h2>Built vs design preview</h2>
+  <p class="ix-sub">Every window carries one of two tags, on the map and on the navigator.</p>
+  <div class="ix-legend">
+    <div class="ix-box"><span class="ix-kind is-built">Built</span><p><b>11 windows.</b> A real screen template of the platform code,
+      rendered with demo data: onboarding, Knowledge Partners, the partner academy with its pathway, badge and jobs, and Round Tables with the staff approval queue.</p></div>
+    <div class="ix-box"><span class="ix-kind is-preview">Design preview</span><p><b>47 windows.</b> The design for a screen
+      that is planned but not built yet, made from the same components and the same demo data.</p></div>
+  </div>
+</div></section>
+
+<section class="ix-sec" id="map"><div class="ix-wrap">
+  <h2>Site map</h2>
+  <p class="ix-sub">All 58 windows, grouped by where they sit in the menu, in tour order.</p>
+  <nav class="ix-jump" aria-label="Chapters"><a href="#ch-1">First run &amp; onboarding</a><a href="#ch-2">Dashboard</a><a href="#ch-3">Courses</a><a href="#ch-4">Districts</a><a href="#ch-5">Round Tables &amp; Masterclasses</a><a href="#ch-6">Community</a><a href="#ch-7">Video Library</a><a href="#ch-8">Slide Builder</a><a href="#ch-9">Profile &amp; Account</a><a href="#ch-10">Partner console &amp; Admin</a></nav>
+  <section class="ix-ch" id="ch-1">
+  <header class="ix-ch__head"><span class="ix-ch__n">01</span>
+    <div class="ix-grow"><h3>First run &amp; onboarding</h3><p>Public site · Register</p></div>
+    <span class="ix-ch__count">5 windows · from 1</span></header>
+  <div class="ix-grid"><a class="ix-card" href="home.html">
+  <span class="ix-card__img"><img src="assets/thumbs/home.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">1</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Public site › Home</span>
+    <span class="ix-card__title">Landing page hero</span>
+    <span class="ix-card__who"><i class="is-visitor">?</i>Visitor</span></span>
+</a><a class="ix-card" href="home-districts.html">
+  <span class="ix-card__img"><img src="assets/thumbs/home-districts.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">2</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Public site › Home › Districts</span>
+    <span class="ix-card__title">Landing page: the 7 Knowledge Districts</span>
+    <span class="ix-card__who"><i class="is-visitor">?</i>Visitor</span></span>
+</a><a class="ix-card" href="sign-up.html">
+  <span class="ix-card__img"><img src="assets/thumbs/sign-up.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">3</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Register › Create account</span>
+    <span class="ix-card__title">Sign-up: create your account</span>
+    <span class="ix-card__who"><i class="is-visitor">?</i>Visitor</span></span>
+</a><a class="ix-card" href="onboarding.html">
+  <span class="ix-card__img"><img src="assets/thumbs/onboarding.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">4</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Register › Onboarding › Question 2 of 5</span>
+    <span class="ix-card__title">Onboarding question 2 of 5: primary area of interest</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="onboarding-results.html">
+  <span class="ix-card__img"><img src="assets/thumbs/onboarding-results.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">5</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Register › Onboarding › Your personalised path</span>
+    <span class="ix-card__title">Onboarding results for Layla</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-2">
+  <header class="ix-ch__head"><span class="ix-ch__n">02</span>
+    <div class="ix-grow"><h3>Dashboard</h3><p>Top menu · Dashboard</p></div>
+    <span class="ix-ch__count">5 windows · from 6</span></header>
+  <div class="ix-grid"><a class="ix-card" href="dashboard.html">
+  <span class="ix-card__img"><img src="assets/thumbs/dashboard.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">6</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard</span>
+    <span class="ix-card__title">Learner dashboard</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="dashboard-lower.html">
+  <span class="ix-card__img"><img src="assets/thumbs/dashboard-lower.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">7</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard</span>
+    <span class="ix-card__title">Learner dashboard: AI Tutor, community and districts</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="dashboard-user-menu.html">
+  <span class="ix-card__img"><img src="assets/thumbs/dashboard-user-menu.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">8</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › User menu</span>
+    <span class="ix-card__title">User menu open on the dashboard</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="notifications.html">
+  <span class="ix-card__img"><img src="assets/thumbs/notifications.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">9</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Notifications</span>
+    <span class="ix-card__title">Notifications inbox</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="tutor-history.html">
+  <span class="ix-card__img"><img src="assets/thumbs/tutor-history.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">10</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › AI Tutor › Conversation history</span>
+    <span class="ix-card__title">AI Tutor conversation history</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-3">
+  <header class="ix-ch__head"><span class="ix-ch__n">03</span>
+    <div class="ix-grow"><h3>Courses</h3><p>Top menu · Courses</p></div>
+    <span class="ix-ch__count">8 windows · from 11</span></header>
+  <div class="ix-grid"><a class="ix-card" href="catalogue.html">
+  <span class="ix-card__img"><img src="assets/thumbs/catalogue.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">11</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Catalogue</span>
+    <span class="ix-card__title">Course catalogue</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="course-usdt-203.html">
+  <span class="ix-card__img"><img src="assets/thumbs/course-usdt-203.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">12</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Catalogue › Course page</span>
+    <span class="ix-card__title">Course page: USDT-203 Stablecoin Payments &amp; Treasury Operations</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="checkout.html">
+  <span class="ix-card__img"><img src="assets/thumbs/checkout.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">13</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Catalogue › Course page › Secure checkout</span>
+    <span class="ix-card__title">Secure checkout with team licence</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · team admin</span></span>
+</a><a class="ix-card" href="order-confirmation.html">
+  <span class="ix-card__img"><img src="assets/thumbs/order-confirmation.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">14</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Catalogue › Course page › Secure checkout › Confirmation</span>
+    <span class="ix-card__title">Purchase confirmation</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · team admin</span></span>
+</a><a class="ix-card" href="course-player.html">
+  <span class="ix-card__img"><img src="assets/thumbs/course-player.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">15</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Course page › Player</span>
+    <span class="ix-card__title">Course player with the AI Tutor open</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="knowledge-check.html">
+  <span class="ix-card__img"><img src="assets/thumbs/knowledge-check.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">16</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Course page › Player › Knowledge check</span>
+    <span class="ix-card__title">Knowledge check with feedback</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="course-progress.html">
+  <span class="ix-card__img"><img src="assets/thumbs/course-progress.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">17</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › Course page › Progress</span>
+    <span class="ix-card__title">Progress and grade breakdown</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="certificate.html">
+  <span class="ix-card__img"><img src="assets/thumbs/certificate.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">18</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Courses › My courses › Certificate</span>
+    <span class="ix-card__title">Verified certificate</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-4">
+  <header class="ix-ch__head"><span class="ix-ch__n">04</span>
+    <div class="ix-grow"><h3>Districts</h3><p>Top menu · Districts</p></div>
+    <span class="ix-ch__count">9 windows · from 19</span></header>
+  <div class="ix-grid"><a class="ix-card" href="districts.html">
+  <span class="ix-card__img"><img src="assets/thumbs/districts.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">19</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts</span>
+    <span class="ix-card__title">Knowledge Districts overview</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="district-digital-assets.html">
+  <span class="ix-card__img"><img src="assets/thumbs/district-digital-assets.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">20</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Digital Assets District</span>
+    <span class="ix-card__title">Digital Assets District page</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="partners.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partners.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">21</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Knowledge Partners</span>
+    <span class="ix-card__title">Knowledge Partners directory</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="partner-tether.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-tether.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">22</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Knowledge Partners › Tether (illustrative)</span>
+    <span class="ix-card__title">Partner page: Tether (illustrative demo)</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="academy-tether.html">
+  <span class="ix-card__img"><img src="assets/thumbs/academy-tether.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">23</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Knowledge Partners › Tether › Academy</span>
+    <span class="ix-card__title">Tether Academy home (illustrative demo)</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="pathway-treasury-specialist.html">
+  <span class="ix-card__img"><img src="assets/thumbs/pathway-treasury-specialist.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">24</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Knowledge Partners › Tether › Academy › Pathway</span>
+    <span class="ix-card__title">Pathway: Stablecoin Payments &amp; Treasury Specialist</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="badge-stablecoin-foundations.html">
+  <span class="ix-card__img"><img src="assets/thumbs/badge-stablecoin-foundations.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">25</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Knowledge Partners › Tether › Academy › Badge</span>
+    <span class="ix-card__title">Badge issued to Layla: Stablecoin Foundations</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="jobs.html">
+  <span class="ix-card__img"><img src="assets/thumbs/jobs.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">26</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Academy › Jobs</span>
+    <span class="ix-card__title">Jobs board: open positions</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="job-apply.html">
+  <span class="ix-card__img"><img src="assets/thumbs/job-apply.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">27</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Academy › Jobs › Job detail › One-click apply</span>
+    <span class="ix-card__title">Job detail with one-click apply and consent</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-5">
+  <header class="ix-ch__head"><span class="ix-ch__n">05</span>
+    <div class="ix-grow"><h3>Round Tables &amp; Masterclasses</h3><p>Dashboard · Districts · Admin</p></div>
+    <span class="ix-ch__count">8 windows · from 28</span></header>
+  <div class="ix-grid"><a class="ix-card" href="round-tables.html">
+  <span class="ix-card__img"><img src="assets/thumbs/round-tables.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">28</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Round Tables</span>
+    <span class="ix-card__title">Round Tables: all sessions with status and filters</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="round-table-detail.html">
+  <span class="ix-card__img"><img src="assets/thumbs/round-table-detail.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">29</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Round Tables › Stablecoins as Settlement Rails in the GCC</span>
+    <span class="ix-card__title">Round Table detail: Stablecoins as Settlement Rails in the GCC</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="round-table-live.html">
+  <span class="ix-card__img"><img src="assets/thumbs/round-table-live.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">30</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Round Tables › AI Agents in Financial Crime Detection › Live room</span>
+    <span class="ix-card__title">Live Round Table room</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="round-table-outputs.html">
+  <span class="ix-card__img"><img src="assets/thumbs/round-table-outputs.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">31</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Round Tables › Travel Rule Interoperability › Outputs</span>
+    <span class="ix-card__title">After-session outputs with approval status</span>
+    <span class="ix-card__who"><i class="">AH</i>Amira · staff</span></span>
+</a><a class="ix-card" href="admin-approvals.html">
+  <span class="ix-card__img"><img src="assets/thumbs/admin-approvals.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-built">Built</span>
+    <span class="ix-num">32</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Admin › Content approval</span>
+    <span class="ix-card__title">Staff approval queue</span>
+    <span class="ix-card__who"><i class="">AH</i>Amira · staff</span></span>
+</a><a class="ix-card" href="opinion-paper.html">
+  <span class="ix-card__img"><img src="assets/thumbs/opinion-paper.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">33</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Knowledge Library › Opinion paper</span>
+    <span class="ix-card__title">Opinion paper in the Knowledge Library</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="masterclasses.html">
+  <span class="ix-card__img"><img src="assets/thumbs/masterclasses.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">34</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Masterclasses</span>
+    <span class="ix-card__title">Masterclass catalogue of expert digital twins</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="masterclass-live.html">
+  <span class="ix-card__img"><img src="assets/thumbs/masterclass-live.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">35</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Districts › Masterclasses › Designing Reserve Requirements › Live session</span>
+    <span class="ix-card__title">Live masterclass with an expert digital twin</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-6">
+  <header class="ix-ch__head"><span class="ix-ch__n">06</span>
+    <div class="ix-grow"><h3>Community</h3><p>Top menu · Community</p></div>
+    <span class="ix-ch__count">3 windows · from 36</span></header>
+  <div class="ix-grid"><a class="ix-card" href="community.html">
+  <span class="ix-card__img"><img src="assets/thumbs/community.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">36</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Community</span>
+    <span class="ix-card__title">Community home</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="community-thread.html">
+  <span class="ix-card__img"><img src="assets/thumbs/community-thread.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">37</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Community › Thread</span>
+    <span class="ix-card__title">Thread: an investigator&#x27;s question, solved</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="community-thread-latest.html">
+  <span class="ix-card__img"><img src="assets/thumbs/community-thread-latest.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">38</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Community › Thread › Latest replies</span>
+    <span class="ix-card__title">Thread: the latest replies</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-7">
+  <header class="ix-ch__head"><span class="ix-ch__n">07</span>
+    <div class="ix-grow"><h3>Video Library</h3><p>Top menu · Video Library</p></div>
+    <span class="ix-ch__count">2 windows · from 39</span></header>
+  <div class="ix-grid"><a class="ix-card" href="video-library.html">
+  <span class="ix-card__img"><img src="assets/thumbs/video-library.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">39</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Video Library</span>
+    <span class="ix-card__title">Video Library</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="video-player.html">
+  <span class="ix-card__img"><img src="assets/thumbs/video-player.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">40</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Video Library › Player</span>
+    <span class="ix-card__title">Video player with chapters, slides and transcript</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-8">
+  <header class="ix-ch__head"><span class="ix-ch__n">08</span>
+    <div class="ix-grow"><h3>Slide Builder</h3><p>Top menu · Slide Builder (staff)</p></div>
+    <span class="ix-ch__count">2 windows · from 41</span></header>
+  <div class="ix-grid"><a class="ix-card" href="slide-builder.html">
+  <span class="ix-card__img"><img src="assets/thumbs/slide-builder.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">41</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Slide Builder</span>
+    <span class="ix-card__title">Slide Builder: prompt and district templates</span>
+    <span class="ix-card__who"><i class="">AH</i>Amira · staff</span></span>
+</a><a class="ix-card" href="slide-editor.html">
+  <span class="ix-card__img"><img src="assets/thumbs/slide-editor.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">42</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Slide Builder › Editor</span>
+    <span class="ix-card__title">Generated deck in the editor</span>
+    <span class="ix-card__who"><i class="">AH</i>Amira · staff</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-9">
+  <header class="ix-ch__head"><span class="ix-ch__n">09</span>
+    <div class="ix-grow"><h3>Profile &amp; Account</h3><p>Account menu · Profile · Account Settings</p></div>
+    <span class="ix-ch__count">7 windows · from 43</span></header>
+  <div class="ix-grid"><a class="ix-card" href="profile-user-menu.html">
+  <span class="ix-card__img"><img src="assets/thumbs/profile-user-menu.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">43</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">User menu › Profile</span>
+    <span class="ix-card__title">User menu open on the profile</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="profile.html">
+  <span class="ix-card__img"><img src="assets/thumbs/profile.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">44</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Profile</span>
+    <span class="ix-card__title">Profile: Layla&#x27;s professional record</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="badge-wallet.html">
+  <span class="ix-card__img"><img src="assets/thumbs/badge-wallet.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">45</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Profile › Badge wallet</span>
+    <span class="ix-card__title">Badge wallet with share and verify</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="account-settings.html">
+  <span class="ix-card__img"><img src="assets/thumbs/account-settings.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">46</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Account Settings › Notifications &amp; privacy</span>
+    <span class="ix-card__title">Notifications, privacy and talent pipeline consent</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="billing.html">
+  <span class="ix-card__img"><img src="assets/thumbs/billing.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">47</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Account Settings › Billing &amp; subscriptions</span>
+    <span class="ix-card__title">Billing: personal purchases and employer licence</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · learner</span></span>
+</a><a class="ix-card" href="team-members.html">
+  <span class="ix-card__img"><img src="assets/thumbs/team-members.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">48</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Account Settings › Team admin › Members &amp; seats</span>
+    <span class="ix-card__title">Team admin: Gulf Digital Exchange members and seats</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · team admin</span></span>
+</a><a class="ix-card" href="team-evidence.html">
+  <span class="ix-card__img"><img src="assets/thumbs/team-evidence.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">49</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Account Settings › Team admin › Progress &amp; evidence</span>
+    <span class="ix-card__title">Team progress and training evidence report</span>
+    <span class="ix-card__who"><i class="">LA</i>Layla · team admin</span></span>
+</a></div>
+</section>
+<section class="ix-ch" id="ch-10">
+  <header class="ix-ch__head"><span class="ix-ch__n">10</span>
+    <div class="ix-grow"><h3>Partner console &amp; Admin</h3><p>Dashboard (partner) · Account menu · Admin (staff)</p></div>
+    <span class="ix-ch__count">9 windows · from 50</span></header>
+  <div class="ix-grid"><a class="ix-card" href="partner-console.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-console.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">50</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Overview</span>
+    <span class="ix-card__title">Partner console: academy overview</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-analytics.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-analytics.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">51</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Analytics</span>
+    <span class="ix-card__title">Course and enrolment analytics</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-reports.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-reports.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">52</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Intelligence reports</span>
+    <span class="ix-card__title">Intelligence reports: weekly summaries and Round Table briefs</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-payouts.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-payouts.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">53</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Payouts</span>
+    <span class="ix-card__title">Payouts with the 70/30 revenue share</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-course-authoring.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-course-authoring.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">54</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Course authoring › USDT-203</span>
+    <span class="ix-card__title">Course authoring: outline editor for USDT-203</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-branding.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-branding.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">55</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Branding</span>
+    <span class="ix-card__title">Academy branding with live preview</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-jobs-talent.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-jobs-talent.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">56</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Jobs &amp; talent</span>
+    <span class="ix-card__title">Job postings and consent-based applicant pipeline</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="partner-onboarding.html">
+  <span class="ix-card__img"><img src="assets/thumbs/partner-onboarding.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">57</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Dashboard › Partner console › Onboarding</span>
+    <span class="ix-card__title">Partner onboarding checklist</span>
+    <span class="ix-card__who"><i class="">NK</i>Nadia · partner admin</span></span>
+</a><a class="ix-card" href="admin.html">
+  <span class="ix-card__img"><img src="assets/thumbs/admin.jpg" alt="" width="480" height="300">
+    <span class="ix-kind is-preview">Design preview</span>
+    <span class="ix-num">58</span></span>
+  <span class="ix-card__body"><span class="ix-card__path">Admin › Overview</span>
+    <span class="ix-card__title">Staff admin overview</span>
+    <span class="ix-card__who"><i class="">AH</i>Amira · staff</span></span>
+</a></div>
+</section>
+</div></section>
+
+<footer class="ix-foot"><div class="ix-wrap">
+  <span><strong>Illustrative demo data · not a live platform · Tether shown as an illustrative demo partner, no partnership implied</strong></span>
+  <span>Apart from Dubai Blockchain Center, BUiD and Tether, all people and organisations are fictitious.</span>
+</div></footer>
+
+<script>
+(function () {
+  var PAGES = [{"f": "home.html", "s": "home", "i": 1, "t": "Landing page hero"}, {"f": "home-districts.html", "s": "home-districts", "i": 2, "t": "Landing page: the 7 Knowledge Districts"}, {"f": "sign-up.html", "s": "sign-up", "i": 3, "t": "Sign-up: create your account"}, {"f": "onboarding.html", "s": "onboarding", "i": 4, "t": "Onboarding question 2 of 5: primary area of interest"}, {"f": "onboarding-results.html", "s": "onboarding-results", "i": 5, "t": "Onboarding results for Layla"}, {"f": "dashboard.html", "s": "dashboard", "i": 6, "t": "Learner dashboard"}, {"f": "dashboard-lower.html", "s": "dashboard-lower", "i": 7, "t": "Learner dashboard: AI Tutor, community and districts"}, {"f": "dashboard-user-menu.html", "s": "dashboard-user-menu", "i": 8, "t": "User menu open on the dashboard"}, {"f": "notifications.html", "s": "notifications", "i": 9, "t": "Notifications inbox"}, {"f": "tutor-history.html", "s": "tutor-history", "i": 10, "t": "AI Tutor conversation history"}, {"f": "catalogue.html", "s": "catalogue", "i": 11, "t": "Course catalogue"}, {"f": "course-usdt-203.html", "s": "course-usdt-203", "i": 12, "t": "Course page: USDT-203 Stablecoin Payments & Treasury Operations"}, {"f": "checkout.html", "s": "checkout", "i": 13, "t": "Secure checkout with team licence"}, {"f": "order-confirmation.html", "s": "order-confirmation", "i": 14, "t": "Purchase confirmation"}, {"f": "course-player.html", "s": "course-player", "i": 15, "t": "Course player with the AI Tutor open"}, {"f": "knowledge-check.html", "s": "knowledge-check", "i": 16, "t": "Knowledge check with feedback"}, {"f": "course-progress.html", "s": "course-progress", "i": 17, "t": "Progress and grade breakdown"}, {"f": "certificate.html", "s": "certificate", "i": 18, "t": "Verified certificate"}, {"f": "districts.html", "s": "districts", "i": 19, "t": "Knowledge Districts overview"}, {"f": "district-digital-assets.html", "s": "district-digital-assets", "i": 20, "t": "Digital Assets District page"}, {"f": "partners.html", "s": "partners", "i": 21, "t": "Knowledge Partners directory"}, {"f": "partner-tether.html", "s": "partner-tether", "i": 22, "t": "Partner page: Tether (illustrative demo)"}, {"f": "academy-tether.html", "s": "academy-tether", "i": 23, "t": "Tether Academy home (illustrative demo)"}, {"f": "pathway-treasury-specialist.html", "s": "pathway-treasury-specialist", "i": 24, "t": "Pathway: Stablecoin Payments & Treasury Specialist"}, {"f": "badge-stablecoin-foundations.html", "s": "badge-stablecoin-foundations", "i": 25, "t": "Badge issued to Layla: Stablecoin Foundations"}, {"f": "jobs.html", "s": "jobs", "i": 26, "t": "Jobs board: open positions"}, {"f": "job-apply.html", "s": "job-apply", "i": 27, "t": "Job detail with one-click apply and consent"}, {"f": "round-tables.html", "s": "round-tables", "i": 28, "t": "Round Tables: all sessions with status and filters"}, {"f": "round-table-detail.html", "s": "round-table-detail", "i": 29, "t": "Round Table detail: Stablecoins as Settlement Rails in the GCC"}, {"f": "round-table-live.html", "s": "round-table-live", "i": 30, "t": "Live Round Table room"}, {"f": "round-table-outputs.html", "s": "round-table-outputs", "i": 31, "t": "After-session outputs with approval status"}, {"f": "admin-approvals.html", "s": "admin-approvals", "i": 32, "t": "Staff approval queue"}, {"f": "opinion-paper.html", "s": "opinion-paper", "i": 33, "t": "Opinion paper in the Knowledge Library"}, {"f": "masterclasses.html", "s": "masterclasses", "i": 34, "t": "Masterclass catalogue of expert digital twins"}, {"f": "masterclass-live.html", "s": "masterclass-live", "i": 35, "t": "Live masterclass with an expert digital twin"}, {"f": "community.html", "s": "community", "i": 36, "t": "Community home"}, {"f": "community-thread.html", "s": "community-thread", "i": 37, "t": "Thread: an investigator's question, solved"}, {"f": "community-thread-latest.html", "s": "community-thread-latest", "i": 38, "t": "Thread: the latest replies"}, {"f": "video-library.html", "s": "video-library", "i": 39, "t": "Video Library"}, {"f": "video-player.html", "s": "video-player", "i": 40, "t": "Video player with chapters, slides and transcript"}, {"f": "slide-builder.html", "s": "slide-builder", "i": 41, "t": "Slide Builder: prompt and district templates"}, {"f": "slide-editor.html", "s": "slide-editor", "i": 42, "t": "Generated deck in the editor"}, {"f": "profile-user-menu.html", "s": "profile-user-menu", "i": 43, "t": "User menu open on the profile"}, {"f": "profile.html", "s": "profile", "i": 44, "t": "Profile: Layla's professional record"}, {"f": "badge-wallet.html", "s": "badge-wallet", "i": 45, "t": "Badge wallet with share and verify"}, {"f": "account-settings.html", "s": "account-settings", "i": 46, "t": "Notifications, privacy and talent pipeline consent"}, {"f": "billing.html", "s": "billing", "i": 47, "t": "Billing: personal purchases and employer licence"}, {"f": "team-members.html", "s": "team-members", "i": 48, "t": "Team admin: Gulf Digital Exchange members and seats"}, {"f": "team-evidence.html", "s": "team-evidence", "i": 49, "t": "Team progress and training evidence report"}, {"f": "partner-console.html", "s": "partner-console", "i": 50, "t": "Partner console: academy overview"}, {"f": "partner-analytics.html", "s": "partner-analytics", "i": 51, "t": "Course and enrolment analytics"}, {"f": "partner-reports.html", "s": "partner-reports", "i": 52, "t": "Intelligence reports: weekly summaries and Round Table briefs"}, {"f": "partner-payouts.html", "s": "partner-payouts", "i": 53, "t": "Payouts with the 70/30 revenue share"}, {"f": "partner-course-authoring.html", "s": "partner-course-authoring", "i": 54, "t": "Course authoring: outline editor for USDT-203"}, {"f": "partner-branding.html", "s": "partner-branding", "i": 55, "t": "Academy branding with live preview"}, {"f": "partner-jobs-talent.html", "s": "partner-jobs-talent", "i": 56, "t": "Job postings and consent-based applicant pipeline"}, {"f": "partner-onboarding.html", "s": "partner-onboarding", "i": 57, "t": "Partner onboarding checklist"}, {"f": "admin.html", "s": "admin", "i": 58, "t": "Staff admin overview"}];
+  var last = null;
+  try { last = window.localStorage.getItem('cpxd.last'); } catch (e) { last = null; }
+  var p = null;
+  for (var i = 0; i < PAGES.length; i++) { if (PAGES[i].s === last) p = PAGES[i]; }
+  if (p && p.i > 1) {
+    var el = document.getElementById('ix-resume');
+    var a = document.createElement('a');
+    a.setAttribute('href', p.f);
+    a.textContent = p.i + ' / ' + PAGES.length + ' · ' + p.t + ' →';
+    el.appendChild(document.createTextNode('Continue where you left off: '));
+    el.appendChild(a);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'ArrowRight') window.location.href = PAGES[0].f;
+  });
+})();
+</script>
+</body>
+</html>

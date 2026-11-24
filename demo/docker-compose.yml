@@ -1,0 +1,8 @@
+services:
+  demo:
+    build: .
+    image: chronopoli-demo
+    container_name: chronopoli-demo
+    ports:
+      - "8080:80"
+    restart: unless-stopped
